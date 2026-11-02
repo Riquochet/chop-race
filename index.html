@@ -45,7 +45,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-help{font-size:.8125rem;color:var(--chop-muted);margin:0 0 .75rem}
 .chop-help summary{cursor:pointer;color:var(--chop-fg);font-weight:600;padding:4px 0;list-style-position:inside}
 .chop-help p{line-height:1.4;margin:.4rem 0;max-width:65ch}
-.chop-race{font-size:.875rem;line-height:1.45;margin:0 0 .5rem;max-width:65ch}
+.chop-race{line-height:1.4;margin:.4rem 0;max-width:65ch}
+.chop-news{margin:.25rem 0 .75rem;max-width:65ch}
+.chop-news-h{font-size:1.0625rem;line-height:1.3;margin:0 0 .2rem;text-wrap:balance}
+.chop-news-meta{font-size:.75rem;color:var(--chop-muted);margin:0 0 .4rem}
+.chop-news p.b{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
 .chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
 .chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -79,8 +83,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
   <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span></p>
+  <article class="chop-news" id="chop-news" hidden aria-live="polite">
+    <h2 class="chop-news-h" id="news-head"></h2>
+    <p class="chop-news-meta" id="news-meta"></p>
+    <div id="news-body"></div>
+  </article>
+  <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-  <details class="chop-help"><summary>How to read the charts</summary>
     <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Final and Chop read ours (Sleeper).</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
     <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Bench players are faded.</p>
@@ -218,6 +227,17 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   // LIVE light: on while the latest data says a game is in progress (and is under 15 minutes old).
   function isLive() { return !!(DOC && DOC.live && Date.now() / 1000 - (+DOC.builtAt || 0) < 15 * 60); }
   function clock(t) { return new Date(t * 1000).toLocaleString([], {weekday: "short", hour: "numeric", minute: "2-digit"}); }
+  // The race write-up (chop_news.py): every 15 minutes during a game, then frozen once the session ends.
+  function drawNews() {
+    var a = DOC && DOC.article, box = document.getElementById("chop-news");
+    box.hidden = !(a && a.headline);
+    if (box.hidden) return;
+    document.getElementById("news-head").textContent = a.headline;
+    document.getElementById("news-meta").textContent = "Week " + a.week + " · " +
+      (a.final ? a.session + ", final" : a.session + ", in progress") + " · written " + clock(a.t);
+    var body = document.getElementById("news-body"); body.textContent = "";
+    (a.paras || []).forEach(function (t) { var p = document.createElement("p"); p.className = "b"; p.textContent = t; body.appendChild(p); });
+  }
   function drawStatus() {
     var live = isLive(), now = Date.now() / 1000, parts = [];
     document.getElementById("chop-live").hidden = !live;
@@ -560,7 +580,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var ok = !!rows();
     document.getElementById("chop-wait").hidden = ok;
     document.getElementById("chop-body").hidden = !ok;
-    drawStatus();
+    drawStatus(); drawNews();
     if (!ok) return;
     drawChart(document.getElementById("chop-chart"), rows(), ST.teams, document.getElementById("chop-reset"));
     drawTable(document.querySelector("#sec-teams .chop-t tbody"));
