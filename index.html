@@ -4,10 +4,11 @@
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
 <script>window.CHOP_DATA_URL = 'live_doc.json';</script>
 </head><body>
-<title>Chop Race</title>
+<title>Sleeper - The Chopping Block</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Layout: one full-width chart (game time only), then the standings table; tap a row or line end to isolate a team. */
+/* Layout: one full-width chart (game time only), then the standings table; tap rows or line ends to pick out teams. */
+[hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
 :root{--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
   --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
   --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
@@ -41,6 +42,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
 .chop-h{font-size:1.25rem;line-height:1.25;margin:0 0 .25rem;text-wrap:balance}
+.chop-help{font-size:.8125rem;color:var(--chop-muted);margin:0 0 .75rem}
+.chop-help summary{cursor:pointer;color:var(--chop-fg);font-weight:600;padding:4px 0;list-style-position:inside}
+.chop-help p{line-height:1.4;margin:.4rem 0;max-width:65ch}
+.chop-race{font-size:.875rem;line-height:1.45;margin:0 0 .5rem;max-width:65ch}
 .chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
 .chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -72,12 +77,17 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
 </style>
 <div class="chop">
-  <h1 class="chop-h">Week race to Monday night</h1>
+  <h1 class="chop-h">Sleeper - The Chopping Block</h1>
   <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span></p>
-  <p class="chop-sub">Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Tap a team to pick out its line. Final and Chop read ours (Sleeper).</p>
+  <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
+  <details class="chop-help"><summary>How to read the charts</summary>
+    <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Final and Chop read ours (Sleeper).</p>
+    <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
+    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Bench players are faded.</p>
+  </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
-    <div class="chop-zoombar"><span>Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</span>
+    <div class="chop-zoombar"><span></span>
       <button type="button" class="chop-reset" id="chop-reset" hidden>Show whole week</button></div>
     <section id="sec-teams">
     <div class="chop-chart" id="chop-chart"></div>
@@ -92,7 +102,6 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2"><label for="mine-team">Players for</label></h2>
         <select id="mine-team"></select></div>
         <button type="button" class="chop-reset" id="mine-reset" hidden>Show whole week</button></div>
-      <p class="chop-sub">Every player on the team you pick (teams still alive only). The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Bench players are faded. Same gestures as above.</p>
       <div class="chop-chart" id="mine-chart"></div>
       <div class="chop-tw">
         <table class="chop-t chop-pt">
@@ -107,8 +116,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 <script>
 (function () {
   var DOC = null;
-  var ST = {teams: {key: "teams", view: null, sel: null, reset: function () {}},
-            mine: {key: "mine", view: null, sel: null, reset: function () {}, team: null}};
+  var ST = {teams: {key: "teams", view: null, sel: [], reset: function () {}},      // sel = the picked lines, any number
+            mine: {key: "mine", view: null, sel: [], reset: function () {}, team: null}};
   var PICK_KEY = "chop-race-player-team";
   try { ST.mine.team = localStorage.getItem(PICK_KEY); } catch (e) {}
   function rows() {
@@ -191,14 +200,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     return out;
   }
   function short(n, k) { var c = Array.from(n); return c.length > k ? c.slice(0, k - 1).join("") + "…" : n; }   // by character, so emoji count once
-  function pick(st, t) { st.sel = st.sel === t ? null : t; style(st); }
+  function pick(st, t) {                          // a tap adds the line to the picked set, or drops it
+    var i = st.sel.indexOf(t);
+    if (i < 0) st.sel.push(t); else st.sel.splice(i, 1);
+    style(st);
+  }
   function style(st) {
     var root = document.getElementById("sec-" + st.key); if (!root) return;
     root.querySelectorAll(".chop-chart [data-team]").forEach(function (n) {
-      n.classList.toggle("dim", !!st.sel && n.getAttribute("data-team") !== st.sel);
+      n.classList.toggle("dim", st.sel.length > 0 && st.sel.indexOf(n.getAttribute("data-team")) < 0);
     });
     root.querySelectorAll(".chop-t tbody tr").forEach(function (r) {
-      r.classList.toggle("sel", !!st.sel && r.getAttribute("data-key") === st.sel);
+      r.classList.toggle("sel", st.sel.indexOf(r.getAttribute("data-key")) >= 0);
     });
   }
 
@@ -214,6 +227,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       if (DOC.builtAt) parts.push("last update " + clock(DOC.builtAt));
     }
     document.getElementById("chop-when").textContent = parts.join(" · ") || "—";
+    if (DOC && DOC.teams) document.getElementById("chop-alive").textContent = String(DOC.teams.length);
   }
   // When to look again: every minute during a game, every 5 minutes while finals land (25 minutes
   // after the last update), else asleep until 5 minutes before the next kickoff (at most 6 hours).
@@ -513,19 +527,21 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     style(ST.mine);
   }
 
-  // Team picker: alive teams only (the doc carries only alive rosters), ours first, then by the name shown.
+  // Team picker: alive teams only (the doc carries only alive rosters), in the team table's order
+  // (worst first) with each team's place in it.
   function drawPicker(sel) {
     var R = DOC && DOC.rosters, cur = mineTeam();
     sel.hidden = !R;
     if (!R) return;
     var us = (DOC.teams || []).find(function (t) { return String(t.us) === "true"; }), usT = us && us.team;
-    var long = roomy();
-    var names = Object.keys(R).sort(function (a, b) { return (b === usT) - (a === usT) || teamName(a, long).toLowerCase().localeCompare(teamName(b, long).toLowerCase()); });
-    var key = names.join("|") + long;
+    var long = roomy(), rank = {};
+    (DOC.teams || []).forEach(function (t) { rank[t.team] = +t.rank; });
+    var names = Object.keys(R).sort(function (a, b) { return (rank[b] || 0) - (rank[a] || 0); });
+    var key = names.map(function (n) { return rank[n] + n; }).join("|") + long;
     if (sel.getAttribute("data-key") !== key) {
       sel.textContent = ""; sel.setAttribute("data-key", key);
       names.forEach(function (n) {
-        var o = document.createElement("option"); o.value = n; o.textContent = teamName(n, long) + (n === usT ? " · ours" : "");
+        var o = document.createElement("option"); o.value = n; o.textContent = (rank[n] ? rank[n] + ". " : "") + teamName(n, long) + (n === usT ? " · ours" : "");
         o.style.color = teamColor(n); sel.appendChild(o);
       });
     }
@@ -557,13 +573,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       if (!st.el || st.el.contains(e.target)) return;
       if (st.dismiss) st.dismiss();
       var row = e.target.closest && e.target.closest("#sec-" + st.key + " .chop-t tbody tr");
-      if (st.sel && !row) { st.sel = null; style(st); }
+      if (st.sel.length && !row) { st.sel = []; style(st); }
     });
   }, true);
   document.getElementById("chop-reset").addEventListener("click", function () { ST.teams.reset(); });
   document.getElementById("mine-reset").addEventListener("click", function () { ST.mine.reset(); });
   document.getElementById("mine-team").addEventListener("change", function (e) {
-    ST.mine.team = e.target.value; ST.mine.view = ST.mine.yview = ST.mine.sel = null;
+    ST.mine.team = e.target.value; ST.mine.view = ST.mine.yview = null; ST.mine.sel = [];
     try { localStorage.setItem(PICK_KEY, ST.mine.team); } catch (err) {}
     renderMine();
   });
