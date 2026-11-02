@@ -20,14 +20,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-h2{font-size:1.0625rem;margin:0;color:var(--chop-fg)}
 .chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
 .chop-pt td:nth-child(2),.chop-pt th:nth-child(2),.chop-pt td:nth-child(6),.chop-pt th:nth-child(6){text-align:left;color:var(--chop-muted)}
-.chop-pt tr.bench td{color:var(--chop-muted)}
+.chop-pt tr.bench td{opacity:.6}
 .chop-zoombar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;color:var(--chop-muted);font-size:.75rem;margin-bottom:6px}
 .chop-zoombar button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 10px;cursor:pointer}
 .chop-zoombar select{font:inherit;font-size:.9375rem;font-weight:600;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 8px;max-width:100%}
 .chop-pickrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .chop-zoombar select:focus-visible,.chop-zoombar button:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
 .chop-state{color:var(--chop-muted);font-size:.875rem;padding:48px 0;text-align:center}
-.chop-live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2a9d3a;margin-right:6px;vertical-align:1px}
+.chop-status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8125rem;color:var(--chop-muted);margin:0 0 .5rem}
+.chop-live{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#d62728;border-radius:4px;padding:2px 7px}
+.chop-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:chop-pulse 1.6s ease-in-out infinite}
+@keyframes chop-pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.chop-live::before{animation:none}}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
   --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
   --chop-c10:#f2f2f7;--chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
@@ -48,6 +52,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-chart .fut{fill:var(--chop-future)}
 .chop-chart path.ln{fill:none;stroke-linejoin:round;stroke-linecap:round;transition:opacity .15s}
 .chop-chart .lab{font-size:10.5px;cursor:pointer}
+.chop-chart .hit{fill:transparent;cursor:pointer}
 .chop-chart .dim{opacity:.12}
 .chop-tip{position:absolute;pointer-events:none;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;
   padding:6px 8px;font-size:12px;line-height:1.35;box-shadow:0 2px 10px rgba(0,0,0,.18);min-width:150px;z-index:2}
@@ -61,14 +66,15 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-t th:nth-child(2),.chop-t td:nth-child(2){text-align:left}
 .chop-t tbody tr{cursor:pointer}
 .chop-t tr.us td{font-weight:700}
+.chop-t td.nm{font-weight:600}
 .chop-t tr.sel td{background:var(--chop-future)}
 .chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
 </style>
 <div class="chop">
   <h1 class="chop-h">Week race to Monday night</h1>
-  <p class="chop-sub"><span class="chop-live" aria-hidden="true"></span>Updates itself while games are on. Last update <span id="chop-asof">—</span>.
-  Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Tap a team to pick out its line. Final and Chop read ours (Sleeper).</p>
+  <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span></p>
+  <p class="chop-sub">Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Tap a team to pick out its line. Final and Chop read ours (Sleeper).</p>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
     <div class="chop-zoombar"><span>Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</span>
@@ -117,7 +123,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var teams = DOC.teams.map(function (d) { return Object.assign({}, d, {color: +d.color}); });
     var col = {}; teams.forEach(function (t) { col[t.team] = "var(--chop-c" + t.color + ")"; });
     var us = (teams.find(function (t) { return String(t.us) === "true"; }) || {}).team;
-    var name = {}, gxOf = {}; teams.forEach(function (t) { name[t.team] = t.team; gxOf[t.team] = t.gx; });
+    var name = {}, gxOf = {}; teams.forEach(function (t) { name[t.team] = teamName(t.team); gxOf[t.team] = t.gx; });
     return {
       series: S, wins: W.data, teams: teams, col: col, us: us, name: name,
       width: function (t) { return t === us ? 3.4 : 1.8; }, bold: function (t) { return t === us; },
@@ -125,6 +131,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       widths: function (t) { return t === us ? {thick: 5, thin: 1.6, done: 0.75} : {thick: 3.4, thin: 1.1, done: 0.5}; },
       faint: function () { return false; }, aria: "Points by team through the week, scored and projected"
     };
+  }
+  // A team's name: its Sleeper team name where space is short (phones), "Team name (account)" where
+  // there is room; teams without a team name show the account alone.
+  function roomy() { return innerWidth >= 560; }
+  function teamName(acct, long) {
+    var row = DOC && (DOC.teams || []).find(function (t) { return t.team === acct; });
+    var nm = row && row.name || acct;
+    return (long === undefined ? roomy() : long) && nm !== acct ? nm + " (" + acct + ")" : nm;
+  }
+  function teamColor(acct) {
+    var row = DOC && (DOC.teams || []).find(function (t) { return t.team === acct; });
+    return row ? "var(--chop-c" + (+row.color) + ")" : null;
   }
   // The roster the player chart shows: the picked team if it is still alive, else ours.
   function mineTeam() {
@@ -149,7 +167,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     return {
       series: S, wins: DOC.windows || [], teams: items, col: col, us: null, name: name, rows: P.rows,
       width: function (t) { return slot[t] === "START" ? 4.5 : 3; }, bold: function (t) { return slot[t] === "START"; },
-      faint: function (t) { return slot[t] !== "START"; }, rangeOnly: true, aria: "Points by player for " + mineTeam() + ", scored and projected"
+      faint: function (t) { return slot[t] !== "START"; }, rangeOnly: true, aria: "Points by player for " + teamName(mineTeam(), true) + ", scored and projected"
     };
   }
   function valAt(pts, x) {                        // value of a step/linear path at x
@@ -172,7 +190,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     out.push({x: hi, pts: valAt(pts, hi)});
     return out;
   }
-  function short(n, k) { return n.length > k ? n.slice(0, k - 1) + "…" : n; }
+  function short(n, k) { var c = Array.from(n); return c.length > k ? c.slice(0, k - 1).join("") + "…" : n; }   // by character, so emoji count once
   function pick(st, t) { st.sel = st.sel === t ? null : t; style(st); }
   function style(st) {
     var root = document.getElementById("sec-" + st.key); if (!root) return;
@@ -184,7 +202,28 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     });
   }
 
-  function drawAsof(el) { el.textContent = DOC && DOC.asof ? DOC.asof : "—"; }
+  // LIVE light: on while the latest data says a game is in progress (and is under 15 minutes old).
+  function isLive() { return !!(DOC && DOC.live && Date.now() / 1000 - (+DOC.builtAt || 0) < 15 * 60); }
+  function clock(t) { return new Date(t * 1000).toLocaleString([], {weekday: "short", hour: "numeric", minute: "2-digit"}); }
+  function drawStatus() {
+    var live = isLive(), now = Date.now() / 1000, parts = [];
+    document.getElementById("chop-live").hidden = !live;
+    if (DOC) {
+      parts.push(live ? "Game on" : "No game on");
+      if (!live && DOC.next && DOC.next > now) parts.push("next kickoff " + clock(DOC.next));
+      if (DOC.builtAt) parts.push("last update " + clock(DOC.builtAt));
+    }
+    document.getElementById("chop-when").textContent = parts.join(" · ") || "—";
+  }
+  // When to look again: every minute during a game, every 5 minutes while finals land (25 minutes
+  // after the last update), else asleep until 5 minutes before the next kickoff (at most 6 hours).
+  function nextDelay() {
+    var now = Date.now() / 1000;
+    if (!DOC || isLive()) return 60;
+    if (now - (+DOC.builtAt || 0) < 25 * 60) return 5 * 60;
+    if (DOC.next) return Math.min(6 * 3600, Math.max(60, DOC.next - 300 - now));
+    return 6 * 3600;
+  }
 
   // One chart: lines on game time, zoom kept in st.view ([a, b] game minutes, null = whole week) across updates.
   function drawChart(el, d, st, resetBtn) {
@@ -193,9 +232,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var series = d.series, wins = d.wins, teams = d.teams, col = d.col, us = d.us;
     var nowRow = wins.find(function (w) { return w.kind === "now"; }), nowX = nowRow ? +nowRow.x0 : 0;
     var width = Math.max(300, el.clientWidth || 360), narrow = width < 560;
-    var m = {l: 30, r: narrow ? 104 : 150, t: 10, b: narrow ? 30 : 42}, h = narrow ? 420 : 470;
+    var m = {l: 30, r: narrow ? 108 : 230, t: 10, b: narrow ? 42 : 42}, h = narrow ? 430 : 470;
     var pw = width - m.l - m.r, ph = h - m.t - m.b;
-    var xmax = d3.max(series, function (r) { return r.x; }) || 1, minSpan = Math.min(xmax, 15);
+    var xmax = Math.max(d3.max(series, function (r) { return r.x; }) || 1,      // the whole week's windows, even when
+      d3.max(wins, function (w) { return w.kind === "window" ? +w.x1 : 0; }) || 0), minSpan = Math.min(xmax, 15);   // no player plays the last one
     var by = d3.group(series, function (r) { return r.team; });
     var full = {}, span = {};
     by.forEach(function (v, k) { v.sort(function (p, q) { return p.x - q.x; }); full[k] = v; span[k] = [v[0].x, v[v.length - 1].x]; });
@@ -259,14 +299,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         gBack.append("line").attr("class", "grid").attr("x1", m.l).attr("x2", width - m.r).attr("y1", y(yv)).attr("y2", y(yv));
         gBack.append("text").attr("class", "ax").attr("x", m.l - 5).attr("y", y(yv) + 4).attr("text-anchor", "end").text(yv);
       });
+      var lastEnd = -Infinity;
       wins.filter(function (w) { return w.kind === "window"; }).forEach(function (w, i) {
         var wa = x(+w.x0), wb = x(+w.x1);
         if (i && wa > m.l && wa < width - m.r)
           gBack.append("line").attr("class", "div").attr("x1", wa).attr("x2", wa).attr("y1", m.t).attr("y2", h - m.b);
         var ca = Math.max(m.l, wa), cb = Math.min(width - m.r, wb);
         if (cb - ca < 24) return;                        // window mostly off screen
-        gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 15)
-          .attr("text-anchor", "middle").text(narrow && cb - ca < 90 ? w.short : w.label);
+        var txt = narrow && cb - ca < 90 ? w.short : w.label, cx = (ca + cb) / 2, half = txt.length * 3.1 + 3;
+        var row = narrow && cx - half < lastEnd ? 1 : 0;  // phones: a crowded label drops to a second row
+        if (!row) lastEnd = cx + half;
+        gBack.append("text").attr("class", "ax").attr("x", cx).attr("y", h - m.b + 15 + row * 13)
+          .attr("text-anchor", "middle").text(txt);
         if (!narrow) gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 29)
           .attr("text-anchor", "middle").style("font-size", "10px").text(w.when);
       });
@@ -315,10 +359,12 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       for (var i = 1; i < ends.length; i++) if (ends[i].y < ends[i - 1].y + 12) ends[i].y = ends[i - 1].y + 12;
       var over = ends.length ? ends[ends.length - 1].y - (h - m.b + 4) : 0;
       if (over > 0) ends.forEach(function (e) { e.y -= over; });
-      ends.forEach(function (e) {
+      ends.forEach(function (e) {                         // the whole label column, name height, picks the line
+        gTop.append("rect").attr("class", "hit").attr("x", width - m.r + 2).attr("y", e.y - 7).attr("width", m.r - 2).attr("height", 12)
+          .on("click", function () { pick(st, e.team); });
         gTop.append("text").attr("class", "lab").attr("data-team", e.team).attr("x", width - m.r + 6).attr("y", e.y + 4)
           .style("fill", col[e.team]).style("font-weight", d.bold(e.team) ? 700 : 400)
-          .text(short(d.name[e.team], narrow ? 9 : 16) + " " + e.v.toFixed(1))
+          .text(short(d.name[e.team], narrow ? 11 : 32) + " " + e.v.toFixed(1))
           .on("click", function () { pick(st, e.team); });
       });
       if (resetBtn) resetBtn.hidden = !st.view && !st.yview;
@@ -339,7 +385,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       vals.forEach(function (r) {
         var row = tip.append("div").attr("class", "r").style("opacity", r.on ? null : 0.55);
         var l = row.append("span"); l.append("span").attr("class", "chop-dot").style("background", col[r.team]);
-        l.append("span").text(" " + short(d.name[r.team], 16)).style("font-weight", d.bold(r.team) ? 700 : null);
+        l.append("span").text(" " + short(d.name[r.team], narrow ? 16 : 32)).style("font-weight", d.bold(r.team) ? 700 : null);
         row.append("span").text(r.v.toFixed(1));
       });
       var tw = tip.node().offsetWidth, left = px > width / 2 ? px - tw - 14 : px + 14;
@@ -435,7 +481,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       if (t.team === d.us) tr.className = "us";
       [t.rank, t.team, t.now, t.est_final, t.est_sleeper, t.chop, t.chop_sleeper].forEach(function (v, i) {
         var td = document.createElement("td");
-        if (i === 1) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[t.team]; td.appendChild(dot); }
+        if (i === 1) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[t.team]; td.appendChild(dot);
+          td.className = "nm"; td.style.color = d.col[t.team]; v = d.name[t.team]; }
         td.appendChild(document.createTextNode(i >= 2 ? (+v).toFixed(1) : String(v)));
         tr.appendChild(td);
       });
@@ -454,7 +501,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       tr.className = r.slot === "START" ? "" : "bench";
       [r.label, r.slot === "START" ? "Start" : "Bench", r.now, r.est_final, r.est_sleeper, r.state].forEach(function (v, i) {
         var td = document.createElement("td");
-        if (i === 0) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[r.id]; td.appendChild(dot); }
+        if (i === 0) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[r.id]; td.appendChild(dot);
+          td.className = "nm"; td.style.color = d.col[r.id]; }
         td.appendChild(document.createTextNode(i >= 2 && i <= 4 ? (+v).toFixed(1) : String(v)));
         tr.appendChild(td);
       });
@@ -465,19 +513,23 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     style(ST.mine);
   }
 
-  // Team picker: alive teams only (the doc carries only alive rosters), ours first, then by name.
+  // Team picker: alive teams only (the doc carries only alive rosters), ours first, then by the name shown.
   function drawPicker(sel) {
     var R = DOC && DOC.rosters, cur = mineTeam();
     sel.hidden = !R;
     if (!R) return;
     var us = (DOC.teams || []).find(function (t) { return String(t.us) === "true"; }), usT = us && us.team;
-    var names = Object.keys(R).sort(function (a, b) { return (b === usT) - (a === usT) || a.toLowerCase().localeCompare(b.toLowerCase()); });
-    if (sel.options.length === names.length && names.every(function (n, i) { return sel.options[i].value === n; })) { sel.value = cur; return; }
-    sel.textContent = "";
-    names.forEach(function (n) {
-      var o = document.createElement("option"); o.value = n; o.textContent = n === usT ? n + " (ours)" : n; sel.appendChild(o);
-    });
-    sel.value = cur;
+    var long = roomy();
+    var names = Object.keys(R).sort(function (a, b) { return (b === usT) - (a === usT) || teamName(a, long).toLowerCase().localeCompare(teamName(b, long).toLowerCase()); });
+    var key = names.join("|") + long;
+    if (sel.getAttribute("data-key") !== key) {
+      sel.textContent = ""; sel.setAttribute("data-key", key);
+      names.forEach(function (n) {
+        var o = document.createElement("option"); o.value = n; o.textContent = teamName(n, long) + (n === usT ? " · ours" : "");
+        o.style.color = teamColor(n); sel.appendChild(o);
+      });
+    }
+    sel.value = cur; sel.style.color = teamColor(cur);
   }
   function renderMine() {
     var md = mineRows();
@@ -492,7 +544,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var ok = !!rows();
     document.getElementById("chop-wait").hidden = ok;
     document.getElementById("chop-body").hidden = !ok;
-    drawAsof(document.getElementById("chop-asof"));
+    drawStatus();
     if (!ok) return;
     drawChart(document.getElementById("chop-chart"), rows(), ST.teams, document.getElementById("chop-reset"));
     drawTable(document.querySelector("#sec-teams .chop-t tbody"));
@@ -519,25 +571,29 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
   render();
   // Data: on claude.ai the page's db doc chart/current (live snapshots); anywhere else (the GitHub copy)
-  // the same document as JSON at window.CHOP_DATA_URL, fetched every minute.
+  // the same document as JSON at window.CHOP_DATA_URL, fetched on nextDelay()'s timer.
   function failed() { if (!DOC) document.getElementById("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
   (async function () {
     if (window.claude) {
       var db = await window.claude.use("db");
       db.doc("chart/current").onSnapshot(function (snap) { DOC = snap.exists ? snap.data() : null; render(); }, failed);
+      (function light() { drawStatus(); setTimeout(light, nextDelay() * 1000); })();   // the light goes out on its own
+      document.addEventListener("visibilitychange", function () { if (!document.hidden) drawStatus(); });
       return;
     }
-    var url = window.CHOP_DATA_URL || "live_doc.json", built = 0;
+    var url = window.CHOP_DATA_URL || "live_doc.json", built = 0, timer = 0;
     async function poll() {
+      clearTimeout(timer);
       try {
         var r = await fetch(url + (url.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), {cache: "no-store"});
         if (!r.ok) throw new Error(r.status);
         var d = await r.json();
-        if (d.builtAt !== built) { built = d.builtAt; DOC = d; render(); }
+        if (d.builtAt !== built) { built = d.builtAt; DOC = d; render(); } else drawStatus();
       } catch (e) { failed(); }
+      timer = setTimeout(poll, nextDelay() * 1000);
     }
-    poll(); setInterval(poll, 60000);
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
+    poll();
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });   // a phone waking up
   })();
 })();
 </script>
