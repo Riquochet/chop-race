@@ -5,7 +5,6 @@
 <script>window.CHOP_DATA_URL = 'live_doc.json';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one full-width chart (game time only), then the standings table; tap rows or line ends to pick out teams. */
 [hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
@@ -606,17 +605,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   var lastW = 0;
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
   render();
-  // Data: on claude.ai the page's db doc chart/current (live snapshots); anywhere else (the GitHub copy)
-  // the same document as JSON at window.CHOP_DATA_URL, fetched on nextDelay()'s timer.
+  // Data: live_doc.json next to the page (the score recorder pushes it every minute during games),
+  // fetched on nextDelay()'s timer: every minute while live, asleep until just before the next kickoff.
   function failed() { if (!DOC) document.getElementById("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
   (async function () {
-    if (window.claude) {
-      var db = await window.claude.use("db");
-      db.doc("chart/current").onSnapshot(function (snap) { DOC = snap.exists ? snap.data() : null; render(); }, failed);
-      (function light() { drawStatus(); setTimeout(light, nextDelay() * 1000); })();   // the light goes out on its own
-      document.addEventListener("visibilitychange", function () { if (!document.hidden) drawStatus(); });
-      return;
-    }
     var url = window.CHOP_DATA_URL || "live_doc.json", built = 0, timer = 0;
     async function poll() {
       clearTimeout(timer);
