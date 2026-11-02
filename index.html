@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
+<script>window.CHOP_DATA_URL = 'https://raw.githubusercontent.com/Riquochet/chop-race/data/live_doc.json';</script>
+</head><body>
+<title>Chop Race</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one full-width chart (game time only), then the standings table; tap a row or line end to isolate a team. */
+:root{--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
+  --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
+  --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
+  --chop-panel:#ffffff;--chop-future:rgba(120,120,140,.07);
+}
+body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,system-ui,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;
+  padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chop{max-width:1000px;margin-inline:auto}
+.chop-sec{margin-top:28px;padding-top:16px;border-top:1px solid var(--chop-grid)}
+.chop-h2{font-size:1.0625rem;margin:0;color:var(--chop-fg)}
+.chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
+.chop-pt td:nth-child(2),.chop-pt th:nth-child(2),.chop-pt td:nth-child(6),.chop-pt th:nth-child(6){text-align:left;color:var(--chop-muted)}
+.chop-pt tr.bench td{color:var(--chop-muted)}
+.chop-zoombar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;color:var(--chop-muted);font-size:.75rem;margin-bottom:6px}
+.chop-zoombar button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 10px;cursor:pointer}
+.chop-zoombar select{font:inherit;font-size:.9375rem;font-weight:600;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 8px;max-width:100%}
+.chop-pickrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chop-zoombar select:focus-visible,.chop-zoombar button:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
+.chop-state{color:var(--chop-muted);font-size:.875rem;padding:48px 0;text-align:center}
+.chop-live{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2a9d3a;margin-right:6px;vertical-align:1px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
+  --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
+  --chop-c10:#f2f2f7;--chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
+  --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}}
+:root[data-theme="dark"]{color-scheme:dark;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
+  --chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;--chop-c10:#f2f2f7;
+  --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
+  --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
+.chop-h{font-size:1.25rem;line-height:1.25;margin:0 0 .25rem;text-wrap:balance}
+.chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
+.chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.chop-chart svg{display:block;width:100%;height:auto}
+.chop-chart .ax{fill:var(--chop-muted);font-size:11px}
+.chop-chart .grid{stroke:var(--chop-grid);stroke-width:1}
+.chop-chart .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
+.chop-chart .nowln{stroke:var(--chop-fg);stroke-width:1.2}
+.chop-chart .fut{fill:var(--chop-future)}
+.chop-chart path.ln{fill:none;stroke-linejoin:round;stroke-linecap:round;transition:opacity .15s}
+.chop-chart .lab{font-size:10.5px;cursor:pointer}
+.chop-chart .dim{opacity:.12}
+.chop-tip{position:absolute;pointer-events:none;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;
+  padding:6px 8px;font-size:12px;line-height:1.35;box-shadow:0 2px 10px rgba(0,0,0,.18);min-width:150px;z-index:2}
+.chop-tip b{display:block;margin-bottom:2px}
+.chop-tip .r{display:flex;gap:6px;align-items:center;justify-content:space-between}
+.chop-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+.chop-tw{overflow-x:auto;margin-top:.75rem}
+.chop-t{border-collapse:collapse;font-size:.78rem;width:100%}
+.chop-t th{color:var(--chop-muted);font-weight:500;text-align:right;padding:4px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
+.chop-t td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
+.chop-t th:nth-child(2),.chop-t td:nth-child(2){text-align:left}
+.chop-t tbody tr{cursor:pointer}
+.chop-t tr.us td{font-weight:700}
+.chop-t tr.sel td{background:var(--chop-future)}
+.chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
+@media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
+</style>
+<div class="chop">
+  <h1 class="chop-h">Week race to Monday night</h1>
+  <p class="chop-sub"><span class="chop-live" aria-hidden="true"></span>Updates itself about every 5 minutes while games are on. Last update <span id="chop-asof">—</span>.
+  Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Tap a team to pick out its line. Final and Chop read ours (Sleeper).</p>
+  <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
+  <div id="chop-body" hidden>
+    <div class="chop-zoombar"><span>Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</span>
+      <button type="button" class="chop-reset" id="chop-reset" hidden>Show whole week</button></div>
+    <section id="sec-teams">
+    <div class="chop-chart" id="chop-chart"></div>
+    <div class="chop-tw">
+      <table class="chop-t">
+        <thead><tr><th>#</th><th>Team</th><th>Now</th><th>Final</th><th>(Slpr)</th><th>Chop%</th><th>(Slpr)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    </section>
+    <section id="sec-mine" class="chop-sec">
+      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2"><label for="mine-team">Players for</label></h2>
+        <select id="mine-team"></select></div>
+        <button type="button" class="chop-reset" id="mine-reset" hidden>Show whole week</button></div>
+      <p class="chop-sub">Every player on the team you pick (teams still alive only). The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Bench players are faded. Same gestures as above.</p>
+      <div class="chop-chart" id="mine-chart"></div>
+      <div class="chop-tw">
+        <table class="chop-t chop-pt">
+          <thead><tr><th>Player</th><th>Slot</th><th>Now</th><th>Final</th><th>(Slpr)</th><th>State</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+(function () {
+  var DOC = null;
+  var ST = {teams: {key: "teams", view: null, sel: null, reset: function () {}},
+            mine: {key: "mine", view: null, sel: null, reset: function () {}, team: null}};
+  var PICK_KEY = "chop-race-player-team";
+  try { ST.mine.team = localStorage.getItem(PICK_KEY); } catch (e) {}
+  function rows() {
+    if (!DOC || !DOC.teams) return null;
+    var S = [];
+    Object.keys(DOC.lines || {}).forEach(function (t) {
+      var L = DOC.lines[t];
+      (L.ax || []).forEach(function (x, i) { S.push({team: t, x: x, pts: L.ay[i], phase: "actual"}); });
+      (L.px || []).forEach(function (x, i) { S.push({team: t, x: x, pts: L.py[i], phase: "projected"}); });
+    });
+    var W = {data: DOC.windows || []};
+    var teams = DOC.teams.map(function (d) { return Object.assign({}, d, {color: +d.color}); });
+    var col = {}; teams.forEach(function (t) { col[t.team] = "var(--chop-c" + t.color + ")"; });
+    var us = (teams.find(function (t) { return String(t.us) === "true"; }) || {}).team;
+    var name = {}, gxOf = {}; teams.forEach(function (t) { name[t.team] = t.team; gxOf[t.team] = t.gx; });
+    return {
+      series: S, wins: W.data, teams: teams, col: col, us: us, name: name,
+      width: function (t) { return t === us ? 3.4 : 1.8; }, bold: function (t) { return t === us; },
+      games: function (t) { return (gxOf[t] || []).map(Number); },
+      widths: function (t) { return t === us ? {thick: 5, thin: 1.6, done: 0.75} : {thick: 3.4, thin: 1.1, done: 0.5}; },
+      faint: function () { return false; }, aria: "Points by team through the week, scored and projected"
+    };
+  }
+  // The roster the player chart shows: the picked team if it is still alive, else ours.
+  function mineTeam() {
+    var R = DOC && DOC.rosters;
+    if (!R) return null;
+    if (ST.mine.team && R[ST.mine.team]) return ST.mine.team;
+    var us = (DOC.teams || []).find(function (t) { return String(t.us) === "true"; });
+    return us && R[us.team] ? us.team : Object.keys(R)[0] || null;
+  }
+  function mineRows() {
+    var P = DOC && DOC.rosters ? DOC.rosters[mineTeam()] : DOC && DOC.players;
+    if (!P || !P.rows || !P.rows.length) return null;
+    var S = [];
+    Object.keys(P.lines || {}).forEach(function (id) {
+      var L = P.lines[id];
+      (L.ax || []).forEach(function (x, i) { S.push({team: id, x: x, pts: L.ay[i], phase: "actual"}); });
+      (L.px || []).forEach(function (x, i) { S.push({team: id, x: x, pts: L.py[i], phase: "projected"}); });
+    });
+    var items = P.rows.map(function (r) { return Object.assign({}, r, {team: r.id}); });
+    var col = {}, name = {}, slot = {};
+    items.forEach(function (r) { col[r.id] = "var(--chop-c" + (+r.color) + ")"; name[r.id] = r.short; slot[r.id] = r.slot; });
+    return {
+      series: S, wins: DOC.windows || [], teams: items, col: col, us: null, name: name, rows: P.rows,
+      width: function (t) { return slot[t] === "START" ? 4.5 : 3; }, bold: function (t) { return slot[t] === "START"; },
+      faint: function (t) { return slot[t] !== "START"; }, rangeOnly: true, aria: "Points by player for " + mineTeam() + ", scored and projected"
+    };
+  }
+  function valAt(pts, x) {                        // value of a step/linear path at x
+    var v = pts.length ? pts[0].pts : 0;
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      if (p.x <= x) { v = p.pts; continue; }
+      var q = pts[i - 1];
+      if (q && p.x > q.x) v = q.pts + (p.pts - q.pts) * (x - q.x) / (p.x - q.x);
+      break;
+    }
+    return v;
+  }
+  function clip(pts, a, b) {                      // the part of a path between x = a and x = b, ends interpolated
+    if (!pts.length) return [];
+    var lo = Math.max(a, pts[0].x), hi = Math.min(b, pts[pts.length - 1].x);
+    if (hi <= lo) return [];
+    var out = [{x: lo, pts: valAt(pts, lo)}];
+    pts.forEach(function (p) { if (p.x > lo && p.x < hi) out.push(p); });
+    out.push({x: hi, pts: valAt(pts, hi)});
+    return out;
+  }
+  function short(n, k) { return n.length > k ? n.slice(0, k - 1) + "…" : n; }
+  function pick(st, t) { st.sel = st.sel === t ? null : t; style(st); }
+  function style(st) {
+    var root = document.getElementById("sec-" + st.key); if (!root) return;
+    root.querySelectorAll(".chop-chart [data-team]").forEach(function (n) {
+      n.classList.toggle("dim", !!st.sel && n.getAttribute("data-team") !== st.sel);
+    });
+    root.querySelectorAll(".chop-t tbody tr").forEach(function (r) {
+      r.classList.toggle("sel", !!st.sel && r.getAttribute("data-key") === st.sel);
+    });
+  }
+
+  function drawAsof(el) { el.textContent = DOC && DOC.asof ? DOC.asof : "—"; }
+
+  // One chart: lines on game time, zoom kept in st.view ([a, b] game minutes, null = whole week) across updates.
+  function drawChart(el, d, st, resetBtn) {
+    el.textContent = "";
+    if (!d) { el.textContent = "—"; return; }
+    var series = d.series, wins = d.wins, teams = d.teams, col = d.col, us = d.us;
+    var nowRow = wins.find(function (w) { return w.kind === "now"; }), nowX = nowRow ? +nowRow.x0 : 0;
+    var width = Math.max(300, el.clientWidth || 360), narrow = width < 560;
+    var m = {l: 30, r: narrow ? 104 : 150, t: 10, b: narrow ? 30 : 42}, h = narrow ? 420 : 470;
+    var pw = width - m.l - m.r, ph = h - m.t - m.b;
+    var xmax = d3.max(series, function (r) { return r.x; }) || 1, minSpan = Math.min(xmax, 15);
+    var by = d3.group(series, function (r) { return r.team; });
+    var full = {}, span = {};
+    by.forEach(function (v, k) { v.sort(function (p, q) { return p.x - q.x; }); full[k] = v; span[k] = [v[0].x, v[v.length - 1].x]; });
+    function inGame(t, xv) { return !d.rangeOnly || (span[t] && xv >= span[t][0] && xv <= span[t][1]); }
+    var order = teams.map(function (t) { return t.team; }).filter(function (t) { return t !== us; });
+    if (us) order.push(us);                              // ours drawn last, on top
+
+    var svg = d3.select(el).append("svg").attr("viewBox", "0 0 " + width + " " + h).attr("width", "100%")
+      .attr("role", "img").attr("aria-label", d.aria);
+    svg.append("defs").append("clipPath").attr("id", "chop-clip-" + st.key).append("rect")
+      .attr("x", m.l).attr("y", m.t - 2).attr("width", pw).attr("height", ph + 4);
+    var gBack = svg.append("g"), gLines = svg.append("g").attr("clip-path", "url(#chop-clip-" + st.key + ")"), gTop = svg.append("g");
+    var rule = svg.append("line").attr("class", "grid").style("stroke", "var(--chop-fg)").style("display", "none")
+      .attr("y1", m.t).attr("y2", h - m.b);
+    var tip = d3.select(el).append("div").attr("class", "chop-tip").style("display", "none");
+    var line = d3.line(), x = null;
+
+    var yTop = d3.max(series, function (r) { return r.pts; }) || 1;
+    yTop = d3.scaleLinear().domain([0, yTop + Math.max(2, yTop * 0.06)]).nice().domain()[1];
+    var raf = 0;
+    function schedule() { if (!raf) raf = requestAnimationFrame(function () { raf = 0; paint(); }); }
+    // x: game minutes, never narrower than 15; y: points, never narrower than 2. null = whole week / auto-fit.
+    function setView(a, b, ya, yb) {
+      var span = Math.max(minSpan, Math.min(xmax, b - a));
+      a = Math.max(0, Math.min(xmax - span, a));
+      st.view = span >= xmax - 1e-6 ? null : [a, a + span];
+      if (ya !== undefined) {                           // points stay between 0 and the week's top
+        var ys = Math.min(yTop, Math.max(2, yb - ya));
+        ya = Math.max(0, Math.min(yTop - ys, ya));
+        st.yview = [ya, ya + ys];
+      }
+      if (!st.view) st.yview = null;                     // zoomed all the way out: whole week, points auto-fit
+      hideTip(); schedule();
+    }
+    function resetView() { st.view = null; st.yview = null; hideTip(); schedule(); }
+    function paint() {
+      var dom = st.view || [0, xmax], a = dom[0], b = dom[1];
+      x = d3.scaleLinear(dom, [m.l, width - m.r]);
+      var y;
+      if (st.yview) y = d3.scaleLinear(st.yview, [h - m.b, m.t]);
+      else {
+        var lo = Infinity, hi = -Infinity;               // fit y to what is on screen
+        order.forEach(function (t) {
+          var pts = full[t] || [];
+          if (!pts.length) return;
+          [valAt(pts, a), valAt(pts, b)].concat(pts.filter(function (r) { return r.x >= a && r.x <= b; }).map(function (r) { return r.pts; }))
+            .forEach(function (v) { if (v < lo) lo = v; if (v > hi) hi = v; });
+        });
+        if (!isFinite(lo)) { lo = 0; hi = 1; }
+        if (!st.view) lo = 0;
+        var pad = Math.max(2, (hi - lo) * 0.06);
+        y = d3.scaleLinear([Math.max(0, lo - pad), hi + pad], [h - m.b, m.t]).nice();
+      }
+      st.ycur = y.domain();
+      gBack.selectAll("*").remove(); gLines.selectAll("*").remove(); gTop.selectAll("*").remove();
+
+      var fx = Math.max(m.l, Math.min(width - m.r, x(nowX)));
+      gBack.append("rect").attr("class", "fut").attr("x", fx).attr("y", m.t).attr("width", Math.max(0, width - m.r - fx)).attr("height", ph);
+      y.ticks(6).forEach(function (yv) {
+        if (y(yv) < m.t - 1 || y(yv) > h - m.b + 1) return;
+        gBack.append("line").attr("class", "grid").attr("x1", m.l).attr("x2", width - m.r).attr("y1", y(yv)).attr("y2", y(yv));
+        gBack.append("text").attr("class", "ax").attr("x", m.l - 5).attr("y", y(yv) + 4).attr("text-anchor", "end").text(yv);
+      });
+      wins.filter(function (w) { return w.kind === "window"; }).forEach(function (w, i) {
+        var wa = x(+w.x0), wb = x(+w.x1);
+        if (i && wa > m.l && wa < width - m.r)
+          gBack.append("line").attr("class", "div").attr("x1", wa).attr("x2", wa).attr("y1", m.t).attr("y2", h - m.b);
+        var ca = Math.max(m.l, wa), cb = Math.min(width - m.r, wb);
+        if (cb - ca < 24) return;                        // window mostly off screen
+        gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 15)
+          .attr("text-anchor", "middle").text(narrow && cb - ca < 90 ? w.short : w.label);
+        if (!narrow) gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 29)
+          .attr("text-anchor", "middle").style("font-size", "10px").text(w.when);
+      });
+      if (x(nowX) >= m.l && x(nowX) <= width - m.r) {
+        gBack.append("line").attr("class", "nowln").attr("x1", x(nowX)).attr("x2", x(nowX)).attr("y1", m.t).attr("y2", h - m.b);
+        gBack.append("text").attr("class", "ax").attr("x", x(nowX) + 4).attr("y", m.t + 10).style("fill", "var(--chop-fg)").text("Now");
+      }
+      line.x(function (r) { return x(r.x); }).y(function (r) { return y(r.pts); });
+      order.forEach(function (t) {
+        var tr = full[t] || [];
+        if (d.games && tr.length) {                      // teams: thick while a starter is playing, thin between, very thin once done
+          var gx = d.games(t), iv = [];
+          for (var gi = 0; gi + 1 < gx.length; gi += 2) {
+            if (iv.length && gx[gi] - iv[iv.length - 1][1] < 0.5) iv[iv.length - 1][1] = Math.max(iv[iv.length - 1][1], gx[gi + 1]);
+            else iv.push([gx[gi], gx[gi + 1]]);
+          }
+          var doneX = iv.length ? iv[iv.length - 1][1] : 0, w = d.widths(t);
+          var act = tr.filter(function (r) { return r.phase === "actual"; }), pro = tr.filter(function (r) { return r.phase === "projected"; });
+          function seg(pts, a, b, width, dash) {
+            var s2 = clip(pts, a, b); if (s2.length < 2) return;
+            gLines.append("path").attr("class", "ln").attr("data-team", t).attr("d", line(s2))
+              .style("stroke", col[t]).style("stroke-width", width).style("stroke-dasharray", dash ? "5 4" : null);
+          }
+          seg(act, 0, doneX, w.thin, false); seg(pro, 0, doneX, w.thin, true);
+          seg(tr.slice().sort(function (p, q) { return p.x - q.x; }), doneX, xmax, w.done, false);
+          iv.forEach(function (g) { seg(act, g[0], g[1], w.thick, false); seg(pro, g[0], g[1], w.thick, true); });
+          return;
+        }
+        if (d.rangeOnly && tr.length) {                  // out of game: one very thin line across the whole week
+          var thin = [{x: 0, pts: tr[0].pts}].concat(tr, [{x: xmax, pts: tr[tr.length - 1].pts}]);
+          gLines.append("path").attr("class", "ln").attr("data-team", t).attr("d", line(thin))
+            .style("stroke", col[t]).style("stroke-width", 1).style("opacity", d.faint(t) ? 0.5 : 0.85);
+        }
+        ["actual", "projected"].forEach(function (phs) {
+          var pts = tr.filter(function (r) { return r.phase === phs; });
+          if (!pts.length) return;
+          gLines.append("path").attr("class", "ln").attr("data-team", t).attr("d", line(pts))
+            .style("stroke", col[t]).style("stroke-width", d.width(t)).style("opacity", d.faint(t) ? 0.6 : null)
+            .style("stroke-dasharray", phs === "projected" ? (d.rangeOnly ? "8 5" : "5 4") : null);
+        });
+      });
+      // right-edge labels: value at the right edge of what is on screen (players: projected final)
+      var ends = teams.filter(function (t) { return full[t.team]; })
+        .map(function (t) { var v = d.rangeOnly ? +t.est_final : valAt(full[t.team] || [], b); return {team: t.team, v: v, y: y(Math.max(y.domain()[0], Math.min(y.domain()[1], v)))}; })
+        .sort(function (p, q) { return p.y - q.y; });
+      for (var i = 1; i < ends.length; i++) if (ends[i].y < ends[i - 1].y + 12) ends[i].y = ends[i - 1].y + 12;
+      var over = ends.length ? ends[ends.length - 1].y - (h - m.b + 4) : 0;
+      if (over > 0) ends.forEach(function (e) { e.y -= over; });
+      ends.forEach(function (e) {
+        gTop.append("text").attr("class", "lab").attr("data-team", e.team).attr("x", width - m.r + 6).attr("y", e.y + 4)
+          .style("fill", col[e.team]).style("font-weight", d.bold(e.team) ? 700 : 400)
+          .text(short(d.name[e.team], narrow ? 9 : 16) + " " + e.v.toFixed(1))
+          .on("click", function () { pick(st, e.team); });
+      });
+      if (resetBtn) resetBtn.hidden = !st.view && !st.yview;
+      style(st);
+    }
+
+    function hideTip() { tip.style("display", "none"); rule.style("display", "none"); }
+    function showTip(px) {
+      if (px < m.l || px > width - m.r || !x) return hideTip();
+      var xv = x.invert(px);
+      var vals = teams.filter(function (t) { return full[t.team]; })
+        .map(function (t) { return {team: t.team, v: valAt(full[t.team] || [], xv), on: inGame(t.team, xv)}; })
+        .sort(function (p, q) { return q.v - p.v; });
+      var win = wins.find(function (w) { return w.kind === "window" && xv >= +w.x0 && xv <= +w.x1; });
+      rule.style("display", null).attr("x1", px).attr("x2", px);
+      tip.style("display", null).text("");
+      tip.append("b").text((win ? win.label : "Between games") + (xv > nowX ? " · projected" : ""));
+      vals.forEach(function (r) {
+        var row = tip.append("div").attr("class", "r").style("opacity", r.on ? null : 0.55);
+        var l = row.append("span"); l.append("span").attr("class", "chop-dot").style("background", col[r.team]);
+        l.append("span").text(" " + short(d.name[r.team], 16)).style("font-weight", d.bold(r.team) ? 700 : null);
+        row.append("span").text(r.v.toFixed(1));
+      });
+      var tw = tip.node().offsetWidth, left = px > width / 2 ? px - tw - 14 : px + 14;
+      tip.style("left", Math.max(0, Math.min(width - tw, left)) + "px").style("top", (m.t + 4) + "px");
+    }
+
+    // Gestures. Mouse: hover reads values, drag scrolls, trackpad pinch / ctrl- or shift-wheel zooms, double-click resets.
+    // Touch: one finger slides to read values (up/down still scrolls the page); two fingers pinch to zoom both axes
+    // together around the spot between them, and drag to move; double-tap resets.
+    var node = svg.node(), g0 = null, drag = null, lastTap = 0, tap = null;
+    svg.style("touch-action", "pan-y");
+    function loc(e) { var r = node.getBoundingClientRect(); return [(e.clientX - r.left) * width / r.width, (e.clientY - r.top) * h / r.height]; }
+    function dom() { return st.view ? st.view.slice() : [0, xmax]; }
+    // One zoom factor for both axes, from the distance between the fingers; the point under them stays under them.
+    function zoomAt(xd, yd, ax, ay, k, bx, by) {        // (ax, ay) = anchor before, (bx, by) = where it is now, in pixels
+      var xs = (xd[1] - xd[0]) / k, ys = (yd[1] - yd[0]) / k;
+      var xv = xd[0] + (ax - m.l) / pw * (xd[1] - xd[0]), yv = yd[0] + (h - m.b - ay) / ph * (yd[1] - yd[0]);
+      var xa = xv - (bx - m.l) / pw * xs, ya = yv - (h - m.b - by) / ph * ys;
+      setView(xa, xa + xs, ya, ya + ys);
+    }
+    function pinchStart(t) {
+      var p = loc(t[0]), q = loc(t[1]);
+      g0 = {mx: (p[0] + q[0]) / 2, my: (p[1] + q[1]) / 2, dist: Math.max(30, Math.hypot(p[0] - q[0], p[1] - q[1])),
+            xd: dom(), yd: (st.ycur || [0, 1]).slice()};
+    }
+    function pinchMove(t) {
+      var p = loc(t[0]), q = loc(t[1]);
+      var k = Math.max(0.05, Math.hypot(p[0] - q[0], p[1] - q[1]) / g0.dist);
+      zoomAt(g0.xd, g0.yd, g0.mx, g0.my, k, (p[0] + q[0]) / 2, (p[1] + q[1]) / 2);
+    }
+    // The readout waits TIP_DELAY ms after one finger lands, so a pinch's first finger never pops it up;
+    // once a second finger touches, it stays hidden until every finger is off the glass.
+    var TIP_DELAY = 300, tipTimer = 0, tipOn = false, multi = false, lastX = 0;
+    function cancelTip() { clearTimeout(tipTimer); tipTimer = 0; tipOn = false; hideTip(); }
+    st.el = el; st.dismiss = cancelTip;
+    node.addEventListener("touchstart", function (e) {
+      if (e.touches.length >= 2) { e.preventDefault(); multi = true; cancelTip(); tap = null; pinchStart(e.touches); return; }
+      if (multi) return;
+      var p = loc(e.touches[0]); lastX = p[0]; tap = {x: p[0], y: p[1], t: Date.now()};
+      clearTimeout(tipTimer);
+      tipTimer = setTimeout(function () { tipTimer = 0; if (!multi) { tipOn = true; showTip(lastX); } }, TIP_DELAY);
+    }, {passive: false});
+    node.addEventListener("touchmove", function (e) {
+      if (e.touches.length >= 2) { e.preventDefault(); multi = true; cancelTip(); if (!g0) pinchStart(e.touches); pinchMove(e.touches); return; }
+      if (multi) return;
+      var p = loc(e.touches[0]); lastX = p[0];
+      if (tap && (Math.abs(p[0] - tap.x) > 10 || Math.abs(p[1] - tap.y) > 10)) tap = null;
+      if (tipOn) showTip(p[0]);
+    }, {passive: false});
+    node.addEventListener("touchend", function (e) {
+      if (e.touches.length >= 2) { pinchStart(e.touches); return; }   // a third finger lifted: carry on from here
+      g0 = null;
+      if (e.touches.length === 0) { multi = false; clearTimeout(tipTimer); tipTimer = 0; tipOn = false; }
+      if (e.touches.length === 0 && tap && Date.now() - tap.t < 250) {
+        if (Date.now() - lastTap < 350) { lastTap = 0; resetView(); }   // double-tap: two quick, still taps
+        else lastTap = Date.now();
+      }
+      tap = null;
+    });
+    node.addEventListener("touchcancel", function () { g0 = null; tap = null; multi = false; cancelTip(); });
+    el.addEventListener("contextmenu", function (e) { e.preventDefault(); });          // no copy menu on a long press
+    el.addEventListener("selectstart", function (e) { e.preventDefault(); });          // no text selection while dragging
+    ["gesturestart", "gesturechange"].forEach(function (n) { node.addEventListener(n, function (e) { e.preventDefault(); }); });
+
+    node.addEventListener("pointerdown", function (ev) {
+      if (ev.pointerType !== "mouse" || ev.button !== 0) return;
+      var l = loc(ev); drag = {x: l[0], y: l[1], xd: dom(), yd: (st.ycur || [0, 1]).slice()}; hideTip(); node.setPointerCapture(ev.pointerId);
+    });
+    node.addEventListener("pointermove", function (ev) {
+      if (ev.pointerType !== "mouse") return;
+      if (drag) { var l = loc(ev); if (st.view) zoomAt(drag.xd, drag.yd, drag.x, drag.y, 1, l[0], l[1]); }
+      else showTip(loc(ev)[0]);
+    });
+    node.addEventListener("pointerup", function (ev) { if (ev.pointerType === "mouse") drag = null; });
+    node.addEventListener("pointerleave", function (ev) { if (ev.pointerType === "mouse" && !drag) hideTip(); });
+    node.addEventListener("dblclick", resetView);
+    node.addEventListener("wheel", function (ev) {
+      if (!(ev.ctrlKey || ev.shiftKey)) return;          // plain scrolling still scrolls the page
+      ev.preventDefault();
+      var l = loc(ev);
+      zoomAt(dom(), (st.ycur || [0, 1]).slice(), l[0], l[1], Math.exp(-(ev.deltaY || ev.deltaX) * 0.01), l[0], l[1]);
+    }, {passive: false});
+    st.reset = resetView;
+    paint();
+  }
+
+  function drawTable(tb) {
+    tb.textContent = "";
+    var d = rows();
+    if (!d) return;
+    d.teams.slice().sort(function (a, b) { return +b.rank - +a.rank; }).forEach(function (t) {   // worst-first
+      var tr = document.createElement("tr");
+      if (t.team === d.us) tr.className = "us";
+      [t.rank, t.team, t.now, t.est_final, t.est_sleeper, t.chop, t.chop_sleeper].forEach(function (v, i) {
+        var td = document.createElement("td");
+        if (i === 1) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[t.team]; td.appendChild(dot); }
+        td.appendChild(document.createTextNode(i >= 2 ? (+v).toFixed(1) : String(v)));
+        tr.appendChild(td);
+      });
+      tr.setAttribute("data-key", t.team);
+      tr.addEventListener("click", function () { pick(ST.teams, t.team); });
+      tb.appendChild(tr);
+    });
+    style(ST.teams);
+  }
+
+  function drawMineTable(tb, d) {
+    tb.textContent = "";
+    if (!d) return;
+    d.rows.forEach(function (r) {
+      var tr = document.createElement("tr");
+      tr.className = r.slot === "START" ? "" : "bench";
+      [r.label, r.slot === "START" ? "Start" : "Bench", r.now, r.est_final, r.est_sleeper, r.state].forEach(function (v, i) {
+        var td = document.createElement("td");
+        if (i === 0) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[r.id]; td.appendChild(dot); }
+        td.appendChild(document.createTextNode(i >= 2 && i <= 4 ? (+v).toFixed(1) : String(v)));
+        tr.appendChild(td);
+      });
+      tr.setAttribute("data-key", r.id);
+      tr.addEventListener("click", function () { pick(ST.mine, r.id); });
+      tb.appendChild(tr);
+    });
+    style(ST.mine);
+  }
+
+  // Team picker: alive teams only (the doc carries only alive rosters), ours first, then by name.
+  function drawPicker(sel) {
+    var R = DOC && DOC.rosters, cur = mineTeam();
+    sel.hidden = !R;
+    if (!R) return;
+    var us = (DOC.teams || []).find(function (t) { return String(t.us) === "true"; }), usT = us && us.team;
+    var names = Object.keys(R).sort(function (a, b) { return (b === usT) - (a === usT) || a.toLowerCase().localeCompare(b.toLowerCase()); });
+    if (sel.options.length === names.length && names.every(function (n, i) { return sel.options[i].value === n; })) { sel.value = cur; return; }
+    sel.textContent = "";
+    names.forEach(function (n) {
+      var o = document.createElement("option"); o.value = n; o.textContent = n === usT ? n + " (ours)" : n; sel.appendChild(o);
+    });
+    sel.value = cur;
+  }
+  function renderMine() {
+    var md = mineRows();
+    document.getElementById("sec-mine").hidden = !md;
+    drawPicker(document.getElementById("mine-team"));
+    if (md) {
+      drawChart(document.getElementById("mine-chart"), md, ST.mine, document.getElementById("mine-reset"));
+      drawMineTable(document.querySelector("#sec-mine .chop-t tbody"), md);
+    }
+  }
+  function render() {
+    var ok = !!rows();
+    document.getElementById("chop-wait").hidden = ok;
+    document.getElementById("chop-body").hidden = !ok;
+    drawAsof(document.getElementById("chop-asof"));
+    if (!ok) return;
+    drawChart(document.getElementById("chop-chart"), rows(), ST.teams, document.getElementById("chop-reset"));
+    drawTable(document.querySelector("#sec-teams .chop-t tbody"));
+    renderMine();
+  }
+  // a touch or click anywhere outside a chart closes that chart's readout and clears its selection
+  // (its own table rows still pick, so they keep the selection for their click to toggle)
+  document.addEventListener("pointerdown", function (e) {
+    [ST.teams, ST.mine].forEach(function (st) {
+      if (!st.el || st.el.contains(e.target)) return;
+      if (st.dismiss) st.dismiss();
+      var row = e.target.closest && e.target.closest("#sec-" + st.key + " .chop-t tbody tr");
+      if (st.sel && !row) { st.sel = null; style(st); }
+    });
+  }, true);
+  document.getElementById("chop-reset").addEventListener("click", function () { ST.teams.reset(); });
+  document.getElementById("mine-reset").addEventListener("click", function () { ST.mine.reset(); });
+  document.getElementById("mine-team").addEventListener("change", function (e) {
+    ST.mine.team = e.target.value; ST.mine.view = ST.mine.yview = ST.mine.sel = null;
+    try { localStorage.setItem(PICK_KEY, ST.mine.team); } catch (err) {}
+    renderMine();
+  });
+  var lastW = 0;
+  addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
+  render();
+  // Data: on claude.ai the page's db doc chart/current (live snapshots); anywhere else (the GitHub copy)
+  // the same document as JSON at window.CHOP_DATA_URL, fetched every minute.
+  function failed() { if (!DOC) document.getElementById("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
+  (async function () {
+    if (window.claude) {
+      var db = await window.claude.use("db");
+      db.doc("chart/current").onSnapshot(function (snap) { DOC = snap.exists ? snap.data() : null; render(); }, failed);
+      return;
+    }
+    var url = window.CHOP_DATA_URL || "live_doc.json", built = 0;
+    async function poll() {
+      try {
+        var r = await fetch(url + (url.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), {cache: "no-store"});
+        if (!r.ok) throw new Error(r.status);
+        var d = await r.json();
+        if (d.builtAt !== built) { built = d.builtAt; DOC = d; render(); }
+      } catch (e) { failed(); }
+    }
+    poll(); setInterval(poll, 60000);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });
+  })();
+})();
+</script>
+
+</body></html>
