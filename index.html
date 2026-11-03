@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '5c8e2b3c1f';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'dacb0ab1d7';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -137,7 +137,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     </section>
   </div>
   <section id="sec-stories" class="chop-sec" hidden>
-    <h2 class="chop-h2" id="stories-h">This week's stories</h2>
+    <h2 class="chop-h2">Stories from the last 7 days</h2>
     <div id="stories-list"></div>
   </section>
 </div>
@@ -258,7 +258,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var body = document.getElementById("news-body"); body.textContent = "";
     (a.paras || []).forEach(function (t) { var p = document.createElement("p"); p.className = "b"; rich(p, t, a); body.appendChild(p); });
   }
-  // Every story this week at the bottom, newest first: headline and time, tap to read. Rebuilt only when a
+  // Every story of the last 7 days at the bottom, newest first: headline, week and time, tap to read. Rebuilt only when a
   // story is added, so one being read stays open through the minute-by-minute updates.
   var KIND = {live: "in game", final: "session final", day: "day wrap"}, storiesSig = "", openStories = {};
   function drawStories() {
@@ -267,14 +267,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var sig = items.map(function (a) { return a.t; }).join(",") + "|" + roomy();
     if (!items.length || sig === storiesSig) return;
     storiesSig = sig;
-    document.getElementById("stories-h").textContent = "Week " + items[items.length - 1].week + " stories";
     var list = document.getElementById("stories-list"); list.textContent = "";
     items.slice().reverse().forEach(function (a) {
       var d = document.createElement("details"); d.className = "chop-story"; d.open = !!openStories[a.t];
       d.addEventListener("toggle", function () { openStories[a.t] = d.open; });
       var sm = document.createElement("summary"), h = document.createElement("b"), w = document.createElement("span");
       h.textContent = a.headline.replace(MARK, "$3");
-      w.textContent = clock(a.t) + (KIND[a.kind] ? " · " + KIND[a.kind] : "");
+      w.textContent = "Week " + a.week + " · " + clock(a.t) + (KIND[a.kind] ? " · " + KIND[a.kind] : "");
       sm.appendChild(h); sm.appendChild(w); d.appendChild(sm);
       (a.paras || []).forEach(function (t) { var p = document.createElement("p"); rich(p, t, a); d.appendChild(p); });
       list.appendChild(d);
