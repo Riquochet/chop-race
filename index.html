@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e06b184bae';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '5c8e2b3c1f';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -18,6 +18,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop{max-width:1000px;margin-inline:auto}
 .chop-sec{margin-top:28px;padding-top:16px;border-top:1px solid var(--chop-grid)}
 .chop-h2{font-size:1.0625rem;margin:0;color:var(--chop-fg)}
+.chop-story{border-bottom:1px solid var(--chop-grid);max-width:65ch}
+.chop-story summary{cursor:pointer;padding:10px 0;list-style-position:outside;margin-left:1.1em}
+.chop-story summary b{display:block;font-size:.9375rem;line-height:1.3}
+.chop-story summary span{display:block;font-size:.75rem;color:var(--chop-muted);margin-top:2px}
+.chop-story p{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
+.chop-story[open]{padding-bottom:.4rem}
+#stories-list{margin-top:6px}
 .chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
 .chop-pt td:nth-child(2),.chop-pt th:nth-child(2),.chop-pt td:nth-child(6),.chop-pt th:nth-child(6){text-align:left;color:var(--chop-muted)}
 .chop-pt tr.bench td{opacity:.6}
@@ -49,9 +56,9 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-news-h{font-size:1.0625rem;line-height:1.3;margin:0 0 .2rem;text-wrap:balance}
 .chop-news-meta{font-size:.75rem;color:var(--chop-muted);margin:0 0 .4rem}
 .chop-news p.b{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
-.chop-news a.ref{color:var(--ref);color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
+.chop-news a.ref,.chop-story a.ref{color:var(--ref);color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
   text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
-.chop-news a.ref:focus-visible{outline:2px solid var(--ref);outline-offset:2px;border-radius:2px}
+.chop-news a.ref:focus-visible,.chop-story a.ref:focus-visible{outline:2px solid var(--ref);outline-offset:2px;border-radius:2px}
 .chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
 .chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -129,6 +136,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       </div>
     </section>
   </div>
+  <section id="sec-stories" class="chop-sec" hidden>
+    <h2 class="chop-h2" id="stories-h">This week's stories</h2>
+    <div id="stories-list"></div>
+  </section>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
@@ -246,6 +257,28 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       (a.final ? a.session + ", final" : a.session + ", in progress") + " · written " + clock(a.t);
     var body = document.getElementById("news-body"); body.textContent = "";
     (a.paras || []).forEach(function (t) { var p = document.createElement("p"); p.className = "b"; rich(p, t, a); body.appendChild(p); });
+  }
+  // Every story this week at the bottom, newest first: headline and time, tap to read. Rebuilt only when a
+  // story is added, so one being read stays open through the minute-by-minute updates.
+  var KIND = {live: "in game", final: "session final", day: "day wrap"}, storiesSig = "", openStories = {};
+  function drawStories() {
+    var items = (DOC && DOC.articles) || [], sec = document.getElementById("sec-stories");
+    sec.hidden = !items.length;
+    var sig = items.map(function (a) { return a.t; }).join(",") + "|" + roomy();
+    if (!items.length || sig === storiesSig) return;
+    storiesSig = sig;
+    document.getElementById("stories-h").textContent = "Week " + items[items.length - 1].week + " stories";
+    var list = document.getElementById("stories-list"); list.textContent = "";
+    items.slice().reverse().forEach(function (a) {
+      var d = document.createElement("details"); d.className = "chop-story"; d.open = !!openStories[a.t];
+      d.addEventListener("toggle", function () { openStories[a.t] = d.open; });
+      var sm = document.createElement("summary"), h = document.createElement("b"), w = document.createElement("span");
+      h.textContent = a.headline.replace(MARK, "$3");
+      w.textContent = clock(a.t) + (KIND[a.kind] ? " · " + KIND[a.kind] : "");
+      sm.appendChild(h); sm.appendChild(w); d.appendChild(sm);
+      (a.paras || []).forEach(function (t) { var p = document.createElement("p"); rich(p, t, a); d.appendChild(p); });
+      list.appendChild(d);
+    });
   }
   // Names in the story are links in their chart colors: [[t:account|text]] is a team, [[p:player id|text]] a
   // player (chop_news.py marks them). A story without marks gets its exact team names and player labels linked.
@@ -650,7 +683,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var ok = !!rows();
     document.getElementById("chop-wait").hidden = ok;
     document.getElementById("chop-body").hidden = !ok;
-    drawStatus(); drawNews();
+    drawStatus(); drawNews(); drawStories();
     if (!ok) return;
     drawChart(document.getElementById("chop-chart"), rows(), ST.teams, document.getElementById("chop-reset"));
     drawTable(document.querySelector("#sec-teams .chop-t tbody"));
