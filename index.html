@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c0c9cbdea9';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -607,6 +607,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   render();
   // Data: live_doc.json next to the page (the score recorder pushes it every minute during games),
   // fetched on nextDelay()'s timer: every minute while live, asleep until just before the next kickoff.
+  // The page redraws in place; it reloads itself only when live_doc says a newer page is on GitHub.
   function failed() { if (!DOC) document.getElementById("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
   (async function () {
     var url = window.CHOP_DATA_URL || "live_doc.json", built = 0, timer = 0;
@@ -617,8 +618,16 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         if (!r.ok) throw new Error(r.status);
         var d = await r.json();
         if (d.builtAt !== built) { built = d.builtAt; DOC = d; render(); } else drawStatus();
+        if (d.page && window.CHOP_PAGE && d.page !== window.CHOP_PAGE) newPage(d.page);
       } catch (e) { failed(); }
       timer = setTimeout(poll, nextDelay() * 1000);
+    }
+    // A new page version was pushed: reload once GitHub serves it (checked first, so a slow deploy never loops).
+    async function newPage(v) {
+      try {
+        var r = await fetch(location.pathname + "?t=" + Date.now(), {cache: "no-store"});
+        if (r.ok && (await r.text()).indexOf(v) >= 0) location.reload();
+      } catch (e) {}
     }
     poll();
     document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });   // a phone waking up
