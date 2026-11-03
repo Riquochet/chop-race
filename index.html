@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c0c9cbdea9';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4a877d2529';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -241,8 +241,9 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var live = isLive(), now = Date.now() / 1000, parts = [];
     document.getElementById("chop-live").hidden = !live;
     if (DOC) {
-      parts.push(live ? "Game on" : "No game on");
-      if (!live && DOC.next && DOC.next > now) parts.push("next kickoff " + clock(DOC.next));
+      var soon = !live && DOC.next && DOC.next - now < 300;    // checking every minute until ESPN says the game started
+      parts.push(live ? "Game on" : soon ? "Kickoff any minute" : "No game on");
+      if (!live && !soon && DOC.next) parts.push("next kickoff " + clock(DOC.next));
       if (DOC.builtAt) parts.push("last update " + clock(DOC.builtAt));
     }
     document.getElementById("chop-when").textContent = parts.join(" · ") || "—";
