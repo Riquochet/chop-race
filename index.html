@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '1f5b9e19d8';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e7bb53a460';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -71,14 +71,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-tip .r{display:flex;gap:6px;align-items:center;justify-content:space-between}
 .chop-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
 .chop-tw{overflow-x:auto;margin-top:.75rem}
-.chop-t{border-collapse:collapse;font-size:.78rem;width:100%}
+.chop-t{border-collapse:separate;border-spacing:0;font-size:.78rem;width:100%}
 .chop-t th{color:var(--chop-muted);font-weight:500;text-align:right;padding:4px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
 .chop-t td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
 .chop-t th:nth-child(2),.chop-t td:nth-child(2){text-align:left}
 .chop-t tbody tr{cursor:pointer}
 .chop-t tr.us td{font-weight:700}
 .chop-t td.nm{font-weight:600}
-.chop-t tr.sel td{background:var(--chop-future)}
+/* a picked row: a rounded box in its line's color around the whole row (inset shadows, so nothing shifts) */
+.chop-t tr.sel td{background:color-mix(in srgb,var(--row) 12%,transparent);border-bottom-color:transparent;
+  box-shadow:inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
+.chop-t tr.sel td:first-child{border-radius:8px 0 0 8px;box-shadow:inset 2px 0 0 var(--row),inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
+.chop-t tr.sel td:last-child{border-radius:0 8px 8px 0;box-shadow:inset -2px 0 0 var(--row),inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
 .chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
 </style>
@@ -583,7 +587,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         td.appendChild(document.createTextNode(i >= 2 ? (+v).toFixed(1) : String(v)));
         tr.appendChild(td);
       });
-      tr.setAttribute("data-key", t.team);
+      tr.setAttribute("data-key", t.team); tr.style.setProperty("--row", d.col[t.team]);
       tr.addEventListener("click", function () { pick(ST.teams, t.team); });
       tb.appendChild(tr);
     });
@@ -603,7 +607,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         td.appendChild(document.createTextNode(i >= 2 && i <= 4 ? (+v).toFixed(1) : String(v)));
         tr.appendChild(td);
       });
-      tr.setAttribute("data-key", r.id);
+      tr.setAttribute("data-key", r.id); tr.style.setProperty("--row", d.col[r.id]);
       tr.addEventListener("click", function () { pick(ST.mine, r.id); });
       tb.appendChild(tr);
     });
