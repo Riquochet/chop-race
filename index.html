@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4a877d2529';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '1f5b9e19d8';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -49,6 +49,9 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-news-h{font-size:1.0625rem;line-height:1.3;margin:0 0 .2rem;text-wrap:balance}
 .chop-news-meta{font-size:.75rem;color:var(--chop-muted);margin:0 0 .4rem}
 .chop-news p.b{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
+.chop-news a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
+  text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
+.chop-news a.ref:focus-visible{outline:2px solid var(--ref);outline-offset:2px;border-radius:2px}
 .chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
 .chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -231,11 +234,71 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var a = DOC && DOC.article, box = document.getElementById("chop-news");
     box.hidden = !(a && a.headline);
     if (box.hidden) return;
-    document.getElementById("news-head").textContent = a.headline;
+    rich(document.getElementById("news-head"), a.headline, a);
     document.getElementById("news-meta").textContent = "Week " + a.week + " · " +
       (a.final ? a.session + ", final" : a.session + ", in progress") + " · written " + clock(a.t);
     var body = document.getElementById("news-body"); body.textContent = "";
-    (a.paras || []).forEach(function (t) { var p = document.createElement("p"); p.className = "b"; p.textContent = t; body.appendChild(p); });
+    (a.paras || []).forEach(function (t) { var p = document.createElement("p"); p.className = "b"; rich(p, t, a); body.appendChild(p); });
+  }
+  // Names in the story are links in their chart colors: [[t:account|text]] is a team, [[p:player id|text]] a
+  // player (chop_news.py marks them). A story without marks gets its exact team names and player labels linked.
+  var MARK = /\[\[([tp]):([^|\]]+)\|([^\]]+)\]\]/g;
+  function playerTeam(id) {
+    var R = DOC.rosters || {};
+    return Object.keys(R).find(function (t) { return R[t].rows.some(function (r) { return r.id === id; }); });
+  }
+  function rich(el, text, a) {
+    el.textContent = "";
+    var marked = [a.headline].concat(a.paras || []).some(function (t) { MARK.lastIndex = 0; return MARK.test(t); });
+    if (!marked) text = autoMark(text);
+    var at = 0, m; MARK.lastIndex = 0;
+    while ((m = MARK.exec(text))) {
+      if (m.index > at) el.appendChild(document.createTextNode(text.slice(at, m.index)));
+      el.appendChild(refLink(m[1], m[2], m[3]));
+      at = MARK.lastIndex;
+    }
+    if (at < text.length) el.appendChild(document.createTextNode(text.slice(at)));
+  }
+  function autoMark(text) {
+    var names = [];
+    (DOC.teams || []).forEach(function (t) { names.push([t.name || t.team, "t", t.team]); names.push([t.team, "t", t.team]); });
+    Object.keys(DOC.rosters || {}).forEach(function (t) {
+      DOC.rosters[t].rows.forEach(function (r) { names.push([r.label, "p", r.id]); names.push([r.name, "p", r.id]); });
+    });
+    names = names.filter(function (n) { return n[0]; }).sort(function (p, q) { return q[0].length - p[0].length; });
+    if (!names.length) return text;
+    var by = {}; names.forEach(function (n) { if (!by[n[0]]) by[n[0]] = n; });
+    var re = new RegExp(names.map(function (n) { return n[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|"), "g");
+    return text.replace(re, function (s) { var n = by[s]; return "[[" + n[1] + ":" + n[2] + "|" + s + "]]"; });
+  }
+  function refLink(kind, key, label) {
+    var team = kind === "t" ? key : playerTeam(key), row = null;
+    if (kind === "p" && team) row = DOC.rosters[team].rows.find(function (r) { return r.id === key; });
+    var color = kind === "t" ? teamColor(key) : row && "var(--chop-c" + (+row.color) + ")";
+    if (!team || !color) return document.createTextNode(label);           // not on the page (e.g. chopped): plain text
+    var link = document.createElement("a");
+    link.className = "ref"; link.textContent = label; link.style.setProperty("--ref", color);
+    link.href = kind === "t" ? "#sec-teams" : "#sec-mine";
+    link.addEventListener("click", function (e) { e.preventDefault(); show(kind, key, team); });
+    return link;
+  }
+  // A team link highlights that team's line; a player link opens the player chart on the player's team,
+  // highlights the player there and the team above, then scrolls to the chart.
+  function show(kind, key, team) {
+    ST.teams.sel = [team]; style(ST.teams);
+    if (kind === "p") {
+      if (mineTeam() !== team) {
+        ST.mine.team = team; ST.mine.view = ST.mine.yview = null;
+        try { localStorage.setItem(PICK_KEY, team); } catch (err) {}
+      }
+      ST.mine.sel = [key]; renderMine(); style(ST.mine);
+    }
+    var to = document.getElementById(kind === "t" ? "sec-teams" : "sec-mine"), y0 = scrollY;
+    var smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    to.scrollIntoView({behavior: smooth ? "smooth" : "auto", block: "start"});
+    setTimeout(function () {                      // a browser that never animated the scroll just jumps
+      if (scrollY === y0 && Math.abs(to.getBoundingClientRect().top) > 20) to.scrollIntoView({block: "start"});
+    }, 1000);
   }
   function drawStatus() {
     var live = isLive(), now = Date.now() / 1000, parts = [];
