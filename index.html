@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e7bb53a460';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e6f6a1fa99';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -49,7 +49,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-news-h{font-size:1.0625rem;line-height:1.3;margin:0 0 .2rem;text-wrap:balance}
 .chop-news-meta{font-size:.75rem;color:var(--chop-muted);margin:0 0 .4rem}
 .chop-news p.b{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
-.chop-news a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
+.chop-news a.ref{color:var(--ref);color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
   text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
 .chop-news a.ref:focus-visible{outline:2px solid var(--ref);outline-offset:2px;border-radius:2px}
 .chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
@@ -79,8 +79,9 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-t tr.us td{font-weight:700}
 .chop-t td.nm{font-weight:600}
 /* a picked row: a rounded box in its line's color around the whole row (inset shadows, so nothing shifts) */
-.chop-t tr.sel td{background:color-mix(in srgb,var(--row) 12%,transparent);border-bottom-color:transparent;
+.chop-t tr.sel td{position:relative;isolation:isolate;border-bottom-color:transparent;
   box-shadow:inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
+.chop-t tr.sel td::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--row);opacity:.15;border-radius:inherit;pointer-events:none}
 .chop-t tr.sel td:first-child{border-radius:8px 0 0 8px;box-shadow:inset 2px 0 0 var(--row),inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
 .chop-t tr.sel td:last-child{border-radius:0 8px 8px 0;box-shadow:inset -2px 0 0 var(--row),inset 0 2px 0 var(--row),inset 0 -2px 0 var(--row)}
 .chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
