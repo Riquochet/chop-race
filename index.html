@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '6ab364154a';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '50b0517ab8';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -68,6 +68,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-chart .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
 .chop-chart .nowln{stroke:var(--chop-fg);stroke-width:1.2}
 .chop-chart .kick{stroke:var(--chop-fg);stroke-width:1.5}
+.chop-chart .kickzone{fill:var(--chop-fg);fill-opacity:.14;pointer-events:none}
 .chop-chart .fut{fill:var(--chop-future)}
 .chop-chart path.ln{fill:none;stroke-linejoin:round;stroke-linecap:round;transition:opacity .15s}
 .chop-chart .lab{font-size:10.5px;cursor:pointer}
@@ -107,7 +108,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   </article>
   <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-    <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a short tick on the bottom axis marks a later kickoff inside a window, like the 1:25 games after the 1:05. Final and Chop read ours (Sleeper).</p>
+    <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours (Sleeper).</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
     <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Bench players are faded.</p>
   </details>
@@ -251,6 +252,23 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   function windowTime(w) {
     if (!w.t0) return w.when || "";
     return clock(w.t0) + "–" + new Date(w.t1 * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+  }
+  // A window's kickoffs that start within 45 minutes of each other form a zone: [{x0, x1, t0, t1}], the
+  // opening kickoff alone is none, and a later kickoff far from the others is a zone of one moment.
+  function kickZones(w) {
+    var out = [], cur = {x0: +w.x0, x1: +w.x0, t0: +w.t0, t1: +w.t0, opening: true};
+    (w.kicks || []).forEach(function (k) {
+      if (k.t - cur.t1 <= 45 * 60) { cur.x1 = k.x; cur.t1 = k.t; return; }
+      if (!cur.opening || cur.t1 > cur.t0) out.push(cur);
+      cur = {x0: k.x, x1: k.x, t0: k.t, t1: k.t};
+    });
+    if (!cur.opening || cur.t1 > cur.t0) out.push(cur);
+    return out;
+  }
+  function zoneTime(z) {                          // "1:05–1:25 PM" (the viewer's zone), or one time for a lone kickoff
+    var a = shortTime(z.t0), b = shortTime(z.t1), m = /\s*\S*[AP]M$/i.exec(b);
+    if (z.t1 === z.t0) return b;
+    return (m && a.slice(-m[0].length) === m[0] ? a.slice(0, -m[0].length) : a) + "–" + b;
   }
   function shortTime(t) { return new Date(t * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}); }
   // A moment in the viewer's own time zone, e.g. "Mon 6:19 PM".
@@ -449,9 +467,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         if (i && wa > m.l && wa < width - m.r)
           gBack.append("line").attr("class", "div").attr("x1", wa).attr("x2", wa).attr("y1", m.t).attr("y2", h - m.b);
         var ca = Math.max(m.l, wa), cb = Math.min(width - m.r, wb);
-        var kicks = (w.kicks || []).filter(function (k) { var kx = x(k.x); return kx >= m.l && kx <= width - m.r; });
-        kicks.forEach(function (k) {                     // a later kickoff in this window: a short tick on the axis
-          gBack.append("line").attr("class", "kick").attr("x1", x(k.x)).attr("x2", x(k.x)).attr("y1", h - m.b - 4).attr("y2", h - m.b + 5);
+        var zones = kickZones(w).filter(function (z) { return x(z.x1) >= m.l && x(z.x0) <= width - m.r; });
+        zones.forEach(function (z) {                     // staggered kickoffs: a shaded zone; a lone later kickoff: a short tick
+          var za = Math.max(m.l, x(z.x0)), zb = Math.min(width - m.r, x(z.x1));
+          if (z.t1 > z.t0) gBack.append("rect").attr("class", "kickzone").attr("x", za).attr("y", m.t).attr("width", Math.max(zb - za, 1)).attr("height", h - m.b - m.t);
+          else gBack.append("line").attr("class", "kick").attr("x1", za).attr("x2", za).attr("y1", h - m.b - 4).attr("y2", h - m.b + 5);
         });
         if (cb - ca < 24) return;                        // window mostly off screen
         var txt = cb - ca >= w.label.length * 5.8 + 6 ? w.label : w.short, cx = (ca + cb) / 2, half = txt.length * 2.6 + 1;   // the full name only where it fits
@@ -460,8 +480,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         if (!row) lastEnd = cx + half;
         gBack.append("text").attr("class", "ax").attr("x", cx).attr("y", h - m.b + 15 + row * 13)
           .attr("text-anchor", "middle").text(txt);
-        kicks.forEach(function (k) {                     // the kickoff's time, only where it clears the labels around it
-          var t = shortTime(k.t), kx = x(k.x), hk = t.length * 2.7;
+        zones.forEach(function (z) {                     // its time, only where it clears the labels around it
+          var t = zoneTime(z), kx = (x(z.x0) + x(z.x1)) / 2, hk = t.length * 2.7;
           if (row || kx + hk > cx - half - 3 && kx - hk < cx + half + 3 || kx - hk < prevEnd + 3 || kx + hk > cb) return;
           gBack.append("text").attr("class", "ax").attr("x", kx).attr("y", h - m.b + 15).attr("text-anchor", "middle").style("font-size", "10px").text(t);
         });
