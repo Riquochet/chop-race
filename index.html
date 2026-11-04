@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '51af2cffeb';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '8a8ec2f16e';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -289,7 +289,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   // story is added, so one being read stays open through the minute-by-minute updates.
   var KIND = {live: "in game", final: "session final", day: "day wrap"}, storiesSig = "", openStories = {};
   function drawStories() {
-    var items = (DOC && DOC.articles) || [], sec = document.getElementById("sec-stories");
+    var top = DOC && DOC.article, sec = document.getElementById("sec-stories");
+    var items = ((DOC && DOC.articles) || []).filter(function (a) { return !top || a.t !== top.t; });   // the story at the top isn't repeated here
     sec.hidden = !items.length;
     var sig = items.map(function (a) { return a.t; }).join(",") + "|" + roomy();
     if (!items.length || sig === storiesSig) return;
