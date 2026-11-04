@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '50b0517ab8';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '51af2cffeb';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -68,7 +68,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-chart .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
 .chop-chart .nowln{stroke:var(--chop-fg);stroke-width:1.2}
 .chop-chart .kick{stroke:var(--chop-fg);stroke-width:1.5}
-.chop-chart .kickzone{fill:var(--chop-fg);fill-opacity:.14;pointer-events:none}
+.chop-chart .kickzone{fill:var(--chop-fg);fill-opacity:.06;pointer-events:none}
+.chop-chart .kickend{stroke:var(--chop-muted);stroke-opacity:.5;stroke-dasharray:3 4;stroke-width:1}
 .chop-chart .fut{fill:var(--chop-future)}
 .chop-chart path.ln{fill:none;stroke-linejoin:round;stroke-linecap:round;transition:opacity .15s}
 .chop-chart .lab{font-size:10.5px;cursor:pointer}
@@ -248,10 +249,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 
   // LIVE light: on while the latest data says a game is in progress (and is under 15 minutes old).
   function isLive() { return !!(DOC && DOC.live && Date.now() / 1000 - (+DOC.builtAt || 0) < 15 * 60); }
-  // A game window's real time, in the viewer's time zone: "Sun 10:00 AM–1:25 PM".
+  // A game window's real time, in the viewer's time zone: "5:15-8:25pm", or "10:00am-1:05pm" across noon.
   function windowTime(w) {
     if (!w.t0) return w.when || "";
-    return clock(w.t0) + "–" + new Date(w.t1 * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+    var a = shortTime(w.t0), b = shortTime(w.t1);
+    return (a.slice(-2) === b.slice(-2) ? a.slice(0, -2) : a) + "-" + b;
   }
   // A window's kickoffs that start within 45 minutes of each other form a zone: [{x0, x1, t0, t1}], the
   // opening kickoff alone is none, and a later kickoff far from the others is a zone of one moment.
@@ -265,14 +267,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     if (!cur.opening || cur.t1 > cur.t0) out.push(cur);
     return out;
   }
-  function zoneTime(z) {                          // "1:05–1:25 PM" (the viewer's zone), or one time for a lone kickoff
-    var a = shortTime(z.t0), b = shortTime(z.t1), m = /\s*\S*[AP]M$/i.exec(b);
-    if (z.t1 === z.t0) return b;
-    return (m && a.slice(-m[0].length) === m[0] ? a.slice(0, -m[0].length) : a) + "–" + b;
+  // A time in the viewer's own time zone, e.g. "6:19pm".
+  function shortTime(t) {
+    var d = new Date(t * 1000), hr = d.getHours();
+    return (hr % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0") + (hr < 12 ? "am" : "pm");
   }
-  function shortTime(t) { return new Date(t * 1000).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}); }
-  // A moment in the viewer's own time zone, e.g. "Mon 6:19 PM".
-  function clock(t) { return new Date(t * 1000).toLocaleString([], {weekday: "short", hour: "numeric", minute: "2-digit"}); }
+  // A moment in the viewer's own time zone, e.g. "Mon 6:19pm".
+  function clock(t) { return new Date(t * 1000).toLocaleDateString([], {weekday: "short"}) + " " + shortTime(t); }
   // The race write-up (chop_news.py): every 15 minutes during a game, then frozen once the session ends.
   function drawNews() {
     var a = DOC && DOC.article, box = document.getElementById("chop-news");
@@ -470,21 +471,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         var zones = kickZones(w).filter(function (z) { return x(z.x1) >= m.l && x(z.x0) <= width - m.r; });
         zones.forEach(function (z) {                     // staggered kickoffs: a shaded zone; a lone later kickoff: a short tick
           var za = Math.max(m.l, x(z.x0)), zb = Math.min(width - m.r, x(z.x1));
-          if (z.t1 > z.t0) gBack.append("rect").attr("class", "kickzone").attr("x", za).attr("y", m.t).attr("width", Math.max(zb - za, 1)).attr("height", h - m.b - m.t);
+          if (z.t1 > z.t0) {
+            gBack.append("rect").attr("class", "kickzone").attr("x", za).attr("y", m.t).attr("width", Math.max(zb - za, 1)).attr("height", h - m.b - m.t);
+            if (x(z.x1) <= width - m.r) gBack.append("line").attr("class", "kickend").attr("x1", zb).attr("x2", zb).attr("y1", m.t).attr("y2", h - m.b);   // the last kickoff
+          }
           else gBack.append("line").attr("class", "kick").attr("x1", za).attr("x2", za).attr("y1", h - m.b - 4).attr("y2", h - m.b + 5);
         });
         if (cb - ca < 24) return;                        // window mostly off screen
         var txt = cb - ca >= w.label.length * 5.8 + 6 ? w.label : w.short, cx = (ca + cb) / 2, half = txt.length * 2.6 + 1;   // the full name only where it fits
         var row = narrow && cx - half < lastEnd ? 1 : 0;  // phones: a crowded label drops to a second row
-        var prevEnd = lastEnd;
         if (!row) lastEnd = cx + half;
         gBack.append("text").attr("class", "ax").attr("x", cx).attr("y", h - m.b + 15 + row * 13)
           .attr("text-anchor", "middle").text(txt);
-        zones.forEach(function (z) {                     // its time, only where it clears the labels around it
-          var t = zoneTime(z), kx = (x(z.x0) + x(z.x1)) / 2, hk = t.length * 2.7;
-          if (row || kx + hk > cx - half - 3 && kx - hk < cx + half + 3 || kx - hk < prevEnd + 3 || kx + hk > cb) return;
-          gBack.append("text").attr("class", "ax").attr("x", kx).attr("y", h - m.b + 15).attr("text-anchor", "middle").style("font-size", "10px").text(t);
-        });
         var when = windowTime(w);                         // its real time, only where it fits
         if (!narrow && cb - ca >= when.length * 5.4 + 6) gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 29)
           .attr("text-anchor", "middle").style("font-size", "10px").text(when);
