@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '96bd0e90ef';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c090cbc806';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -740,7 +740,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var t = n % 100, u = n % 10;
     return n + (t >= 11 && t <= 13 ? "th" : u === 1 ? "st" : u === 2 ? "nd" : u === 3 ? "rd" : "th");
   }
-  // The Game column: when he plays and how hard the matchup is, or how much of his game is left. Never a score.
+  // The Game column: when he plays, how hard the matchup is and any bye still to come, or how much of his game is left. Never a score.
   function gameCell(r) {
     var td = document.createElement("td"), g = r.game; td.className = "game";
     function ln(text) { var l = document.createElement("span"); l.className = "ln"; l.textContent = text; td.appendChild(l); return l; }
@@ -755,6 +755,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         who.title = "How hard this defense is on " + r.pos + "s: 1st hardest, 32nd easiest";
       }
       opp.appendChild(who);
+      if (r.bye) ln("Bye wk " + r.bye);                  // only a bye still to come
     } else ln(g.st === "in" ? g.clock : "Done");
     return td;
   }
