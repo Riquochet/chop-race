@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '5b9bb7e027';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '845d85523a';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -38,6 +38,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-t .n{display:inline-block;text-align:right}
 .chop-t .n.b{text-align:left}
 .chop-t .dot{font-weight:400;color:var(--chop-muted);opacity:.45;margin:0 .3em}
+.chop-t .n.gap{margin-left:.8em}
+.chop-pl.pre{white-space:nowrap}
+.chop-pl.pre .pt{margin-right:0}
+.chop-pl.pre .chop-tag{margin-right:0}
+.chop-t .chop-pl .dot{margin:0 .4em}
 .chop-pt tr.bench td{color:var(--chop-muted)}
 .chop-pt tr.first-bench td{border-top:2px solid var(--chop-fg)}
 .chop-t td{vertical-align:top}
@@ -127,6 +132,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   .chop-t th{white-space:normal;vertical-align:bottom}
   .chop-t th,.chop-t td{padding-left:1px;padding-right:1px}
   .chop-t .dot{margin:0 .1em}
+  .chop-t .chop-pl .tagdot{display:none}               /* phones: a status tag gets its own line, no bullet after it */
+  .chop-pl.pre .chop-tag{display:block;width:fit-content;margin-bottom:1px}
 }
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
 </style>
@@ -142,7 +149,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. Rank is his place at his position by season points in our scoring.</p>
+    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -724,10 +731,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     var ch = pct ? (whole ? 4 : 6) : 5;
     num(td, fmt(a), ch); dot(td); num(td, fmt(b), ch, "b slp");
   }
-  // A team's starters: left to play • in a game • done, a dash for none; DONE once nobody is left or playing.
+  // A team's starters: left to play, in a game, done, a dash for none; DONE once nobody is left or playing.
   function status(td, c) {
     if (!c.left && !c.in) { td.textContent = "DONE"; return; }
-    [c.left, c.in, c.done].forEach(function (v, i) { if (i) dot(td); num(td, v ? String(v) : "-", 1); });
+    [c.left, c.in, c.done].forEach(function (v, i) { num(td, v ? String(v) : "-", 1, i ? "gap" : ""); });
   }
   function ordinal(n) {                           // 1st, 2nd, 3rd, 4th, 11th, 21st, 32nd
     var t = n % 100, u = n % 10;
@@ -760,15 +767,15 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     tag.textContent = name; if (r.body) tag.title = r.body;
     return tag;
   }
-  // Under a player's name: his stats, or away from a game his season rank at his position in our scoring and how
-  // widely he is started and rostered across Sleeper.
+  // Under a player's name: his stats, or away from a game "RB10 · 26% (74%)": his season rank at his position in our
+  // scoring, then the share of Sleeper teams starting (rostering) him.
   function statLine(r) {
     if (r.stats) return r.stats;
     if (r.game && r.game.st === "in") return "";
     var parts = [];
-    if (r.prank) parts.push("Rank " + r.prank);
-    if (r.start != null) parts.push("Started " + Math.round(r.start) + "%");
-    if (r.own != null) parts.push("Rostered " + Math.round(r.own) + "%");
+    if (r.prank) parts.push(r.prank);
+    if (r.start != null) parts.push(Math.round(r.start) + "%" + (r.own != null ? " (" + Math.round(r.own) + "%)" : ""));
+    else if (r.own != null) parts.push("(" + Math.round(r.own) + "%)");
     return parts.join(" · ");
   }
   function drawMineTable(tb, d) {
@@ -779,17 +786,21 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       var tr = document.createElement("tr"), isBench = r.slot !== "START";
       tr.className = isBench ? (bench ? "bench" : "bench first-bench") : "";   // the heavy line starts the bench
       bench = bench || isBench;
-      var who = document.createElement("td"), dot = document.createElement("span");
-      dot.className = "chop-dot"; dot.style.background = d.col[r.id]; who.appendChild(dot);
+      var who = document.createElement("td"), mark = document.createElement("span");
+      mark.className = "chop-dot"; mark.style.background = d.col[r.id]; who.appendChild(mark);
       who.className = "nm"; who.style.color = d.col[r.id];
       who.appendChild(document.createTextNode((r.pos ? r.pos + ": " : "") + r.name + " (" + (r.club || "FA") + ", #" + r.num + ")"));
       var sub = statLine(r), tag = r.stats ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
-        var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : "");
+        var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
         if (tag) line.appendChild(tag);
-        (sub ? sub.split(" · ") : []).forEach(function (part) {
+        (sub ? sub.split(" · ") : []).forEach(function (part, k) {
+          if (!r.stats && (tag || k)) {                    // before a game: QUES • RB10 • 26% (74%)
+            dot(line);
+            if (!k) line.lastChild.classList.add("tagdot");
+          }
           var chunk = document.createElement("span"); chunk.className = "pt"; chunk.textContent = part;
-          line.appendChild(chunk); line.appendChild(document.createTextNode(" "));
+          line.appendChild(chunk); line.appendChild(document.createTextNode(r.stats ? " " : ""));
         });
         who.appendChild(line);
       }
