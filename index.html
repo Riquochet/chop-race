@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'ff4025ff3b';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '7f2adba8ec';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -797,7 +797,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       var who = document.createElement("td"), mark = document.createElement("span");
       mark.className = "chop-dot"; mark.style.background = d.col[r.id]; who.appendChild(mark);
       who.className = "nm"; who.style.color = d.col[r.id];
-      who.appendChild(document.createTextNode((r.pos ? r.pos + ": " : "") + r.name + " (" + (r.club || "FA") + ", #" + r.num + ")"));
+      who.appendChild(document.createTextNode((r.flex ? "FLEX " : "") + (r.pos ? r.pos + ": " : "") + r.name + " (" + (r.club || "FA") + ", #" + r.num + ")"));
       var sub = statLine(r), tag = r.stats ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
         var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
