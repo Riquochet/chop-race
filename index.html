@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'd73d035c0c';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'ff4025ff3b';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -34,7 +34,6 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
 .chop-tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
 .chop-tag.blue{color:var(--chop-tag-blue-t);border-color:var(--chop-tag-blue-b);background:var(--chop-tag-blue-f)}
-.chop-pl.pre .chop-tag.blue{margin-left:.6em}
 /* paired numbers meet at a light bullet, so the bullets line up down the column */
 .chop-t{font-variant-numeric:tabular-nums}
 .chop-t .n{display:inline-block;text-align:right}
@@ -136,8 +135,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   .chop-t .dot{margin:0 .1em}
   .chop-t .chop-pl .tagdot{display:none}               /* phones: a status tag gets its own line, no bullet after it */
   .chop-pl.pre .chop-tag{display:block;width:fit-content;margin-bottom:1px}
-  .chop-pl.pre .chop-tag.blue{display:inline-block;margin:0 0 0 .35em;padding:0 3px}
-  .chop-pl{margin-left:0}
+  .chop-pl.pre .chop-tag.blue{display:inline-block;margin:0;padding:0 3px}
+  .chop-pl{margin-left:0;font-size:.67rem}
   .chop-t .chop-pl .dot{margin:0 .2em}
 }
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
@@ -812,6 +811,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
           line.appendChild(chunk); line.appendChild(document.createTextNode(r.stats ? " " : ""));
         });
         if (!r.stats && r.bye && r.game && r.game.st === "pre") {   // a bye still to come: a blue tag with its week
+          if (sub) dot(line);                              // QB3 • 88% (98%) • 11
           var bye = document.createElement("span"); bye.className = "chop-tag blue"; bye.textContent = r.bye; bye.title = "Bye in week " + r.bye;
           line.appendChild(bye);
         }
