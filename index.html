@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4a9c0d7626';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '9721f5103f';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
 /* Layout: one full-width chart (game time only), then the standings table; tap rows or line ends to pick out teams. */
 [hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
-:root{--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
+:root{--chop-tag-red:#c62828;--chop-tag-yellow:#a67c00;--chop-tag-orange:#c25e00;--chop-rank-l:38%;--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
   --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
   --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
   --chop-panel:#ffffff;--chop-future:rgba(120,120,140,.07);
@@ -28,11 +28,18 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
 .chop-pt td.game,.chop-pt th:last-child{text-align:left;white-space:normal;color:var(--chop-muted);font-size:.72rem;line-height:1.35}
 .chop-pt td.game .ln{display:block;white-space:nowrap}
-.chop-tag{display:inline-block;padding:0 5px;border-radius:9px;font-size:.66rem;font-weight:700;line-height:1.5;color:#111;margin-right:.5em}
-.chop-tag.red{background:#e5262b;color:#fff}
-.chop-tag.yellow{background:#ffd60a}
-.chop-tag.orange{background:#ff9f0a}
-.chop-pt td.game .chop-tag{margin:0 0 0 .35em}
+/* a status tag: a hairline box in its text color, filled with a very light tint of it */
+.chop-tag{position:relative;isolation:isolate;display:inline-block;padding:0 4px;border:var(--rw) solid currentColor;border-radius:3px;font-size:.64rem;font-weight:700;line-height:1.4;margin-right:.5em}
+.chop-tag::before{content:"";position:absolute;inset:0;z-index:-1;background:currentColor;opacity:.15;border-radius:inherit}
+.chop-tag.red{color:var(--chop-tag-red)}
+.chop-tag.yellow{color:var(--chop-tag-yellow)}
+.chop-tag.orange{color:var(--chop-tag-orange)}
+/* paired numbers meet at a light bullet, so the bullets line up down the column */
+.chop-t{font-variant-numeric:tabular-nums}
+.chop-t .n{display:inline-block;text-align:right}
+.chop-t .n.b{text-align:left}
+.chop-t .dot{font-weight:400;color:var(--chop-muted);opacity:.45;margin:0 .3em}
+.chop-t td.nm,.chop-t th.nm{width:100%}
 .chop-pt tr.bench td{color:var(--chop-muted)}
 .chop-pt tr.first-bench td{border-top:2px solid var(--chop-fg)}
 .chop-t td{vertical-align:top}
@@ -52,11 +59,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:chop-pulse 1.6s ease-in-out infinite}
 @keyframes chop-pulse{50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.chop-live::before{animation:none}}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-tag-red:#ff6b6b;--chop-tag-yellow:#ffd60a;--chop-tag-orange:#ff9f40;--chop-rank-l:60%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
   --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
   --chop-c10:#f2f2f7;--chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}}
-:root[data-theme="dark"]{color-scheme:dark;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
+:root[data-theme="dark"]{color-scheme:dark;--chop-tag-red:#ff6b6b;--chop-tag-yellow:#ffd60a;--chop-tag-orange:#ff9f40;--chop-rank-l:60%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
   --chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;--chop-c10:#f2f2f7;
   --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
@@ -113,7 +120,8 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 @media (max-width:559px){                        /* phones: the team table fits without sideways scrolling */
   .chop-t{font-size:.72rem}
   .chop-t th{white-space:normal;vertical-align:bottom}
-  .chop-t th,.chop-t td{padding-left:2px;padding-right:2px}
+  .chop-t th,.chop-t td{padding-left:1px;padding-right:1px}
+  .chop-t .dot{margin:0 .1em}
 }
 @media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
 </style>
@@ -129,7 +137,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the number beside the opponent is how hard that defense has been on his position this season, in our scoring: 1 (red) allows the fewest points, 32 (green) the most.</p>
+    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -139,7 +147,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     <div class="chop-chart" id="chop-chart"></div>
     <div class="chop-tw">
       <table class="chop-t">
-        <thead><tr><th>#</th><th>Team</th><th>Now</th><th>Final • Sleeper</th><th>Chop% • Sleeper</th><th>Left • In • Done</th></tr></thead>
+        <thead><tr><th>#</th><th class="nm">Team</th><th>Now</th><th>Final • Sleeper</th><th>Chop • Sleeper</th><th>Left • In • Done</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -151,7 +159,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       <div class="chop-chart" id="mine-chart"></div>
       <div class="chop-tw">
         <table class="chop-t chop-pt">
-          <thead><tr><th>Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th></tr></thead>
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -684,13 +692,13 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     d.teams.slice().sort(function (a, b) { return +b.rank - +a.rank; }).forEach(function (t) {   // worst-first
       var tr = document.createElement("tr");
       if (t.team === d.us) tr.className = "us";
-      var c = t.count || {}, status = !c.left && !c.in ? "DONE" : (c.left || 0) + " • " + (c.in || 0) + " • " + (c.done || 0);
-      [t.rank, t.team, t.now, [t.est_final, t.est_sleeper], [t.chop, t.chop_sleeper, !roomy()], status].forEach(function (v, i) {
+      [t.rank, t.team, t.now, [t.est_final, t.est_sleeper], [t.chop, t.chop_sleeper, !roomy(), true], t.count || {}].forEach(function (v, i) {
         var td = document.createElement("td");
         if (i === 1) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[t.team]; td.appendChild(dot);
           td.className = "nm"; td.style.color = d.col[t.team]; v = d.name[t.team];
           if (!roomy()) v = String(v).replace(/\S{13,}/g, function (w) { return w.replace(/(.{10})/g, "$1\u200b"); }); }   // phones: a very long name may break, so the table fits
-        if (Array.isArray(v)) ours(td, v[0], v[1], v[2]);
+        if (i === 5) status(td, v);
+        else if (Array.isArray(v)) ours(td, v[0], v[1], v[2], v[3]);
         else td.appendChild(document.createTextNode(i === 2 ? (+v).toFixed(1) : String(v)));
         tr.appendChild(td);
       });
@@ -701,10 +709,24 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     style(ST.teams);
   }
 
-  function ours(td, a, b, whole) {                // "88.8 • 109.4": our number, then Sleeper's; whole = phones' Chop%, "<1" under 1
-    function fmt(v) { v = +v; return !whole ? v.toFixed(1) : v > 0 && v < 1 ? "<1" : String(Math.round(v)); }
-    td.appendChild(document.createTextNode(fmt(a) + " • "));
-    var s = document.createElement("span"); s.className = "slp"; s.textContent = fmt(b); td.appendChild(s);
+  function num(td, text, ch, cls) {               // a number in a fixed width, so a column's bullets line up
+    var n = document.createElement("span"); n.className = "n" + (cls ? " " + cls : ""); n.style.minWidth = ch + "ch"; n.textContent = text; td.appendChild(n);
+  }
+  function dot(td) { var d = document.createElement("span"); d.className = "dot"; d.textContent = "•"; td.appendChild(d); }
+  // "88.8 • 109.4": our number, then Sleeper's. pct = a Chop cell; whole = phones' Chop, "<1%" under 1.
+  function ours(td, a, b, whole, pct) {
+    function fmt(v) { v = +v; return (!whole ? v.toFixed(1) : v > 0 && v < 1 ? "<1" : String(Math.round(v))) + (pct ? "%" : ""); }
+    var ch = pct ? (whole ? 4 : 6) : 5;
+    num(td, fmt(a), ch); dot(td); num(td, fmt(b), ch, "b slp");
+  }
+  // A team's starters: left to play • in a game • done, a dash for none; DONE once nobody is left or playing.
+  function status(td, c) {
+    if (!c.left && !c.in) { td.textContent = "DONE"; return; }
+    [c.left, c.in, c.done].forEach(function (v, i) { if (i) dot(td); num(td, v ? String(v) : "-", 1); });
+  }
+  function ordinal(n) {                           // 1st, 2nd, 3rd, 4th, 11th, 21st, 32nd
+    var t = n % 100, u = n % 10;
+    return n + (t >= 11 && t <= 13 ? "th" : u === 1 ? "st" : u === 2 ? "nd" : u === 3 ? "rd" : "th");
   }
   // The Game column: when he plays and how hard the matchup is, or how much of his game is left. Never a score.
   function gameCell(r) {
@@ -713,13 +735,15 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     if (!g) return td;                                   // a bye shows as a tag under his name
     if (g.st === "pre") {
       ln(clock(g.kick));
-      var opp = ln((g.home ? "vs " : "at ") + g.opp);
-      if (r.hard) {                                      // 1 = the hardest defense for his position (red), 32 = the easiest (green)
-        var chip = document.createElement("span"); chip.className = "chop-tag"; chip.textContent = r.hard;
-        chip.style.background = "hsl(" + Math.round((r.hard - 1) / 31 * 120) + ",90%,50%)";
-        chip.title = "Defense difficulty for " + r.pos + ": 1 hardest, 32 easiest";
-        opp.appendChild(chip);
+      var opp = ln(g.home ? "vs " : "at "), who = document.createElement("span");
+      who.textContent = g.opp;
+      if (r.hard) {                                      // 1st = the hardest defense for his position (red), 32nd = the easiest (green)
+        who.textContent += " (" + ordinal(r.hard) + ")";
+        who.style.color = "hsl(" + Math.round((r.hard - 1) / 31 * 120) + ",90%,var(--chop-rank-l))";
+        who.style.fontWeight = "600";
+        who.title = "How hard this defense is on " + r.pos + "s: 1st hardest, 32nd easiest";
       }
+      opp.appendChild(who);
     } else ln(g.st === "in" ? g.clock : "Done");
     return td;
   }
