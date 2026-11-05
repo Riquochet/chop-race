@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '845d85523a';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '96bd0e90ef';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -758,6 +758,10 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     } else ln(g.st === "in" ? g.clock : "Done");
     return td;
   }
+  // Out for the week, on a bye or a status that keeps him from playing, with nothing scored: no Now or Final numbers.
+  function outThisWeek(r) {
+    return !r.stats && !+r.now && ((!r.game && !!r.club) || ["Out", "IR", "PUP", "Sus", "NA"].indexOf(r.inj) >= 0);
+  }
   // A status tag for a player with no stats yet: QUES yellow; OUT, a bye and anything else keeping him out red.
   function statusTag(r) {
     var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : (!r.game && r.club ? "BYE" : ""));
@@ -805,8 +809,9 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
         who.appendChild(line);
       }
       tr.appendChild(who);
-      var nowCell = document.createElement("td"); nowCell.textContent = (+r.now).toFixed(1); tr.appendChild(nowCell);
-      var fin = document.createElement("td"); ours(fin, r.est_final, r.est_sleeper); tr.appendChild(fin);
+      var nowCell = document.createElement("td"), fin = document.createElement("td");
+      if (!outThisWeek(r)) { nowCell.textContent = (+r.now).toFixed(1); ours(fin, r.est_final, r.est_sleeper); }
+      tr.appendChild(nowCell); tr.appendChild(fin);
       tr.appendChild(gameCell(r));
       tr.setAttribute("data-key", r.id); tr.style.setProperty("--row", d.col[r.id]);
       tr.addEventListener("click", function () { pick(ST.mine, r.id); });
