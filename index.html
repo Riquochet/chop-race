@@ -2,13 +2,13 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '9721f5103f';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '5b9bb7e027';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
 /* Layout: one full-width chart (game time only), then the standings table; tap rows or line ends to pick out teams. */
 [hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
-:root{--chop-tag-red:#c62828;--chop-tag-yellow:#a67c00;--chop-tag-orange:#c25e00;--chop-rank-l:38%;--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
+:root{--chop-tag-red-t:#a63a3a;--chop-tag-red-b:rgba(166,58,58,.4);--chop-tag-red-f:rgba(166,58,58,.08);--chop-tag-yellow-t:#86680a;--chop-tag-yellow-b:rgba(134,104,10,.4);--chop-tag-yellow-f:rgba(134,104,10,.08);--chop-tag-orange-t:#a85a12;--chop-tag-orange-b:rgba(168,90,18,.4);--chop-tag-orange-f:rgba(168,90,18,.08);--chop-rank-s:50%;--chop-rank-l:36%;--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
   --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
   --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
   --chop-panel:#ffffff;--chop-future:rgba(120,120,140,.07);
@@ -28,18 +28,16 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
 .chop-pt td.game,.chop-pt th:last-child{text-align:left;white-space:normal;color:var(--chop-muted);font-size:.72rem;line-height:1.35}
 .chop-pt td.game .ln{display:block;white-space:nowrap}
-/* a status tag: a hairline box in its text color, filled with a very light tint of it */
-.chop-tag{position:relative;isolation:isolate;display:inline-block;padding:0 4px;border:var(--rw) solid currentColor;border-radius:3px;font-size:.64rem;font-weight:700;line-height:1.4;margin-right:.5em}
-.chop-tag::before{content:"";position:absolute;inset:0;z-index:-1;background:currentColor;opacity:.15;border-radius:inherit}
-.chop-tag.red{color:var(--chop-tag-red)}
-.chop-tag.yellow{color:var(--chop-tag-yellow)}
-.chop-tag.orange{color:var(--chop-tag-orange)}
+/* a status tag: muted text in a soft outline of the same color, on a very light tint of it */
+.chop-tag{display:inline-block;padding:0 5px;border:1px solid;border-radius:4px;font-size:.62rem;font-weight:600;letter-spacing:.02em;line-height:1.45;margin-right:.6em}
+.chop-tag.red{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f)}
+.chop-tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
+.chop-tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
 /* paired numbers meet at a light bullet, so the bullets line up down the column */
 .chop-t{font-variant-numeric:tabular-nums}
 .chop-t .n{display:inline-block;text-align:right}
 .chop-t .n.b{text-align:left}
 .chop-t .dot{font-weight:400;color:var(--chop-muted);opacity:.45;margin:0 .3em}
-.chop-t td.nm,.chop-t th.nm{width:100%}
 .chop-pt tr.bench td{color:var(--chop-muted)}
 .chop-pt tr.first-bench td{border-top:2px solid var(--chop-fg)}
 .chop-t td{vertical-align:top}
@@ -59,11 +57,11 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:chop-pulse 1.6s ease-in-out infinite}
 @keyframes chop-pulse{50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.chop-live::before{animation:none}}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-tag-red:#ff6b6b;--chop-tag-yellow:#ffd60a;--chop-tag-orange:#ff9f40;--chop-rank-l:60%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
   --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
   --chop-c10:#f2f2f7;--chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}}
-:root[data-theme="dark"]{color-scheme:dark;--chop-tag-red:#ff6b6b;--chop-tag-yellow:#ffd60a;--chop-tag-orange:#ff9f40;--chop-rank-l:60%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
+:root[data-theme="dark"]{color-scheme:dark;--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
   --chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;--chop-c10:#f2f2f7;
   --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
@@ -101,7 +99,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-tip .r{display:flex;gap:6px;align-items:center;justify-content:space-between}
 .chop-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
 .chop-tw{overflow-x:auto;margin-top:.75rem}
-.chop-t{border-collapse:separate;border-spacing:0;font-size:.78rem;width:100%}
+.chop-t{border-collapse:separate;border-spacing:0;font-size:.78rem}
 .chop-t th{color:var(--chop-muted);font-weight:500;text-align:right;padding:4px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
 .chop-t td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
 .chop-t th:nth-child(2),.chop-t td:nth-child(2){text-align:left}
@@ -117,8 +115,15 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
 .chop-t tr.sel td:first-child{border-radius:8px 0 0 8px;box-shadow:inset var(--rw) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}
 .chop-t tr.sel td:last-child{border-radius:0 8px 8px 0;box-shadow:inset calc(-1 * var(--rw)) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}
 .chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
+@media (min-width:560px){                        /* wide screens: the table is as wide as its contents, with air between columns */
+  .chop-t th,.chop-t td{padding-left:12px;padding-right:12px}
+  .chop-t th:first-child,.chop-t td:first-child{padding-left:4px}
+  .chop-t .dot{margin:0 .55em}
+  .chop-pl{max-width:60ch}
+}
 @media (max-width:559px){                        /* phones: the team table fits without sideways scrolling */
-  .chop-t{font-size:.72rem}
+  .chop-t{font-size:.72rem;width:100%}
+  .chop-t td.nm,.chop-t th.nm{width:100%}
   .chop-t th{white-space:normal;vertical-align:bottom}
   .chop-t th,.chop-t td{padding-left:1px;padding-right:1px}
   .chop-t .dot{margin:0 .1em}
@@ -137,7 +142,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most.</p>
+    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. Rank is his place at his position by season points in our scoring.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -739,8 +744,7 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
       who.textContent = g.opp;
       if (r.hard) {                                      // 1st = the hardest defense for his position (red), 32nd = the easiest (green)
         who.textContent += " (" + ordinal(r.hard) + ")";
-        who.style.color = "hsl(" + Math.round((r.hard - 1) / 31 * 120) + ",90%,var(--chop-rank-l))";
-        who.style.fontWeight = "600";
+        who.style.color = "hsl(" + Math.round((r.hard - 1) / 31 * 120) + ",var(--chop-rank-s),var(--chop-rank-l))";
         who.title = "How hard this defense is on " + r.pos + "s: 1st hardest, 32nd easiest";
       }
       opp.appendChild(who);
@@ -756,11 +760,16 @@ body{background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,sy
     tag.textContent = name; if (r.body) tag.title = r.body;
     return tag;
   }
-  // Under a player's name: his stats, or away from a game how widely he is started and rostered across Sleeper.
+  // Under a player's name: his stats, or away from a game his season rank at his position in our scoring and how
+  // widely he is started and rostered across Sleeper.
   function statLine(r) {
     if (r.stats) return r.stats;
-    if ((r.game && r.game.st === "in") || r.own == null) return "";
-    return (r.start != null ? "Started " + Math.round(r.start) + "% · " : "") + "Rostered " + Math.round(r.own) + "%";
+    if (r.game && r.game.st === "in") return "";
+    var parts = [];
+    if (r.prank) parts.push("Rank " + r.prank);
+    if (r.start != null) parts.push("Started " + Math.round(r.start) + "%");
+    if (r.own != null) parts.push("Rostered " + Math.round(r.own) + "%");
+    return parts.join(" · ");
   }
   function drawMineTable(tb, d) {
     tb.textContent = "";
