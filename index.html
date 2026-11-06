@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '942dc5e69a';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '685a3be794';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -49,12 +49,18 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-meter .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--row);box-shadow:0 0 0 1.5px var(--chop-bg)}
 .chop-meter.rank .mark{background:var(--chop-fg)}
 .chop-pt tr.bench .chop-meter.rank{opacity:.6}
+.chop-meter.red{--row:var(--chop-p-qb)}.chop-meter.yellow{--row:var(--chop-p-te1)}.chop-meter.green{--row:var(--chop-p-wr0)}.chop-meter.blue{--row:var(--chop-p-rb0)}   /* in a game: pace against his projection */
+/* stats under a name: light bullets between the parts, none where a line wraps (the one at the start of each line is clipped) */
+.chop-pl.st{overflow:hidden}
+.chop-pl.st .parts{display:flex;flex-wrap:wrap;margin-left:-1em}
+.chop-pl.st .pt{position:relative;margin:0;padding-left:1em}
+.chop-pl.st .pt::before{content:"•";position:absolute;left:.35em;color:var(--chop-muted);opacity:.45}
 /* a status tag: muted text in a soft outline of the same color, on a very light tint of it */
 .chop-tag{display:inline-block;padding:0 5px;border:1px solid;border-radius:4px;font-size:.62rem;font-weight:600;letter-spacing:.02em;line-height:1.45;margin-right:.6em}
 .chop-tag.red{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f)}
 .chop-tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
 .chop-tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
-.chop-tag.gray{color:var(--chop-muted);border-color:var(--chop-grid);background:transparent;margin-left:.4em;font-weight:400;vertical-align:1px}
+.chop-tag.bench{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f);margin-left:.4em;font-weight:400;vertical-align:1px}
 .chop-tag.blue{color:var(--chop-tag-blue-t);border-color:var(--chop-tag-blue-b);background:var(--chop-tag-blue-f)}
 /* paired numbers meet at a light bullet, so the bullets line up down the column */
 .chop-t{font-variant-numeric:tabular-nums}
@@ -160,6 +166,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   .chop-pl.pre .chop-tag.blue{display:inline-block;margin:0;padding:0 3px}
   .chop-pl{margin-left:0;font-size:.67rem}
   .chop-meter{width:26px;margin-left:2px}
+  .chop-pl.st .pt{white-space:normal;min-width:0}        /* a long passing line wraps rather than pushing the table wide */
   .chop-pt td.game .ln:first-child{white-space:normal}   /* "Sun international" wraps rather than pushing the table wide */
   .chop-pt td.game,.chop-pt th:nth-last-child(2){padding-left:4px}
   .chop-t .chop-pl .dot{margin:0 .2em}
@@ -178,7 +185,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color is his pace against his pregame projection: green on pace or better, yellow under but within the normal swing of a game (one standard deviation, from this season's games), red further under than that, and blue once he has passed the whole projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
@@ -829,7 +836,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       else if (g.st === "in") { f = +r.est_final > 0 ? Math.max(0, Math.min(1, +r.now / +r.est_final)) : 0; td.title = (+r.now).toFixed(1) + " of " + (+r.est_final).toFixed(1) + " predicted"; }
     }
     if (f === null) return td;
-    var box = document.createElement("span"); box.className = "chop-meter" + cls;
+    var box = document.createElement("span"); box.className = "chop-meter" + cls + (r.pace ? " " + r.pace : "");
     function part(name) { var p = document.createElement("span"); p.className = name; box.appendChild(p); return p; }
     part("line");
     if (!cls) part("fill").style.width = f * 100 + "%";
@@ -881,20 +888,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       who.className = "nm"; who.style.color = d.col[r.id];
       who.appendChild(document.createTextNode((r.flex ? "FLEX " : "") + (r.pos ? r.pos + ": " : "") + r.name + " (" + (r.club || "FA") + ", #" + r.num + ")"));
       if (r.acct && r.slot !== "START") {                  // Players in a game: bench points do not count
-        var benchTag = document.createElement("span"); benchTag.className = "chop-tag gray"; benchTag.textContent = "BENCH";
+        var benchTag = document.createElement("span"); benchTag.className = "chop-tag bench"; benchTag.textContent = "BENCH";
         who.appendChild(benchTag);
       }
       var sub = statLine(r), tag = r.stats ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
         var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
         if (tag) line.appendChild(tag);
+        var holder = line;
+        if (r.stats) { holder = document.createElement("span"); holder.className = "parts"; line.appendChild(holder); }
         (sub ? sub.split(" · ") : []).forEach(function (part, k) {
           if (!r.stats && (tag || k)) {                    // before a game: QUES • RB10 • 26% (74%)
             dot(line);
             if (!k) line.lastChild.classList.add("tagdot");
           }
           var chunk = document.createElement("span"); chunk.className = "pt"; chunk.textContent = part;
-          line.appendChild(chunk); line.appendChild(document.createTextNode(r.stats ? " " : ""));
+          holder.appendChild(chunk);
         });
         if (!r.stats && r.bye && r.game && r.game.st === "pre") {   // a bye still to come: a blue tag with its week
           if (sub) dot(line);                              // QB3 • 88% (98%) • 11
