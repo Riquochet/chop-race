@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '75783a49be';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4b07955c9e';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -77,7 +77,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-t td{vertical-align:top}
 .chop-t td.nm{white-space:normal}
 .chop-t .slp{color:var(--chop-muted);font-weight:400}
-.chop-t td.final{font-weight:700}                       /* his game is over: the numbers are the actual final */
+.chop-t td.prefinal,.chop-t td.prefinal .slp{color:var(--chop-muted);font-weight:400}   /* before kickoff Final is only a prediction */
+.chop-t td.final{font-weight:700}                       /* once he has kicked off, and through the actual final */
 .chop-t td.final .slp{color:inherit;font-weight:700}
 .chop-t .pregame{display:block;font-weight:300;color:var(--chop-muted);opacity:.7}   /* under Final once he has kicked off: the pregame prediction */
 .chop-t td.final .pregame .slp{color:var(--chop-muted);font-weight:300}
@@ -189,7 +190,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   </article>
   <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-    <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game. Once a player has kicked off, the dim numbers under his Final are the predictions from before the game; when his game is over, the bold numbers are his actual final.</p>
+    <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game. Once a player has kicked off, his Final turns bold, and the dim numbers under it are the predictions from before the game. When his game is over, the bold numbers are his actual final.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color is his pace against his pregame projection: green on pace or better, yellow under but within the normal swing of a game (one standard deviation, from this season's games), red further under than that, and blue once he has passed the whole projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
@@ -935,7 +936,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var numW = roomy() ? 5 : 4, played = r.game && r.game.st !== "pre";
         nowCell.textContent = r.game && r.game.st === "pre" ? "-" : (+r.now).toFixed(1);    // no score until he has kicked off
         ours(fin, r.est_final, r.est_sleeper, false, false, numW);
-        if (r.game && r.game.st === "post") fin.className = "final";
+        fin.className = played ? "final" : "prefinal";
         if (played && r.pre != null) {                     // under it, what we and Sleeper predicted before the game
           var was = document.createElement("span"); was.className = "pregame"; was.title = "Predicted before the game";
           ours(was, r.pre, r.pre_sleeper, false, false, numW); fin.appendChild(was);
