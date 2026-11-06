@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '685a3be794';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '236b367d73';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -117,6 +117,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-chart svg{display:block;width:100%;height:auto}
 .chop-chart .ax{fill:var(--chop-muted);font-size:11px}
 .chop-chart .grid{stroke:var(--chop-grid);stroke-width:1}
+.chop-chart .sec{stroke:color-mix(in srgb,var(--chop-grid) 85%,var(--chop-fg));stroke-width:1}   /* Players in a game: 30 minutes, or a quarter */
+.chop-chart .sec.hr{stroke:color-mix(in srgb,var(--chop-grid) 50%,var(--chop-fg))}                  /* the hour, or halftime */
 .chop-chart .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
 .chop-chart .nowln{stroke:var(--chop-fg);stroke-width:1.2}
 .chop-chart .kick{stroke:var(--chop-fg);stroke-width:1.5}
@@ -186,7 +188,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color is his pace against his pregame projection: green on pace or better, yellow under but within the normal swing of a game (one standard deviation, from this season's games), red further under than that, and blue once he has passed the whole projection.</p>
-    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
+    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -504,7 +506,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var width = Math.max(300, el.clientWidth || 360), narrow = width < 560;
     var m = {l: 30, r: narrow ? 108 : 230, t: 10, b: narrow ? 42 : 42}, h = Math.max(narrow ? 430 : 470, d.minH || 0);
     var pw = width - m.l - m.r, ph = h - m.t - m.b;
-    var xmax = Math.max(d3.max(series, function (r) { return r.x; }) || 1,      // the whole week's windows, even when
+    var xmax = Math.max(d.xFloor || 0, d3.max(series, function (r) { return r.x; }) || 1,      // the whole week's windows, even when
       d3.max(wins, function (w) { return w.kind === "window" ? +w.x1 : 0; }) || 0), minSpan = Math.min(xmax, 15);   // no player plays the last one
     var by = d3.group(series, function (r) { return r.team; });
     var full = {}, span = {};
@@ -569,10 +571,16 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         gBack.append("line").attr("class", "grid").attr("x1", m.l).attr("x2", width - m.r).attr("y1", y(yv)).attr("y2", y(yv));
         gBack.append("text").attr("class", "ax").attr("x", m.l - 5).attr("y", y(yv) + 4).attr("text-anchor", "end").text(yv);
       });
+      (d.grid || []).forEach(function (g) {              // Players in a game: its sections
+        var gx = x(g.x);
+        if (gx < m.l || gx > width - m.r) return;
+        gBack.append("line").attr("class", "sec" + (g.strong ? " hr" : "")).attr("x1", gx).attr("x2", gx).attr("y1", m.t).attr("y2", h - m.b);
+        if (g.label) gBack.append("text").attr("class", "ax").attr("x", gx).attr("y", h - m.b + 29).attr("text-anchor", "middle").style("font-size", "10px").text(g.label);
+      });
       var lastEnd = -Infinity;
       wins.filter(function (w) { return w.kind === "window"; }).forEach(function (w, i) {
         var wa = x(+w.x0), wb = x(+w.x1);
-        if (i && wa > m.l && wa < width - m.r)
+        if (i && !d.grid && wa > m.l && wa < width - m.r)
           gBack.append("line").attr("class", "div").attr("x1", wa).attr("x2", wa).attr("y1", m.t).attr("y2", h - m.b);
         var ca = Math.max(m.l, wa), cb = Math.min(width - m.r, wb);
         var zones = kickZones(w).filter(function (z) { return x(z.x1) >= m.l && x(z.x0) <= width - m.r; });
@@ -591,7 +599,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         gBack.append("text").attr("class", "ax").attr("x", cx).attr("y", h - m.b + 15 + row * 13)
           .attr("text-anchor", "middle").text(txt);
         var when = windowTime(w);                         // its real time, only where it fits
-        if (!narrow && cb - ca >= when.length * 5.4 + 6) gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 29)
+        if (!d.grid && !narrow && cb - ca >= when.length * 5.4 + 6) gBack.append("text").attr("class", "ax").attr("x", (ca + cb) / 2).attr("y", h - m.b + 29)
           .attr("text-anchor", "middle").style("font-size", "10px").text(when);
       });
       if (x(nowX) >= m.l && x(nowX) <= width - m.r) {
@@ -967,27 +975,59 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       g.rows.forEach(function (r) { items.push(r); col[r.id] = c; name[r.id] = r.short; slot[r.id] = r.slot; });
     });
     if (one) { var pcol = rosterColors(one.rows); one.rows.forEach(function (r) { col[r.id] = pcol[r.id]; }); }   // one group: tell its players apart
-    var now = (DOC.windows || []).find(function (w) { return w.kind === "now"; }), lo = Infinity, hi = -Infinity;
-    items.forEach(function (r) {
-      var L = R[r.acct].lines[r.id] || {};
-      (L.ax || []).concat(L.px || []).forEach(function (x) { if (x < lo) lo = x; if (x > hi) hi = x; });
-    });
-    if (!isFinite(lo) && now) lo = hi = +now.x0;
-    var wins = (DOC.windows || []).filter(function (w) { return w.kind === "window" && +w.x1 > lo && +w.x0 < hi - 1; });
-    var base = wins.length ? +wins[0].x0 : lo;
-    if (st.base !== base) { st.base = base; st.view = st.yview = null; }                                  // a new window: the old zoom means nothing
-    items.forEach(function (r) {
-      var L = R[r.acct].lines[r.id] || {};
-      (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.ay[i], phase: "actual"}); });
-      (L.px || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.py[i], phase: "projected"}); });
-    });
-    var shifted = wins.map(function (w) {
-      return Object.assign({}, w, {x0: +w.x0 - base, x1: +w.x1 - base, kicks: (w.kicks || []).map(function (k) { return {x: k.x - base, t: k.t}; })});
-    });
-    if (now) shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: +now.x0 - base, x1: +now.x0 - base});
+    // One game on the chart: its four quarters, by the game clock. More than one: real time, in 30-minute sections from the first kickoff.
+    var names = {}; items.forEach(function (r) { names[r.gameName] = 1; });
+    var only = Object.keys(names).length === 1 ? Object.keys(names)[0] : null;
+    var clk = only && DOC.clocks && DOC.clocks[only];
+    var shifted, grid, floor, key;
+    var now = (DOC.windows || []).find(function (w) { return w.kind === "now"; });
+    if (clk && clk.length) {
+      var at = function (x) {                            // chart time -> game minute, straight between the plays
+        if (x <= clk[0][0]) return clk[0][1];
+        for (var c = 1; c < clk.length; c++) if (x <= clk[c][0]) {
+          var u = clk[c - 1], v = clk[c];
+          return v[0] > u[0] ? u[1] + (v[1] - u[1]) * (x - u[0]) / (v[0] - u[0]) : v[1];
+        }
+        return clk[clk.length - 1][1];
+      };
+      var nowM = clk[clk.length - 1][1], endM = Math.max(60, nowM);
+      items.forEach(function (r) {
+        var L = R[r.acct].lines[r.id] || {}, px = L.px || [], p0 = px[0], pn = px[px.length - 1];
+        (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: at(x), pts: L.ay[i], phase: "actual"}); });
+        if (px.length > 1 && pn > p0) px.forEach(function (x, i) { S.push({team: r.id, x: nowM + (endM - nowM) * (x - p0) / (pn - p0), pts: L.py[i], phase: "projected"}); });
+      });
+      shifted = [1, 2, 3, 4].map(function (q) { return {kind: "window", label: "Q" + q, short: "Q" + q, when: "", x0: (q - 1) * 15, x1: q * 15, kicks: []}; });
+      if (nowM > 60) shifted.push({kind: "window", label: "OT", short: "OT", when: "", x0: 60, x1: Math.max(70, nowM), kicks: []});
+      shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: nowM, x1: nowM});
+      grid = [{x: 15}, {x: 30, strong: true}, {x: 45}].concat(nowM > 60 ? [{x: 60}] : []);
+      floor = nowM > 60 ? Math.max(70, nowM) : 60; key = "game " + only;
+    } else {
+      var lo = Infinity, hi = -Infinity;
+      items.forEach(function (r) {
+        var L = R[r.acct].lines[r.id] || {};
+        (L.ax || []).concat(L.px || []).forEach(function (x) { if (x < lo) lo = x; if (x > hi) hi = x; });
+      });
+      if (!isFinite(lo) && now) lo = hi = +now.x0;
+      var wins = (DOC.windows || []).filter(function (w) { return w.kind === "window" && +w.x1 > lo && +w.x0 < hi - 1; });
+      var base = wins.length ? +wins[0].x0 : lo;
+      items.forEach(function (r) {
+        var L = R[r.acct].lines[r.id] || {};
+        (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.ay[i], phase: "actual"}); });
+        (L.px || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.py[i], phase: "projected"}); });
+      });
+      shifted = wins.map(function (w) {
+        return Object.assign({}, w, {x0: +w.x0 - base, x1: +w.x1 - base, kicks: (w.kicks || []).map(function (k) { return {x: k.x - base, t: k.t}; })});
+      });
+      if (now) shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: +now.x0 - base, x1: +now.x0 - base});
+      var end = Math.max(hi - base, wins.length ? +wins[wins.length - 1].x1 - base : 0);   // 3 1/2 hours, or more when two windows overlap
+      floor = Math.max(210, Math.ceil(end / 30) * 30); grid = [];
+      for (var g = 30; g < floor; g += 30) grid.push(g % 60 ? {x: g} : {x: g, strong: true, label: g / 60 + "h"});
+      key = "real " + base;
+    }
+    if (st.base !== key) { st.base = key; st.view = st.yview = null; }                                     // a different axis: the old zoom means nothing
     var crowd = items.length > 12;
     return {
-      series: S, wins: shifted, teams: items, col: col, us: null, name: name, rows: items, groups: groups, rangeOnly: true, noThin: true,
+      series: S, wins: shifted, teams: items, col: col, us: null, name: name, rows: items, groups: groups, rangeOnly: true, noThin: true, grid: grid, xFloor: floor,
       minH: items.length * 12.5 + 70, tipMax: 14,
       width: function (t) { return slot[t] === "START" ? (crowd ? 2.2 : 4) : (crowd ? 1.2 : 2.5); }, bold: function () { return false; },
       faint: function (t) { return slot[t] !== "START"; }, aria: "Points for every player in a game, scored and projected"
