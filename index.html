@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'cb38c19a00';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'd168c0f892';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -941,7 +941,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   }
   // The chart's data: only the game windows now under way, with x counted from the first of them.
   function gameRows(all) {
-    var R = DOC.rosters, st = ST.game, one = all.find(function (g) { return g.key === st.group; }), groups = one ? [one] : all;
+    var R = DOC.rosters, st = ST.game, one = all.find(function (g) { return g.key === st.group; }) || (all.length === 1 ? all[0] : null), groups = one ? [one] : all;
     var items = [], col = {}, name = {}, slot = {}, S = [];
     groups.forEach(function (g, i) {
       var c = st.by === "team" ? teamColor(g.key) : "var(--chop-c" + (i % 10) + ")";
