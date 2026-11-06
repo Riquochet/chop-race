@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'd168c0f892';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4175665352';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -176,8 +176,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
-    <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -191,6 +191,18 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         <tbody></tbody>
       </table>
     </div>
+    </section>
+    <section id="sec-mine" class="chop-sec">
+      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2"><label for="mine-team">Players for</label></h2>
+        <select id="mine-team"></select></div>
+        <button type="button" class="chop-reset" id="mine-reset" hidden>Show whole week</button></div>
+      <div class="chop-chart" id="mine-chart"></div>
+      <div class="chop-tw">
+        <table class="chop-t chop-pt">
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th><th aria-label="Matchup rank, or points so far against the predicted final"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </section>
     <section id="sec-game" class="chop-sec">
       <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2">Players in a game</h2>
@@ -206,18 +218,6 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
           <tbody></tbody>
         </table>
       </div>
-      </div>
-    </section>
-    <section id="sec-mine" class="chop-sec">
-      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2"><label for="mine-team">Players for</label></h2>
-        <select id="mine-team"></select></div>
-        <button type="button" class="chop-reset" id="mine-reset" hidden>Show whole week</button></div>
-      <div class="chop-chart" id="mine-chart"></div>
-      <div class="chop-tw">
-        <table class="chop-t chop-pt">
-          <thead><tr><th class="nm">Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th><th aria-label="Matchup rank, or points so far against the predicted final"></th></tr></thead>
-          <tbody></tbody>
-        </table>
       </div>
     </section>
   </div>
