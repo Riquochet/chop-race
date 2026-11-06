@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'b5bc1fc6f2';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2dee762e85';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -492,14 +492,12 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     document.getElementById("chop-when").textContent = parts.join(" · ") || "—";
     if (DOC && DOC.teams) document.getElementById("chop-alive").textContent = String(DOC.teams.length);
   }
-  // When to look again: every minute during a game, every 5 minutes while finals land (25 minutes
-  // after the last update), else asleep until 5 minutes before the next kickoff (at most 6 hours).
+  // When to look again: every minute during a game and from 5 minutes before a kickoff, else every 2 minutes, so a roster
+  // move shows soon after the recorder publishes it.
   function nextDelay() {
     var now = Date.now() / 1000;
     if (!DOC || isLive()) return 60;
-    if (now - (+DOC.builtAt || 0) < 25 * 60) return DOC.next ? Math.max(60, Math.min(5 * 60, DOC.next - 300 - now)) : 5 * 60;   // be looking when the recorder wakes
-    if (DOC.next) return Math.min(6 * 3600, Math.max(60, DOC.next - 300 - now));
-    return 6 * 3600;
+    return DOC.next && DOC.next - 300 - now < 120 ? 60 : 120;
   }
 
   // One chart: lines on game time, zoom kept in st.view ([a, b] game minutes, null = whole week) across updates.
@@ -1184,7 +1182,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
   render();
   // Data: live_doc.json next to the page (the score recorder pushes it every minute during games),
-  // fetched on nextDelay()'s timer: every minute while live, asleep until just before the next kickoff.
+  // fetched on nextDelay()'s timer: every minute while live and just before a kickoff, else every 2 minutes.
   // The page redraws in place; it reloads itself only when live_doc says a newer page is on GitHub.
   function failed() { if (!DOC) document.getElementById("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
   (async function () {
