@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4175665352';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '0e6e16f6f6';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -31,6 +31,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 /* the Players in a game section: group rows in its table, the By game / By team switch */
 .chop-pt tr.grp td{text-align:left;font-weight:700;color:var(--chop-fg);padding-top:12px;border-bottom:1px solid color-mix(in srgb,var(--chop-grid) 78%,var(--chop-fg))}
 .chop-pt tr.grp .sub{font-weight:400;color:var(--chop-muted)}
+.chop-pt tr.grp.club td{font-weight:600;font-size:.72rem;color:var(--chop-muted);padding-top:7px;padding-bottom:3px;border-bottom-color:var(--chop-grid)}
 .chop-pl.tm{white-space:normal}
 .chop-seg{display:inline-flex}
 .chop-zoombar .chop-seg button{border-radius:0;padding:5px 9px}
@@ -177,7 +178,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final.</p>
-    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
+    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game or by team, with each team's players under the NFL teams they play for, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -934,7 +935,10 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       });
     });
     return Object.keys(groups).map(function (k) {
-      groups[k].rows.sort(function (a, b) { return (a.slot === "START" ? 0 : 1) - (b.slot === "START" ? 0 : 1) || b.now - a.now; });   // starters first, leaders on top
+      groups[k].rows.sort(function (a, b) {                // starters first, leaders on top; by team, within each NFL team in kickoff order
+        var club = by === "team" ? a.game.kick - b.game.kick || (a.club < b.club ? -1 : a.club > b.club ? 1 : 0) : 0;
+        return club || (a.slot === "START" ? 0 : 1) - (b.slot === "START" ? 0 : 1) || b.now - a.now;
+      });
       return groups[k];
     }).sort(by === "team" ? function (a, b) { return (rank[b.key] || 0) - (rank[a.key] || 0); }
                           : function (a, b) { return a.kick - b.kick || (a.name < b.name ? -1 : 1); });
@@ -955,7 +959,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       (L.ax || []).concat(L.px || []).forEach(function (x) { if (x < lo) lo = x; if (x > hi) hi = x; });
     });
     if (!isFinite(lo) && now) lo = hi = +now.x0;
-    var wins = (DOC.windows || []).filter(function (w) { return w.kind === "window" && +w.x1 > lo && +w.x0 < hi; });
+    var wins = (DOC.windows || []).filter(function (w) { return w.kind === "window" && +w.x1 > lo && +w.x0 < hi - 1; });
     var base = wins.length ? +wins[0].x0 : lo;
     if (st.base !== base) { st.base = base; st.view = st.yview = null; }                                  // a new window: the old zoom means nothing
     items.forEach(function (r) {
@@ -975,21 +979,32 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       faint: function (t) { return slot[t] !== "START"; }, aria: "Points for every player in a game, scored and projected"
     };
   }
+  function players(n) { return n + (n === 1 ? " player" : " players"); }
+  // A header row in the table: tapping it picks all of its players, or drops them.
+  function groupRow(cls, label, sub, color, rows) {
+    var head = document.createElement("tr"), td = document.createElement("td"), nm = document.createElement("span"), more = document.createElement("span");
+    head.className = cls; td.colSpan = 5; nm.textContent = label; if (color) nm.style.color = color;
+    more.className = "sub"; more.textContent = sub;
+    td.appendChild(nm); td.appendChild(more); head.appendChild(td);
+    head.addEventListener("click", function () {
+      var ids = rows.map(function (r) { return r.id; }), all = ids.every(function (i) { return ST.game.sel.indexOf(i) >= 0; });
+      ST.game.sel = ST.game.sel.filter(function (i) { return ids.indexOf(i) < 0; }).concat(all ? [] : ids);
+      style(ST.game);
+    });
+    return head;
+  }
   function drawGameTable(tb, d) {
     tb.textContent = "";
+    var byTeam = ST.game.by === "team";
     d.groups.forEach(function (g) {
-      var head = document.createElement("tr"), td = document.createElement("td"), nm = document.createElement("span"), sub = document.createElement("span");
-      head.className = "grp"; td.colSpan = 5; nm.textContent = breakable(g.name);
-      if (ST.game.by === "team") nm.style.color = g.color;
-      sub.className = "sub"; sub.textContent = ST.game.by === "team" ? " · " + g.rows.length + " players" : " · " + g.rows[0].game.clock + " · " + g.rows.length + " players";
-      td.appendChild(nm); td.appendChild(sub); head.appendChild(td);
-      head.addEventListener("click", function () {      // a group's name picks all of its players, or drops them
-        var ids = g.rows.map(function (r) { return r.id; }), all = ids.every(function (i) { return ST.game.sel.indexOf(i) >= 0; });
-        ST.game.sel = ST.game.sel.filter(function (i) { return ids.indexOf(i) < 0; }).concat(all ? [] : ids);
-        style(ST.game);
+      tb.appendChild(groupRow("grp", breakable(g.name), byTeam ? " · " + players(g.rows.length) : " · " + g.rows[0].game.clock + " · " + players(g.rows.length), byTeam ? g.color : null, g.rows));
+      g.rows.forEach(function (r, i) {
+        if (byTeam && (!i || g.rows[i - 1].club !== r.club)) {       // by team: his fantasy team, then the NFL team he plays for
+          var club = g.rows.filter(function (x) { return x.club === r.club; });
+          tb.appendChild(groupRow("grp club", r.club, " · " + players(club.length), null, club));
+        }
+        tb.appendChild(playerRow(r, d, ST.game, r.slot === "START" ? "" : "bench"));
       });
-      tb.appendChild(head);
-      g.rows.forEach(function (r) { tb.appendChild(playerRow(r, d, ST.game, r.slot === "START" ? "" : "bench")); });
     });
     style(ST.game);
   }
