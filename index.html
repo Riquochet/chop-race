@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2dee762e85';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c077feec5b';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -38,6 +38,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-zoombar .chop-seg button:first-child{border-radius:6px 0 0 6px;border-right:0}
 .chop-zoombar .chop-seg button:last-child{border-radius:0 6px 6px 0}
 .chop-zoombar .chop-seg button[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
+.chop-update{font:inherit;font-size:.75rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:2px 9px;cursor:pointer}
+.chop-update:disabled{color:var(--chop-muted);cursor:default}
+.chop-update:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
 .chop-none{color:var(--chop-muted);font-size:.875rem;margin:.25rem 0 0}
 /* the small line after the Game column: before kickoff the matchup's rank, red 1st to green 32nd; in a game, points so far against the predicted final */
 .chop-pt td.meter{vertical-align:middle}
@@ -182,7 +185,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 </style>
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
-  <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span></p>
+  <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button></p>
   <article class="chop-news" id="chop-news" hidden aria-live="polite">
     <h2 class="chop-news-h" id="news-head"></h2>
     <p class="chop-news-meta" id="news-meta"></p>
@@ -190,7 +193,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   </article>
   <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-    <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game. Once a player has kicked off, his Final turns bold, and the dim numbers under it are the predictions from before the game. When his game is over, the bold numbers are his actual final.</p>
+    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data takes about a minute to arrive. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game. Once a player has kicked off, his Final turns bold, and the dim numbers under it are the predictions from before the game. When his game is over, the bold numbers are his actual final.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his pregame projection: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it. In the first half of the first quarter, anything under is only yellow. When his game is over the line stays, full, in the color he finished.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
@@ -1205,6 +1208,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         if (r.ok && (await r.text()).indexOf(v) >= 0) location.reload();
       } catch (e) {}
     }
+    // The Update button: asks the recorder (through a public relay, the page has no server) for a full pull, then looks for the
+    // new data every 10 seconds. It takes about a minute to come back, because GitHub has to deploy it.
+    var btn = document.getElementById("chop-update");
+    async function pull() {
+      var was = built, asked = false;
+      btn.disabled = true; btn.textContent = "Updating…";
+      try { asked = (await fetch(window.CHOP_PULL_URL || "https://ntfy.sh/chop-race-update-b01a63b57ecf", {method: "POST", body: "update"})).ok; } catch (e) {}
+      for (var i = 0; i < (asked ? 18 : 1); i++) {       // up to 3 minutes; if the request failed, just look once
+        await poll();
+        if (built !== was) break;
+        if (asked) await new Promise(function (r) { setTimeout(r, 10000); });
+      }
+      btn.textContent = built !== was ? "Updated" : asked ? "No newer data" : "Couldn’t ask for an update";
+      setTimeout(function () { btn.textContent = "Update"; btn.disabled = false; }, 4000);
+    }
+    btn.addEventListener("click", pull);
     poll();
     document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });   // a phone waking up
   })();
