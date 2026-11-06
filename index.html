@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '90cb88e1a9';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c301723d6f';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -148,6 +148,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   .chop-pl.pre .chop-tag.blue{display:inline-block;margin:0;padding:0 3px}
   .chop-pl{margin-left:0;font-size:.67rem}
   .chop-meter{width:26px;margin-left:2px}
+  .chop-pt td.game .ln:first-child{white-space:normal}   /* "Sun international" wraps rather than pushing the table wide */
   .chop-pt td.game,.chop-pt th:nth-last-child(2){padding-left:4px}
   .chop-t .chop-pl .dot{margin:0 .2em}
 }
@@ -757,13 +758,18 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var t = n % 100, u = n % 10;
     return n + (t >= 11 && t <= 13 ? "th" : u === 1 ? "st" : u === 2 ? "nd" : u === 3 ? "rd" : "th");
   }
-  // The Game column: when he plays and how hard the matchup is, or how much of his game is left. Never a score.
+  // The chart's name for the game window a kickoff falls in: "Thu night", "Sun early".
+  function windowName(kick) {
+    var w = ((DOC && DOC.windows) || []).find(function (w) { return w.kind === "window" && kick >= w.t0 && kick < w.t1; });
+    return w ? w.label : clock(kick);
+  }
+  // The Game column: when he plays (the chart's window name) and how hard the matchup is, or how much of his game is left. Never a score.
   function gameCell(r) {
     var td = document.createElement("td"), g = r.game; td.className = "game";
     function ln(text) { var l = document.createElement("span"); l.className = "ln"; l.textContent = text; td.appendChild(l); return l; }
     if (!g) return td;                                   // a bye shows as a tag under his name
     if (g.st === "pre") {
-      ln(clock(g.kick));
+      ln(windowName(g.kick)).title = clock(g.kick);
       var opp = ln(g.home ? "vs " : "at "), who = document.createElement("span");
       who.textContent = g.opp;
       if (r.hard) {                                      // 1st = the hardest defense for his position (red), 32nd = the easiest (green)
