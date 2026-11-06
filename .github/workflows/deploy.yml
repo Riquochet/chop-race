@@ -28,3 +28,4 @@ jobs:
         with: {path: _site}
       - id: deploy
         uses: actions/deploy-pages@v4
+        with: {timeout: 300000}    # a deploy GitHub leaves queued fails in 5 minutes, and the recorder reruns it
