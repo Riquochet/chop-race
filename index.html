@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '0e6e16f6f6';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e0295e047e';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -178,7 +178,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     <p>Updates itself while games are on. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final.</p>
-    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game or by team, with each team's players under the NFL teams they play for, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
+    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
   <div id="chop-body" hidden>
@@ -935,8 +935,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       });
     });
     return Object.keys(groups).map(function (k) {
-      groups[k].rows.sort(function (a, b) {                // starters first, leaders on top; by team, within each NFL team in kickoff order
-        var club = by === "team" ? a.game.kick - b.game.kick || (a.club < b.club ? -1 : a.club > b.club ? 1 : 0) : 0;
+      groups[k].rows.sort(function (a, b) {                // starters first, leaders on top; by game, within each NFL team, away team first
+        var club = by === "game" ? (a.game.home ? 1 : 0) - (b.game.home ? 1 : 0) : 0;
         return club || (a.slot === "START" ? 0 : 1) - (b.slot === "START" ? 0 : 1) || b.now - a.now;
       });
       return groups[k];
@@ -999,7 +999,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     d.groups.forEach(function (g) {
       tb.appendChild(groupRow("grp", breakable(g.name), byTeam ? " · " + players(g.rows.length) : " · " + g.rows[0].game.clock + " · " + players(g.rows.length), byTeam ? g.color : null, g.rows));
       g.rows.forEach(function (r, i) {
-        if (byTeam && (!i || g.rows[i - 1].club !== r.club)) {       // by team: his fantasy team, then the NFL team he plays for
+        if (!byTeam && (!i || g.rows[i - 1].club !== r.club)) {      // by game: the game, then the NFL team he plays for
           var club = g.rows.filter(function (x) { return x.club === r.club; });
           tb.appendChild(groupRow("grp club", r.club, " · " + players(club.length), null, club));
         }
