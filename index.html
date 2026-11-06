@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '1fe272d3d2';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '53d3ad7ff9';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -29,6 +29,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-pt td.game,.chop-pt th:nth-last-child(2){text-align:left;white-space:normal;color:var(--chop-muted);font-size:.72rem;line-height:1.35}
 .chop-pt td.game .ln{display:block;white-space:nowrap}
 /* the small line after the Game column: before kickoff the matchup's rank, red 1st to green 32nd; in a game, points so far against the predicted final */
+.chop-pt td.meter{vertical-align:middle}
 .chop-meter{display:block;position:relative;width:64px;height:1.2em}
 .chop-meter .line,.chop-meter .fill{position:absolute;left:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px}
 .chop-meter .line{right:0;background:var(--chop-grid)}
@@ -777,6 +778,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   // game the same line fills with his color, the dot at his points so far against his predicted final. Empty otherwise.
   function meterCell(r) {
     var td = document.createElement("td"), g = r.game, f = null, cls = "";
+    td.className = "meter";
     if (g && !outThisWeek(r)) {
       if (g.st === "pre" && r.hard) { f = (r.hard - 1) / 31; cls = " rank"; td.title = ordinal(r.hard) + " of 32 against " + r.pos + "s: 1st hardest, 32nd easiest"; }
       else if (g.st === "in") { f = +r.est_final > 0 ? Math.max(0, Math.min(1, +r.now / +r.est_final)) : 0; td.title = (+r.now).toFixed(1) + " of " + (+r.est_final).toFixed(1) + " predicted"; }
