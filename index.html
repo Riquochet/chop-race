@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '9ca8080337';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'cfbc50c0a6';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -51,6 +51,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-meter.rank .line{background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
 .chop-meter .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--row);box-shadow:0 0 0 1.5px var(--chop-bg)}
 .chop-meter.rank .mark{background:var(--chop-fg)}
+.chop-meter .tick{position:absolute;top:50%;width:2px;height:11px;margin:-5.5px 0 0 -1px;border-radius:1px;background:var(--chop-fg);box-shadow:0 0 0 1px var(--chop-bg)}   /* his projection, when he finished past it */
 .chop-pt tr.bench .chop-meter.rank{opacity:.6}
 .chop-meter.red{--row:var(--chop-p-qb)}.chop-meter.yellow{--row:var(--chop-p-te1)}.chop-meter.green{--row:var(--chop-p-wr0)}.chop-meter.blue{--row:var(--chop-p-rb0)}   /* in a game: pace against his projection */
 /* stats under a name: light bullets between the parts, none where a line wraps (the one at the start of each line is clipped) */
@@ -195,7 +196,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final and Chop read ours • Sleeper's. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Final is the points so far plus the prediction for the rest of the game. Once a player has kicked off, his Final turns bold, and the dim numbers under it are the predictions from before the game. When his game is over, the bold numbers are his actual final.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his pregame projection: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it. In the first half of the first quarter, anything under is only yellow. When his game is over the line stays, full, in the color he finished.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his pregame projection: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it. In the first half of the first quarter, anything under is only yellow. When his game is over, the whole line is his pregame projection and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. Organize them by game, split into its two NFL teams, or by team, or show just one. With everything showing, each game or team has its own color; showing one, players get their position colors. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
@@ -841,14 +842,20 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     return td;
   }
   // The untitled column: before kickoff a line from 1st (red) to 32nd (green) with a dot at this opponent's rank; in his
-  // game the same line fills in his pace color, the dot at his points so far against his predicted final; once it is over the line stays, full, in the color he finished. Empty otherwise.
+  // game the same line fills in his pace color, the dot at his points so far against his predicted final. Once it is over, the whole line is his
+  // pregame projection and the dot is where he ended, in the color he finished; past it, the dot sits at the end and a tick on top marks the projection. Empty otherwise.
   function meterCell(r) {
-    var td = document.createElement("td"), g = r.game, f = null, cls = "";
+    var td = document.createElement("td"), g = r.game, f = null, cls = "", tick = null;
     td.className = "meter";
     if (g && !outThisWeek(r)) {
       if (g.st === "pre" && r.hard) { f = (r.hard - 1) / 31; cls = " rank"; td.title = ordinal(r.hard) + " of 32 against " + r.pos + "s: 1st hardest, 32nd easiest"; }
       else if (g.st === "in") { f = +r.est_final > 0 ? Math.max(0, Math.min(1, +r.now / +r.est_final)) : 0; td.title = (+r.now).toFixed(1) + " of " + (+r.est_final).toFixed(1) + " predicted"; }
-      else if (g.st === "post") { f = 1; if (r.pre != null) td.title = (+r.now).toFixed(1) + " final, " + (+r.pre).toFixed(1) + " predicted before the game"; }
+      else if (g.st === "post") {
+        var pts = Math.max(0, +r.now), proj = Math.max(0, +r.pre || 0), whole = Math.max(pts, proj);
+        f = whole > 0 ? pts / whole : 1;                 // no points and no projection: nothing to fall short of
+        if (r.pre != null && pts > proj) tick = proj / whole;
+        if (r.pre != null) td.title = (+r.now).toFixed(1) + " final, " + (+r.pre).toFixed(1) + " predicted before the game";
+      }
     }
     if (f === null) return td;
     var box = document.createElement("span"); box.className = "chop-meter" + cls + (r.pace ? " " + r.pace : "");
@@ -856,6 +863,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     part("line");
     if (!cls) part("fill").style.width = f * 100 + "%";
     part("mark").style.left = "calc(3.5px + (100% - 7px) * " + f + ")";
+    if (tick !== null) part("tick").style.left = "calc(3.5px + (100% - 7px) * " + tick + ")";
     td.appendChild(box);
     return td;
   }
