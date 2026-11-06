@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e0295e047e';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '942dc5e69a';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -54,6 +54,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-tag.red{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f)}
 .chop-tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
 .chop-tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
+.chop-tag.gray{color:var(--chop-muted);border-color:var(--chop-grid);background:transparent;margin-left:.4em;font-weight:400;vertical-align:1px}
 .chop-tag.blue{color:var(--chop-tag-blue-t);border-color:var(--chop-tag-blue-b);background:var(--chop-tag-blue-f)}
 /* paired numbers meet at a light bullet, so the bullets line up down the column */
 .chop-t{font-variant-numeric:tabular-nums}
@@ -879,6 +880,10 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       mark.className = "chop-dot"; mark.style.background = d.col[r.id]; who.appendChild(mark);
       who.className = "nm"; who.style.color = d.col[r.id];
       who.appendChild(document.createTextNode((r.flex ? "FLEX " : "") + (r.pos ? r.pos + ": " : "") + r.name + " (" + (r.club || "FA") + ", #" + r.num + ")"));
+      if (r.acct && r.slot !== "START") {                  // Players in a game: bench points do not count
+        var benchTag = document.createElement("span"); benchTag.className = "chop-tag gray"; benchTag.textContent = "BENCH";
+        who.appendChild(benchTag);
+      }
       var sub = statLine(r), tag = r.stats ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
         var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
@@ -898,9 +903,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         }
         who.appendChild(line);
       }
-      if (r.acct) {                                        // which team he is on; bench points do not count
+      if (r.acct && ST.game.by === "game") {               // by game: which team he is on (by team, the group row says it)
         var tm = document.createElement("span"); tm.className = "chop-pl tm"; tm.style.color = teamColor(r.acct);
-        tm.textContent = breakable(teamName(r.acct, false)) + (r.slot === "START" ? "" : " · bench");
+        tm.textContent = breakable(teamName(r.acct, false));
         who.appendChild(tm);
       }
       tr.appendChild(who);
