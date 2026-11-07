@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '04e0283400';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '0870bd415d';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -45,7 +45,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-update:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
 .chop-none{color:var(--chop-muted);font-size:.875rem;margin:.25rem 0 0}
 /* the small line after the Game column: before kickoff the matchup's rank, red 1st to green 32nd; in a game, points so far against the predicted final */
-.chop-pt td.meter{vertical-align:middle}
+.chop-t td.meter{vertical-align:middle}
 .chop-meter{display:block;position:relative;width:64px;height:1.2em}
 .chop-meter .line,.chop-meter .fill{position:absolute;left:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px}
 .chop-meter .line{right:0;background:var(--chop-grid)}
@@ -84,6 +84,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-t td.nm{white-space:normal}
 .chop-t .slp{color:var(--chop-muted);font-weight:400}
 .chop-t td.prefinal,.chop-t td.prefinal .slp{color:var(--chop-muted);font-weight:400}   /* before kickoff Projected is only a prediction */
+.chop-t td.preweek,.chop-t td.preweek .slp{color:var(--chop-muted)}   /* the team's projection, locked at the week's first kickoff */
+.chop-t .pregame.phone{display:none}
 .chop-t td.struck .n{text-decoration:line-through}      /* his game is over: what we predicted, crossed out */
 .chop-t td.final{font-weight:700}                       /* once he has kicked off, and through the actual final */
 .chop-t td.final .slp{color:inherit;font-weight:700}
@@ -174,6 +176,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 @media (max-width:559px){                        /* phones: the team table fits without sideways scrolling */
   .chop-t{font-size:.72rem;width:100%}
   .chop-t td.nm,.chop-t th.nm{width:100%}
+  .chop-t td.preweek,.chop-t th.preweek{display:none}
+  .chop-t .pregame.phone{display:block}
+  .chop-t .n.gap{margin-left:.5em}
   .chop-t th{white-space:normal;vertical-align:bottom}
   .chop-t th,.chop-t td{padding-left:1px;padding-right:1px}
   .chop-t .dot{margin:0 .1em}
@@ -212,7 +217,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     <div class="chop-chart" id="chop-chart"></div>
     <div class="chop-tw">
       <table class="chop-t">
-        <thead><tr><th>#</th><th class="nm">Team</th><th>Now</th><th>Final • Sleeper</th><th>Chop • Sleeper</th><th>Left • In • Done</th></tr></thead>
+        <thead><tr><th>#</th><th class="nm">Team</th><th>Now</th><th>Final • Sleeper<span class="pregame phone">Projected • Sleeper</span></th><th class="preweek">Projected • Sleeper</th><th>Chop • Sleeper</th><th>Left In Done</th><th aria-label="Place in the race, or points so far against the projected final"></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -786,16 +791,23 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     d.teams.slice().sort(function (a, b) { return +b.rank - +a.rank; }).forEach(function (t) {   // worst-first
       var tr = document.createElement("tr");
       if (t.team === d.us) tr.className = "us";
-      [t.rank, t.team, t.now, [t.est_final, t.est_sleeper], [t.chop, t.chop_sleeper, !roomy(), true], t.count || {}].forEach(function (v, i) {
+      [t.rank, t.team, t.now, [t.est_final, t.est_sleeper], t.pre == null ? "" : [t.pre, t.pre_sleeper], [t.chop, t.chop_sleeper, !roomy(), true], t.count || {}].forEach(function (v, i) {
         var td = document.createElement("td");
         if (i === 1) { var dot = document.createElement("span"); dot.className = "chop-dot"; dot.style.background = d.col[t.team]; td.appendChild(dot);
           td.className = "nm"; td.style.color = d.col[t.team]; v = d.name[t.team];
-          if (!roomy()) v = String(v).replace(/\S{13,}/g, function (w) { return w.replace(/(.{10})/g, "$1\u200b"); }); }   // phones: a very long name may break, so the table fits
-        if (i === 5) status(td, v);
+          if (!roomy()) v = String(v).replace(/\S{11,}/g, function (w) { return w.replace(/(.{8})/g, "$1\u200b"); }); }   // phones: a very long name may break, so the table fits
+        if (i === 6) status(td, v);
         else if (Array.isArray(v)) ours(td, v[0], v[1], v[2], v[3]);
         else td.appendChild(document.createTextNode(i === 2 ? (+v).toFixed(1) : String(v)));
+        if (i === 4) td.className = "preweek";
+        if (i === 3 && t.pre != null) {                    // phones have no room for the column: the same numbers, dim, under Final
+          var was = document.createElement("span"); was.className = "pregame phone"; was.title = "Projected at the week's first kickoff";
+          ours(was, t.pre, t.pre_sleeper); td.appendChild(was);
+        }
         tr.appendChild(td);
       });
+      tr.appendChild(meterCell({game: {st: t.st || "pre"}, stats: true, now: t.now, est_final: t.est_final, pre: t.pre, pace: t.st && t.st !== "pre" ? t.pace : null,
+                                place: +t.rank, of: d.teams.length}));
       tr.setAttribute("data-key", t.team); tr.style.setProperty("--row", d.col[t.team]);
       tr.addEventListener("click", function () { pick(ST.teams, t.team); });
       tb.appendChild(tr);
@@ -853,7 +865,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var td = document.createElement("td"), g = r.game, f = null, cls = "", tick = null;
     td.className = "meter";
     if (g && !outThisWeek(r)) {
-      if (g.st === "pre" && r.hard) { f = (r.hard - 1) / 31; cls = " rank"; td.title = ordinal(r.hard) + " of 32 against " + r.pos + "s: 1st hardest, 32nd easiest"; }
+      if (g.st === "pre" && r.place) { f = r.of > 1 ? (r.of - r.place) / (r.of - 1) : 1; cls = " rank"; td.title = ordinal(r.place) + " of " + r.of + " in the race"; }   // a team, before its first player kicks off
+      else if (g.st === "pre" && r.hard) { f = (r.hard - 1) / 31; cls = " rank"; td.title = ordinal(r.hard) + " of 32 against " + r.pos + "s: 1st hardest, 32nd easiest"; }
       else if (g.st === "in") { f = +r.est_final > 0 ? Math.max(0, Math.min(1, +r.now / +r.est_final)) : 0; td.title = (+r.now).toFixed(1) + " of " + (+r.est_final).toFixed(1) + " predicted"; }
       else if (g.st === "post") {
         var pts = Math.max(0, +r.now), proj = Math.max(0, +r.pre || 0), whole = Math.max(pts, proj);
