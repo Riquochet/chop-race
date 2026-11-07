@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'cfbc50c0a6';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '04e0283400';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -10,6 +10,7 @@
 [hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
 :root{--chop-tag-blue-t:#2a62a6;--chop-tag-blue-b:rgba(42,98,166,.4);--chop-tag-blue-f:rgba(42,98,166,.08);--chop-tag-red-t:#a63a3a;--chop-tag-red-b:rgba(166,58,58,.4);--chop-tag-red-f:rgba(166,58,58,.08);--chop-tag-yellow-t:#86680a;--chop-tag-yellow-b:rgba(134,104,10,.4);--chop-tag-yellow-f:rgba(134,104,10,.08);--chop-tag-orange-t:#a85a12;--chop-tag-orange-b:rgba(168,90,18,.4);--chop-tag-orange-f:rgba(168,90,18,.08);--chop-rank-s:50%;--chop-rank-l:36%;--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
   --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
+  --chop-n-ARI:#B02A53;--chop-n-ATL:#D42A48;--chop-n-BAL:#9371FF;--chop-n-BUF:#2358E0;--chop-n-CAR:#1592CC;--chop-n-CHI:#F05700;--chop-n-CIN:#D96A00;--chop-n-CLE:#7E5530;--chop-n-DAL:#6E8FC0;--chop-n-DEN:#E25E00;--chop-n-DET:#0E90DC;--chop-n-GB:#279E4B;--chop-n-HOU:#D42A48;--chop-n-IND:#2358E0;--chop-n-JAX:#119889;--chop-n-KC:#D42046;--chop-n-LAC:#0091DB;--chop-n-LAR:#5F7FFF;--chop-n-LV:#7C8C99;--chop-n-MIA:#008F8A;--chop-n-MIN:#A45CFF;--chop-n-NE:#6F87C4;--chop-n-NO:#A67F2E;--chop-n-NYG:#3C5AE8;--chop-n-NYJ:#1E9A3A;--chop-n-PHI:#009988;--chop-n-PIT:#A38B00;--chop-n-SEA:#5C9A18;--chop-n-SF:#E0401A;--chop-n-TB:#E0651F;--chop-n-TEN:#3F9BE0;--chop-n-WAS:#B8325F;
   --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
   --chop-panel:#ffffff;--chop-future:rgba(120,120,140,.07);
 }
@@ -28,6 +29,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
 .chop-pt td.game,.chop-pt th:nth-last-child(2){text-align:left;white-space:normal;color:var(--chop-muted);font-size:.72rem;line-height:1.35}
 .chop-pt td.game .ln{display:block;white-space:nowrap}
+.chop-pt td.game.over{vertical-align:middle}
 /* the Players in a game section: group rows in its table, the By game / By team switch */
 .chop-pt tr.grp td{text-align:left;font-weight:700;color:var(--chop-fg);padding-top:12px;border-bottom:1px solid color-mix(in srgb,var(--chop-grid) 78%,var(--chop-fg))}
 .chop-pt tr.grp .sub{font-weight:400;color:var(--chop-muted)}
@@ -81,10 +83,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-t td{vertical-align:top}
 .chop-t td.nm{white-space:normal}
 .chop-t .slp{color:var(--chop-muted);font-weight:400}
-.chop-t td.prefinal,.chop-t td.prefinal .slp{color:var(--chop-muted);font-weight:400}   /* before kickoff Final is only a prediction */
+.chop-t td.prefinal,.chop-t td.prefinal .slp{color:var(--chop-muted);font-weight:400}   /* before kickoff Projected is only a prediction */
+.chop-t td.struck .n{text-decoration:line-through}      /* his game is over: what we predicted, crossed out */
 .chop-t td.final{font-weight:700}                       /* once he has kicked off, and through the actual final */
 .chop-t td.final .slp{color:inherit;font-weight:700}
-.chop-t .pregame{display:block;font-weight:300;color:var(--chop-muted);opacity:.7}   /* under Final once he has kicked off: the pregame prediction */
+.chop-t .pregame{display:block;font-weight:300;color:var(--chop-muted);opacity:.7}   /* under Projected during his game: the pregame prediction */
 .chop-t td.final .pregame .slp{color:var(--chop-muted);font-weight:300}
 .chop-pl{display:block;margin-left:15px;font-size:.72rem;font-weight:400;line-height:1.35;color:var(--chop-muted)}
 .chop-pl.st{color:var(--chop-fg)}
@@ -102,10 +105,12 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 @media (prefers-reduced-motion:reduce){.chop-live::before{animation:none}}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-tag-blue-t:#8fb3d9;--chop-tag-blue-b:rgba(143,179,217,.45);--chop-tag-blue-f:rgba(143,179,217,.1);--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
   --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
-  --chop-c10:#f2f2f7;--chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
+  --chop-c10:#f2f2f7;--chop-n-ARI:#C9305E;--chop-n-ATL:#E5304F;--chop-n-BAL:#9B7BFF;--chop-n-BUF:#2F6BFF;--chop-n-CAR:#1CA8E8;--chop-n-CHI:#FF7A2E;--chop-n-CIN:#FF8A1F;--chop-n-CLE:#B98A5E;--chop-n-DAL:#A3BBDD;--chop-n-DEN:#FF7A1A;--chop-n-DET:#19A0F0;--chop-n-GB:#2FBF5B;--chop-n-HOU:#E0314F;--chop-n-IND:#2F6BFF;--chop-n-JAX:#14B8A6;--chop-n-KC:#E8234A;--chop-n-LAC:#5CC8FF;--chop-n-LAR:#5F7FFF;--chop-n-LV:#C4CBD1;--chop-n-MIA:#00D1C7;--chop-n-MIN:#A45CFF;--chop-n-NE:#8C9FD0;--chop-n-NO:#D9BE85;--chop-n-NYG:#4F6FFF;--chop-n-NYJ:#2BC24A;--chop-n-PHI:#00A896;--chop-n-PIT:#FFD60A;--chop-n-SEA:#7ED321;--chop-n-SF:#FF5A2B;--chop-n-TB:#FF8A4D;--chop-n-TEN:#7CC4F5;--chop-n-WAS:#B8325F;
+  --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}}
 :root[data-theme="dark"]{color-scheme:dark;--chop-tag-blue-t:#8fb3d9;--chop-tag-blue-b:rgba(143,179,217,.45);--chop-tag-blue-f:rgba(143,179,217,.1);--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
   --chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;--chop-c10:#f2f2f7;
+  --chop-n-ARI:#C9305E;--chop-n-ATL:#E5304F;--chop-n-BAL:#9B7BFF;--chop-n-BUF:#2F6BFF;--chop-n-CAR:#1CA8E8;--chop-n-CHI:#FF7A2E;--chop-n-CIN:#FF8A1F;--chop-n-CLE:#B98A5E;--chop-n-DAL:#A3BBDD;--chop-n-DEN:#FF7A1A;--chop-n-DET:#19A0F0;--chop-n-GB:#2FBF5B;--chop-n-HOU:#E0314F;--chop-n-IND:#2F6BFF;--chop-n-JAX:#14B8A6;--chop-n-KC:#E8234A;--chop-n-LAC:#5CC8FF;--chop-n-LAR:#5F7FFF;--chop-n-LV:#C4CBD1;--chop-n-MIA:#00D1C7;--chop-n-MIN:#A45CFF;--chop-n-NE:#8C9FD0;--chop-n-NO:#D9BE85;--chop-n-NYG:#4F6FFF;--chop-n-NYJ:#2BC24A;--chop-n-PHI:#00A896;--chop-n-PIT:#FFD60A;--chop-n-SEA:#7ED321;--chop-n-SF:#FF5A2B;--chop-n-TB:#FF8A4D;--chop-n-TEN:#7CC4F5;--chop-n-WAS:#B8325F;
   --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
   --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
 .chop-h{font-size:1.25rem;line-height:1.25;margin:0 0 .25rem;text-wrap:balance}
@@ -219,22 +224,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       <div class="chop-chart" id="mine-chart"></div>
       <div class="chop-tw">
         <table class="chop-t chop-pt">
-          <thead><tr><th class="nm">Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th><th aria-label="Matchup rank, or points so far against the predicted final"></th></tr></thead>
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Projected • Sleeper</th><th>Game</th><th aria-label="Matchup rank, or points so far against the predicted final"></th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
     </section>
     <section id="sec-game" class="chop-sec">
-      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2">Players in a game</h2>
+      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2" id="game-title">Players in a game</h2>
         <span class="chop-seg" role="group" aria-label="Organize by"><button type="button" id="game-by-game">By game</button><button type="button" id="game-by-team">By team</button></span>
         <select id="game-group" aria-label="Show one game or team"></select></div>
         <button type="button" class="chop-reset" id="game-reset" hidden>Zoom out</button></div>
-      <p class="chop-none" id="game-none" hidden>Nobody is in a game right now.</p>
+      <p class="chop-none" id="game-none" hidden>No players have played yet.</p>
       <div id="game-body">
       <div class="chop-chart" id="game-chart"></div>
       <div class="chop-tw">
         <table class="chop-t chop-pt">
-          <thead><tr><th class="nm">Player</th><th>Now</th><th>Final • Sleeper</th><th>Game</th><th aria-label="Points so far against the predicted final"></th></tr></thead>
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Projected • Sleeper</th><th>Game</th><th aria-label="Points so far against the predicted final"></th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -509,7 +514,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     el.textContent = "";
     if (!d) { el.textContent = "—"; return; }
     var series = d.series, wins = d.wins, teams = d.teams, col = d.col, us = d.us;
-    var nowRow = wins.find(function (w) { return w.kind === "now"; }), nowX = nowRow ? +nowRow.x0 : 0;
+    var nowRow = wins.find(function (w) { return w.kind === "now"; }), nowX = nowRow ? +nowRow.x0 : d.noNow ? 1e9 : 0;
     var width = Math.max(300, el.clientWidth || 360), narrow = width < 560;
     var m = {l: 30, r: narrow ? 108 : 230, t: 10, b: narrow ? 42 : 42}, h = Math.max(narrow ? 430 : 470, d.minH || 0);
     var pw = width - m.l - m.r, ph = h - m.t - m.b;
@@ -824,7 +829,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   }
   // The Game column: when he plays (the chart's window name) and how hard the matchup is, or how much of his game is left. Never a score.
   function gameCell(r) {
-    var td = document.createElement("td"), g = r.game; td.className = "game";
+    var td = document.createElement("td"), g = r.game; td.className = "game" + (g && g.st === "post" ? " over" : "");
     function ln(text) { var l = document.createElement("span"); l.className = "ln"; l.textContent = text; td.appendChild(l); return l; }
     if (!g) return td;                                   // a bye shows as a tag under his name
     if (g.st === "pre") {
@@ -867,7 +872,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     td.appendChild(box);
     return td;
   }
-  // Out for the week, on a bye or a status that keeps him from playing, with nothing scored: no Now or Final numbers.
+  // Out for the week, on a bye or a status that keeps him from playing, with nothing scored: no Now or Projected numbers.
   function outThisWeek(r) {
     return !r.stats && !+r.now && ((!r.game && !!r.club) || ["Out", "IR", "PUP", "Sus", "NA"].indexOf(r.inj) >= 0);
   }
@@ -943,13 +948,18 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       tr.appendChild(who);
       var nowCell = document.createElement("td"), fin = document.createElement("td");
       if (!outThisWeek(r)) {
-        var numW = roomy() ? 5 : 4, played = r.game && r.game.st !== "pre";
-        nowCell.textContent = r.game && r.game.st === "pre" ? "-" : (+r.now).toFixed(1);    // no score until he has kicked off
-        ours(fin, r.est_final, r.est_sleeper, false, false, numW);
-        fin.className = played ? "final" : "prefinal";
-        if (played && r.pre != null) {                     // under it, what we and Sleeper predicted before the game
-          var was = document.createElement("span"); was.className = "pregame"; was.title = "Predicted before the game";
-          ours(was, r.pre, r.pre_sleeper, false, false, numW); fin.appendChild(was);
+        var numW = roomy() ? 5 : 4, gst = r.game && r.game.st;
+        nowCell.textContent = gst === "pre" ? "-" : (+r.now).toFixed(1);                    // no score until he has kicked off
+        if (gst === "post") {                              // over: his points in Now, bold; the pregame projection, struck through
+          nowCell.className = "final";
+          if (r.pre != null) { ours(fin, r.pre, r.pre_sleeper, false, false, numW); fin.className = "prefinal struck"; fin.title = "Predicted before the game"; }
+        } else {
+          ours(fin, r.est_final, r.est_sleeper, false, false, numW);
+          fin.className = gst === "in" ? "final" : "prefinal";
+          if (gst === "in" && r.pre != null) {             // under it, what we and Sleeper predicted before the game
+            var was = document.createElement("span"); was.className = "pregame"; was.title = "Predicted before the game";
+            ours(was, r.pre, r.pre_sleeper, false, false, numW); fin.appendChild(was);
+          }
         }
       }
       tr.appendChild(nowCell); tr.appendChild(fin);
@@ -968,13 +978,25 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   function breakable(s) {                         // phones: a very long team name may break, so the table fits
     return roomy() ? s : String(s).replace(/\S{13,}/g, function (w) { return w.replace(/(.{10})/g, "$1\u200b"); });
   }
-  // Every player in a game, in groups; each group {key, name, rows}. Games run in kickoff order, teams worst first, as in the team table.
+  // A player's line in Players in a game: his NFL team's color, bright when he starts, muted on the bench.
+  function clubColor(club, start) {
+    var c = club ? "var(--chop-n-" + club + ",var(--chop-muted))" : "var(--chop-muted)";
+    return start ? c : "color-mix(in srgb," + c + " 45%,var(--chop-bg))";
+  }
+  function pastWeek() { return !!(DOC && DOC.quiet) && Date.now() / 1000 >= +DOC.quiet; }   // Tuesday midnight: the week is over
+  // What Players in a game shows: whoever is in a game now; with no game on, everyone who has played this week, until the week is
+  // over; before the first kickoff, nobody. Each group {key, name, rows}. Games run in kickoff order, teams worst first, as in the team table.
   function gameGroups() {
-    var R = (DOC && DOC.rosters) || {}, by = ST.game.by, groups = {}, rank = {};
+    var R = (DOC && DOC.rosters) || {}, by = ST.game.by, groups = {}, rank = {}, seen = {};
     (DOC && DOC.teams || []).forEach(function (t) { rank[t.team] = +t.rank; });
     Object.keys(R).forEach(function (acct) {
+      R[acct].rows.forEach(function (r) { if (r.game && !outThisWeek(r)) seen[r.game.st] = 1; });
+    });
+    var want = seen["in"] ? "in" : seen.post && !pastWeek() ? "post" : null;
+    ST.game.mode = want === "in" ? "live" : want ? "summary" : "none";
+    Object.keys(R).forEach(function (acct) {
       R[acct].rows.forEach(function (r) {
-        if (!r.game || r.game.st !== "in" || outThisWeek(r)) return;
+        if (!r.game || r.game.st !== want || outThisWeek(r)) return;
         var g = gameName(r), key = by === "team" ? acct : g;
         (groups[key] = groups[key] || {key: key, name: by === "team" ? teamName(acct) : g, kick: r.game.kick, rows: []})
           .rows.push(Object.assign({}, r, {acct: acct, gameName: g, team: r.id}));
@@ -989,16 +1011,15 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     }).sort(by === "team" ? function (a, b) { return (rank[b.key] || 0) - (rank[a.key] || 0); }
                           : function (a, b) { return a.kick - b.kick || (a.name < b.name ? -1 : 1); });
   }
-  // The chart's data: only the game windows now under way, with x counted from the first of them.
+  // The chart's data: only the game windows these players played in, with x counted from the first of them.
   function gameRows(all) {
     var R = DOC.rosters, st = ST.game, one = all.find(function (g) { return g.key === st.group; }) || (all.length === 1 ? all[0] : null), groups = one ? [one] : all;
     var items = [], col = {}, name = {}, slot = {}, S = [];
-    groups.forEach(function (g, i) {
-      var c = st.by === "team" ? teamColor(g.key) : "var(--chop-c" + (i % 10) + ")";
-      g.color = c;
-      g.rows.forEach(function (r) { items.push(r); col[r.id] = c; name[r.id] = r.short; slot[r.id] = r.slot; });
+    groups.forEach(function (g) {
+      g.color = st.by === "team" ? teamColor(g.key) : null;
+      g.rows.forEach(function (r) { items.push(r); col[r.id] = clubColor(r.club, r.slot === "START"); name[r.id] = r.short; slot[r.id] = r.slot; });
     });
-    if (one) { var pcol = rosterColors(one.rows); one.rows.forEach(function (r) { col[r.id] = pcol[r.id]; }); }   // one group: tell its players apart
+    var summary = st.mode === "summary";
     // One game on the chart: its four quarters, by the game clock. More than one: real time, in 30-minute sections from the first kickoff.
     var names = {}; items.forEach(function (r) { names[r.gameName] = 1; });
     var only = Object.keys(names).length === 1 ? Object.keys(names)[0] : null;
@@ -1022,7 +1043,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       });
       shifted = [1, 2, 3, 4].map(function (q) { return {kind: "window", label: "Q" + q, short: "Q" + q, when: "", x0: (q - 1) * 15, x1: q * 15, kicks: []}; });
       if (nowM > 60) shifted.push({kind: "window", label: "OT", short: "OT", when: "", x0: 60, x1: Math.max(70, nowM), kicks: []});
-      shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: nowM, x1: nowM});
+      if (!summary) shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: nowM, x1: nowM});
       grid = [{x: 15}, {x: 30, strong: true}, {x: 45}].concat(nowM > 60 ? [{x: 60}] : []);
       floor = nowM > 60 ? Math.max(70, nowM) : 60; key = "game " + only;
     } else {
@@ -1032,7 +1053,14 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         (L.ax || []).concat(L.px || []).forEach(function (x) { if (x < lo) lo = x; if (x > hi) hi = x; });
       });
       if (!isFinite(lo) && now) lo = hi = +now.x0;
-      var wins = (DOC.windows || []).filter(function (w) { return w.kind === "window" && +w.x1 > lo && +w.x0 < hi - 1; });
+      // From the first window with one of these players to the last: on a Sunday, the early and late games together until the
+      // last early game ends, because a finished game's players have left the list by then.
+      var allWins = (DOC.windows || []).filter(function (w) { return w.kind === "window"; }), first = -1, last = -1;
+      allWins.forEach(function (w, i) {
+        // a played window opens at its first play, a moment after the kickoff
+        if (items.some(function (r) { return r.game.kick >= w.t0 - 900 && r.game.kick < w.t1; })) { if (first < 0) first = i; last = i; }
+      });
+      var wins = first < 0 ? allWins.filter(function (w) { return +w.x1 > lo && +w.x0 < hi - 1; }) : allWins.slice(first, last + 1);
       var base = wins.length ? +wins[0].x0 : lo;
       items.forEach(function (r) {
         var L = R[r.acct].lines[r.id] || {};
@@ -1042,27 +1070,31 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       shifted = wins.map(function (w) {
         return Object.assign({}, w, {x0: +w.x0 - base, x1: +w.x1 - base, kicks: (w.kicks || []).map(function (k) { return {x: k.x - base, t: k.t}; })});
       });
-      if (now) shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: +now.x0 - base, x1: +now.x0 - base});
+      if (now && !summary) shifted.push({kind: "now", label: "Now", short: "Now", when: "", x0: +now.x0 - base, x1: +now.x0 - base});
       var end = Math.max(hi - base, wins.length ? +wins[wins.length - 1].x1 - base : 0);   // 3 1/2 hours, or more when two windows overlap
-      floor = Math.max(210, Math.ceil(end / 30) * 30); grid = [];
-      for (var g = 30; g < floor; g += 30) grid.push(g % 60 ? {x: g} : {x: g, strong: true, label: g / 60 + "h"});
-      key = "real " + base;
+      if (summary) { floor = end; grid = null; key = "week " + base + " " + end; }     // the finished windows, by name, as on the other charts
+      else {
+        floor = Math.max(210, Math.ceil(end / 30) * 30); grid = [];
+        for (var g = 30; g < floor; g += 30) grid.push(g % 60 ? {x: g} : {x: g, strong: true, label: g / 60 + "h"});
+        key = "real " + base;
+      }
     }
     if (st.base !== key) { st.base = key; st.view = st.yview = null; }                                     // a different axis: the old zoom means nothing
     var crowd = items.length > 12;
     return {
-      series: S, wins: shifted, teams: items, col: col, us: null, name: name, rows: items, groups: groups, rangeOnly: true, noThin: true, grid: grid, xFloor: floor,
+      series: S, wins: shifted, teams: items, col: col, us: null, name: name, rows: items, groups: groups, rangeOnly: true, noThin: true, grid: grid, xFloor: floor, noNow: summary,
       minH: items.length * 12.5 + 70, tipMax: 14,
       width: function (t) { return slot[t] === "START" ? (crowd ? 2.2 : 4) : (crowd ? 1.2 : 2.5); }, bold: function () { return false; },
-      faint: function (t) { return slot[t] !== "START"; }, aria: "Points for every player in a game, scored and projected"
+      faint: function () { return false; }, aria: summary ? "Points for every player who has played this week" : "Points for every player in a game, scored and projected"
     };
   }
   function players(n) { return n + (n === 1 ? " player" : " players"); }
   // A header row in the table: tapping it picks all of its players, or drops them.
-  function groupRow(cls, label, sub, color, rows) {
+  function groupRow(cls, label, sub, color, rows, dotColor) {
     var head = document.createElement("tr"), td = document.createElement("td"), nm = document.createElement("span"), more = document.createElement("span");
     head.className = cls; td.colSpan = 5; nm.textContent = label; if (color) nm.style.color = color;
     more.className = "sub"; more.textContent = sub;
+    if (dotColor) { var key = document.createElement("span"); key.className = "chop-dot"; key.style.background = dotColor; key.style.marginRight = "5px"; td.appendChild(key); }
     td.appendChild(nm); td.appendChild(more); head.appendChild(td);
     head.addEventListener("click", function () {
       var ids = rows.map(function (r) { return r.id; }), all = ids.every(function (i) { return ST.game.sel.indexOf(i) >= 0; });
@@ -1075,11 +1107,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     tb.textContent = "";
     var byTeam = ST.game.by === "team";
     d.groups.forEach(function (g) {
-      tb.appendChild(groupRow("grp", breakable(g.name), byTeam ? " · " + players(g.rows.length) : " · " + g.rows[0].game.clock + " · " + players(g.rows.length), byTeam ? g.color : null, g.rows));
+      tb.appendChild(groupRow("grp", breakable(g.name), byTeam ? " · " + players(g.rows.length) : " · " + (g.rows[0].game.clock || "Done") + " · " + players(g.rows.length), byTeam ? g.color : null, g.rows));
       g.rows.forEach(function (r, i) {
         if (!byTeam && (!i || g.rows[i - 1].club !== r.club)) {      // by game: the game, then the NFL team he plays for
           var club = g.rows.filter(function (x) { return x.club === r.club; });
-          tb.appendChild(groupRow("grp club", r.club, " · " + players(club.length), null, club));
+          tb.appendChild(groupRow("grp club", r.club, " · " + players(club.length), null, club, clubColor(r.club, true)));
         }
         tb.appendChild(playerRow(r, d, ST.game, r.slot === "START" ? "" : "bench"));
       });
@@ -1107,6 +1139,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     if (st.group && !all.some(function (g) { return g.key === st.group; })) { st.group = null; st.view = st.yview = null; st.sel = []; }   // that game ended
     var live = {}; all.forEach(function (g) { g.rows.forEach(function (r) { live[r.id] = 1; }); });
     st.sel = st.sel.filter(function (i) { return live[i]; });
+    document.getElementById("game-title").textContent = st.mode === "summary" ? "Players who have played" : "Players in a game";
     document.getElementById("game-none").hidden = any;
     document.getElementById("game-body").hidden = !any;
     document.querySelector("#sec-game .chop-seg").hidden = !any;
@@ -1221,7 +1254,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var d = null;
         if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
         if (!d) d = await latest();
-        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; render(); } else drawStatus();     // never back to an older copy
+        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; render(); }                       // never back to an older copy
+        else { drawStatus(); if (ST.game.mode === "summary" && pastWeek()) renderGame(); }     // Tuesday midnight passed on an open page
         if (d.page && window.CHOP_PAGE && d.page !== window.CHOP_PAGE) newPage(d.page);
       } catch (e) { failed(); }
       timer = setTimeout(poll, nextDelay() * 1000);
