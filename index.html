@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2d02530831';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2deccff60a';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -182,7 +182,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   .chop-t .dot{margin:0 .1em}
   .chop-t .chop-pl .tagdot{display:none}               /* phones: a status tag gets its own line, no bullet after it */
   .chop-pl.pre .chop-tag{display:block;width:fit-content;margin-bottom:1px}
-  .chop-pl.pre .chop-tag.blue{display:inline-block;margin:0;padding:0 3px}
+  .chop-pl.pre .chop-tag.blue,.chop-pl.pre .chop-tag.atend{display:inline-block;margin:0;padding:0 3px}
   .chop-pl{margin-left:0;font-size:.67rem}
   .chop-meter{width:24px;margin-left:1px}
   .chop-pl.st .pt{white-space:normal;min-width:0}        /* a long passing line wraps rather than pushing the table wide */
@@ -933,17 +933,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       var sub = statLine(r), tag = r.stats ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
         var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
-        if (tag) line.appendChild(tag);
+        var onBye = !!tag && tag.textContent === "BYE";      // BYE closes the line; any other status opens it
+        if (tag && !onBye) line.appendChild(tag);
         var holder = line;
         if (r.stats) { holder = document.createElement("span"); holder.className = "parts"; line.appendChild(holder); }
         (sub ? sub.split(" · ") : []).forEach(function (part, k) {
-          if (!r.stats && (tag || k)) {                    // before a game: QUES • RB10 • 26% (74%)
+          if (!r.stats && ((tag && !onBye) || k)) {        // before a game: QUES • RB10 • 26% (74%)
             dot(line);
             if (!k) line.lastChild.classList.add("tagdot");
           }
           var chunk = document.createElement("span"); chunk.className = "pt"; chunk.textContent = part;
           holder.appendChild(chunk);
         });
+        if (onBye) {                                       // RB16 • 11% (90%) • BYE
+          if (sub) dot(line);
+          tag.classList.add("atend"); line.appendChild(tag);
+        }
         if (!r.stats && r.bye && r.game && r.game.st === "pre") {   // a bye still to come: a blue tag with its week
           if (sub) dot(line);                              // QB3 • 88% (98%) • 11
           var bye = document.createElement("span"); bye.className = "chop-tag blue"; bye.textContent = r.bye; bye.title = "Bye in week " + r.bye;
