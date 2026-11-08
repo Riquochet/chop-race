@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'e74f0c900c';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '5eac14323a';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -888,7 +888,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       else l.textContent = c;
       if (g.st === "in" && g.ball) td.appendChild(ballLine(g.ball));
     }
-    if (r.gameName) ln(r.gameName);
+    if (r.gameName && ST.game.by === "team") ln(r.gameName);   // Fantasy only: under NFL the group row already names the game
     return td;
   }
   // The untitled column: before kickoff a line from 1st (red) to 32nd (green) with a dot at this opponent's rank; in his
