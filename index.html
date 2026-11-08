@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '6f43771d87';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '650bc80a9d';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -79,7 +79,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-chart .rankband{fill:var(--chop-p-qb);opacity:.08}   /* Cushion: below the chop line */
 .chop-chart .lead{stroke-width:.8;opacity:.55}.chop-chart .lead.dim{opacity:.12}   /* from a line's end at Now to its name */
 .chop-chart .chopline{stroke:var(--chop-p-qb);stroke-width:1.2;opacity:.75}
-.chop-chart .chopline-l{fill:var(--chop-p-qb);font-size:10px}   /* the Game column: the quarter (blue) before the clock, DONE (gray) */
+.chop-chart .chopline-l{fill:var(--chop-muted);opacity:.75;font-size:10px}   /* the Game column: the quarter (blue) before the clock, DONE (gray) */
 /* paired numbers meet at a light bullet, so the bullets line up down the column */
 .chop-t{font-variant-numeric:tabular-nums}
 .chop-t .n{display:inline-block;text-align:right}
@@ -340,7 +340,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       plan.forEach(function (p) { S.push({team: p.team, x: x, pts: v[p.team] - cut, phase: "actual"}); });
       if (last) break;
     }
-    return Object.assign({}, d, {series: S, signed: true, zeroLabel: "Chop line", xMax: Math.max(end, 15), fmt: function (v) { return (v > 0.05 ? "+" : "") + v.toFixed(1); },
+    return Object.assign({}, d, {series: S, signed: true, zeroLabel: "Chop line", fmt: function (v) { return (v > 0.05 ? "+" : "") + v.toFixed(1); },
       widths: function (t) { return t === d.us ? {thick: 3.2, thin: 1.6, done: 0.8} : {thick: 2.2, thin: 1.1, done: 0.6}; },
       aria: "Each team's projected points above or below the chop line through the week"});
   }
@@ -651,7 +651,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       });
       if (d.signed && y(0) >= m.t && y(0) <= h - m.b) {
         gBack.append("line").attr("class", "chopline").attr("x1", m.l).attr("x2", width - m.r).attr("y1", y(0)).attr("y2", y(0));
-        gBack.append("text").attr("class", "ax chopline-l").attr("x", m.l + 4).attr("y", y(0) - 4).text(d.zeroLabel);
+        gBack.append("text").attr("class", "ax chopline-l").attr("x", width - m.r - 4).attr("y", y(0) - 4).attr("text-anchor", "end").text(d.zeroLabel);
       }
       (d.grid || []).forEach(function (g) {              // Players in a game: its sections
         var gx = x(g.x);
