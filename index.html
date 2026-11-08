@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '228a10d1c9';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'fbefd59610';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1059,15 +1059,14 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
           .rows.push(Object.assign({}, r, {acct: acct, gameName: g, team: r.id}));
       });
     });
-    // Fantasy: a lineup, QB, RBs, WRs, TE, FLEX, then the bench by the same positions; ties keep Sleeper's own lineup order
+    // A lineup: QB, RBs, WRs, TE, FLEX, then the bench by the same positions. Fantasy ties keep Sleeper's own lineup order
     var POS = {QB: 0, RB: 1, WR: 2, TE: 3}, at = {};
     Object.keys(DOC.rosters || {}).forEach(function (t) { (DOC.rosters[t].rows || []).forEach(function (r, i) { at[t + "/" + r.id] = i; }); });
     function place(r) { return (r.slot === "START" ? 0 : 10) + (r.slot === "START" && r.flex ? 4 : POS[r.pos] != null ? POS[r.pos] : 5); }
     function lineupOrder(a, b) { return place(a) - place(b) || (at[a.acct + "/" + a.id] || 0) - (at[b.acct + "/" + b.id] || 0); }
     return Object.keys(groups).map(function (k) {
-      groups[k].rows.sort(by === "team" ? lineupOrder : function (a, b) {   // NFL: within each NFL team, away team first, starters first, leaders on top
-        var club = (a.game.home ? 1 : 0) - (b.game.home ? 1 : 0);
-        return club || (a.slot === "START" ? 0 : 1) - (b.slot === "START" ? 0 : 1) || b.now - a.now;
+      groups[k].rows.sort(by === "team" ? lineupOrder : function (a, b) {   // NFL: away team first, then each NFL team as a lineup, leaders first on ties
+        return (a.game.home ? 1 : 0) - (b.game.home ? 1 : 0) || place(a) - place(b) || b.now - a.now;
       });
       return groups[k];
     }).sort(by === "team" ? function (a, b) { return (rank[b.key] || 0) - (rank[a.key] || 0); }
