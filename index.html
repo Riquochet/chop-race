@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c28c4feb0c';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '652fde7167';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -73,6 +73,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 @media (min-width:560px) and (max-width:999px){.chop-t .ball .b-s{display:none}.chop-t .ball .b-m{display:inline}}
 @media (min-width:1000px){.chop-t .ball .b-s{display:none}.chop-t .ball .b-l{display:inline}}
 .chop-pt tr.grp .chop-tag{margin-right:.35em;vertical-align:1px}
+.chop-t .tick{font-variant-numeric:tabular-nums}.chop-t .tick.stopped{opacity:.55}   /* the game clock: counting while it runs, dim while stopped */
 .chop-pt tr.grp .chop-tag.team{color:color-mix(in srgb,var(--tc) 80%,var(--chop-fg));border-color:color-mix(in srgb,var(--tc) 45%,transparent);background:color-mix(in srgb,var(--tc) 12%,transparent)}   /* who has the ball, dim in his team's color */
 .chop-pt tr.grp .clubs{white-space:nowrap;font-size:1.25em;vertical-align:-1px}   /* NFL game header: the game's name, larger */
 #sec-teams .chop-t td:first-child{box-shadow:inset 1.5px 0 0 var(--risk,transparent);padding-left:6px}   /* chop risk: red the projected chop, yellow in danger, green probably safe, blue no chance */
@@ -219,7 +220,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
     <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to how far each team's projected final sits above or below the chop line, halfway between the two lowest projections, through the week: above it is safe by that many points, below it (shaded red) is going out. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray DONE tag. Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, which counts down while the game clock is running and dims while it is stopped (worked out from the last play; it lines back up with ESPN every 15 seconds), and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray DONE tag. Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. NFL groups them by game, split into its two NFL teams; Fantasy groups them by fantasy team; or show just one. Lines are in each player's NFL team color, dimmer for bench players. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
@@ -948,6 +949,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var l = document.createElement("span"), c = String(g.clock || ""), m = /^(Q\d|OT) (.+)$/.exec(c), s2 = /^Start of (Q\d)$/.exec(c);
     function tag(text, color) { var t = document.createElement("span"); t.className = "chop-tag " + color; t.textContent = text; l.appendChild(t); }
     if (g.st !== "in") tag("DONE", "gray");
+    else if (m && g.clk) {                             // a live ESPN read: count down while the clock runs, dim while it is stopped
+      tag(m[1], "blue");
+      var tk = document.createElement("span"); tk.className = "tick" + (g.clk.run ? "" : " stopped"); tk._k = g.clk; tk.textContent = clockText(g.clk);
+      tk.title = g.clk.run ? "Clock running" : "Clock stopped"; l.appendChild(tk);
+    }
     else if (m) { tag(m[1], "blue"); l.appendChild(document.createTextNode(m[2])); }
     else if (s2) { tag(s2[1], "blue"); l.appendChild(document.createTextNode("15:00")); l.title = c; }
     else if (c === "Halftime") { tag("HALF", "blue"); l.title = c; }
@@ -1419,6 +1425,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     if ((per === 1 || per === 3) && zero) return "Start of Q" + (per + 1);
     return (per > 4 ? "OT" : "Q" + per) + " " + c;
   }
+  // ESPN's clock does not tick: it jumps after each play to where the clock stood. Whether it runs on from there depends on
+  // the play: a run, a caught pass or a sack keeps it running, unless the ball went out of bounds in the last 2 minutes of the
+  // half or the last 5 of the game; anything else (incompletion, timeout, score, kick, penalty, turnover, end of a quarter) stops it.
+  var CLOCK_SEEN = {};
+  function clockRuns(type, text, per, secs) {
+    if (!/^(Rush|Pass Reception|Sack|Fumble Recovery \(Own\))$/i.test(type || "")) return false;
+    var late = (per === 2 && secs <= 120) || (per >= 4 && secs <= 300);
+    return !(late && /out of bounds|\bob\b/i.test(text || ""));
+  }
+  function clockText(k) {                            // a counting clock's time now, never below 0:00
+    var left = Math.max(0, k.run ? k.secs - (Date.now() / 1000 - k.seen) : k.secs), m = Math.floor(left / 60), sec = Math.floor(left % 60);
+    return m + ":" + (sec < 10 ? "0" : "") + sec;
+  }
+  setInterval(function () {                          // every second: the counting clocks on screen
+    document.querySelectorAll(".chop-t .tick").forEach(function (n) { if (n._k) n.textContent = clockText(n._k); });
+  }, 1000);
   function fracLeft(st) {                            // chop_chart.frac_left: the share of a game still to play, from its clock
     var q = st.period || 1, mm = String(st.displayClock || "15:00").split(":");
     return Math.max(0, Math.min(1, q > 4 ? 0.05 : ((4 - q) * 15 + (+mm[0] || 0) + (+mm[1] || 0) / 60) / 60));
@@ -1433,6 +1455,10 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       }
       var clock = clockLabel(c.status), s = c.situation || {}, last = ((s.lastPlay || {}).type || {}).text || "";
       var pt = String(s.possessionText || ""), cut = pt.lastIndexOf(" "), side = pt.slice(0, Math.max(0, cut)), yd = pt.slice(cut + 1), down = s.down || 0;
+      var secs = +c.status.clock || 0, lp = s.lastPlay || {}, key = c.status.period + "|" + c.status.displayClock + "|" + (lp.id || last);
+      var seen = CLOCK_SEEN[e.id] && CLOCK_SEEN[e.id].key === key ? CLOCK_SEEN[e.id].t : Date.now() / 1000;   // when this clock reading first arrived
+      CLOCK_SEEN[e.id] = {key: key, t: seen};
+      var clk = /^(Q\d|OT) /.test(clock) ? {secs: secs, seen: seen, run: clockRuns(last, lp.text || "", c.status.period, secs)} : null;
       var kick = Object.keys(s).length && clock !== "Halftime" && last.indexOf("Touchdown") < 0 &&
             (KICK_NEXT.test(last) || (down < 1 && (!last || s.yardLine === 35 || s.yardLine === 65)));
       var pt0 = c.competitors.find(function (t) { return t.team.id === s.possession; }), poss = null;
@@ -1441,7 +1467,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         poss = {club: ESPN_TEAM[pab] || pab, yd: n, where: where, down: down, rz: where === "opp" && n <= 20, togo: String(s.shortDownDistanceText || "").indexOf("Goal") >= 0 ? "G" : s.distance};
       }
       c.competitors.forEach(function (t) {
-        var me = {st: "in", f: fracLeft(c.status), clock: clock}, ab = t.team.abbreviation;
+        var me = {st: "in", f: fracLeft(c.status), clock: clock, clk: clk}, ab = t.team.abbreviation;
         if (kick) me.kickoff = true; else if (poss) me.poss = poss;
         out[ESPN_TEAM[ab] || ab] = me;
       });
@@ -1462,7 +1488,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         if (g.st === "pre" && me.st === "in") { g.st = "in"; moved = true; }
         if (g.st === "in" && me.st === "post") { g.st = "post"; delete g.clock; delete g.poss; delete g.kickoff; moved = true; }
         if (g.st === "in" && me.st === "in") {
-          g.clock = me.clock;
+          g.clock = me.clock; if (me.clk) g.clk = me.clk; else delete g.clk;
           if (me.poss) g.poss = me.poss; else delete g.poss;
           if (me.kickoff) g.kickoff = true; else delete g.kickoff;
         }
