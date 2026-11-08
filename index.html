@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '53550013e2';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c28c4feb0c';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1595,7 +1595,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var d = null;
         if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
         if (!d) d = await latest();
-        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; applyLive(); render(); }          // never back to an older copy
+        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; applyLive(); render(); if (!LIVE) liveTick(); }   // never back to an older copy; first data: live reads at once
         else { drawStatus(); if (ST.game.mode === "summary" && pastWeek()) renderGame(); }     // Tuesday midnight passed on an open page
         if (d.page && window.CHOP_PAGE && d.page !== window.CHOP_PAGE) newPage(d.page);
       } catch (e) { failed(); }
