@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'f67a1f7c07';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '53550013e2';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1407,8 +1407,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   var lastW = 0;
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
   render();
-  // Between the minute data updates, the clock, down and yard line come straight from ESPN's scoreboard every 15 seconds while a
-  // game is on and the page is in view (ESPN allows browsers to read it; about 21 KB a read). Points stay on the minute updates.
+  // Between the minute data updates, every 15 seconds while a game is on and the page is in view, the page reads ESPN's scoreboard
+  // (clock, down, yard line, game state; about 21 KB) and Sleeper's live player stats (about 76 KB, cached 4 s at Sleeper, scored
+  // here with the league's own rules, so points match Sleeper's exactly). Lines on the charts stay on the minute updates.
   // The same rules as chop_chart.clock_label and game_info, so a minute update and a 15-second one always agree.
   var LIVE = null, liveTimer = 0, ESPN_TEAM = {WSH: "WAS", JAC: "JAX"};
   var KICK_NEXT = /extra point|two-point|two point|\bPAT\b|field goal good|safety/i;   // as chop_chart.KICK_NEXT
@@ -1418,10 +1419,18 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     if ((per === 1 || per === 3) && zero) return "Start of Q" + (per + 1);
     return (per > 4 ? "OT" : "Q" + per) + " " + c;
   }
-  function espnLive(sb) {                            // {Sleeper club: {clock, poss?, kickoff?}} for games in progress
+  function fracLeft(st) {                            // chop_chart.frac_left: the share of a game still to play, from its clock
+    var q = st.period || 1, mm = String(st.displayClock || "15:00").split(":");
+    return Math.max(0, Math.min(1, q > 4 ? 0.05 : ((4 - q) * 15 + (+mm[0] || 0) + (+mm[1] || 0) / 60) / 60));
+  }
+  function espnLive(sb) {                            // {Sleeper club: {st, f, clock?, poss?, kickoff?}} for every game this week
     var out = {};
     (sb.events || []).forEach(function (e) {
-      var c = e.competitions[0]; if (c.status.type.state !== "in") return;
+      var c = e.competitions[0], state = c.status.type.state;
+      if (state !== "in") {
+        c.competitors.forEach(function (t) { var ab = t.team.abbreviation; out[ESPN_TEAM[ab] || ab] = {st: state, f: state === "pre" ? 1 : 0}; });
+        return;
+      }
       var clock = clockLabel(c.status), s = c.situation || {}, last = ((s.lastPlay || {}).type || {}).text || "";
       var pt = String(s.possessionText || ""), cut = pt.lastIndexOf(" "), side = pt.slice(0, Math.max(0, cut)), yd = pt.slice(cut + 1), down = s.down || 0;
       var kick = Object.keys(s).length && clock !== "Halftime" && last.indexOf("Touchdown") < 0 &&
@@ -1432,44 +1441,126 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         poss = {club: ESPN_TEAM[pab] || pab, yd: n, where: where, down: down, rz: where === "opp" && n <= 20, togo: String(s.shortDownDistanceText || "").indexOf("Goal") >= 0 ? "G" : s.distance};
       }
       c.competitors.forEach(function (t) {
-        var me = {clock: clock}, ab = t.team.abbreviation;
+        var me = {st: "in", f: fracLeft(c.status), clock: clock}, ab = t.team.abbreviation;
         if (kick) me.kickoff = true; else if (poss) me.poss = poss;
         out[ESPN_TEAM[ab] || ab] = me;
       });
     });
     return out;
   }
-  // Lay the latest ESPN read over the doc's games in progress, when it is newer than the doc. True if anything was laid on.
+  // Lay the latest 15-second reads over the minute data while they are fresh (under 45 s old): ESPN's game state, clock and ball,
+  // and Sleeper's live stats scored with the league's rules. Then Now, Final, the bars, each team's totals, Chop% and the order
+  // are worked out again by the same rules as chop_chart (remaining, pace, first_quarter_green, chop_odds), always from our
+  // numbers; Sleeper's appear only as the second number. Returns "moved" when a player started or finished a game, else true/false.
   function applyLive() {
-    if (!DOC || !LIVE || LIVE.t <= +DOC.builtAt) return false;
-    var any = false;
+    if (!DOC || !LIVE || Date.now() / 1000 - LIVE.t > 45) return false;
+    var moved = false, any = false, sc = DOC.scoring, stats = LIVE.stats;
     Object.keys(DOC.rosters || {}).forEach(function (k) {
       (DOC.rosters[k].rows || []).forEach(function (r) {
-        var g = r.game, me = g && g.st === "in" && LIVE.teams[r.club];
+        var g = r.game, me = g && LIVE.teams[r.club];
         if (!me) return;
-        g.clock = me.clock; any = true;
-        if (me.poss) g.poss = me.poss; else delete g.poss;
-        if (me.kickoff) g.kickoff = true; else delete g.kickoff;
+        if (g.st === "pre" && me.st === "in") { g.st = "in"; moved = true; }
+        if (g.st === "in" && me.st === "post") { g.st = "post"; delete g.clock; delete g.poss; delete g.kickoff; moved = true; }
+        if (g.st === "in" && me.st === "in") {
+          g.clock = me.clock;
+          if (me.poss) g.poss = me.poss; else delete g.poss;
+          if (me.kickoff) g.kickoff = true; else delete g.kickoff;
+        }
+        any = true;
+        if (g.st === "pre") return;
+        var sv = stats && sc && stats[r.id];
+        if (sv) { r.now = round1(scorePts(sv, sc)); var line = statText(sv); if (line) r.stats = line; }
+        var out = r.inj === "Out" || r.inj === "IR", f = g.st === "in" ? me.f : 0, now = +r.now || 0;
+        var ro = out ? 0 : remainingPts(now, f, +r.base || 0), rs = out ? 0 : remainingPts(now, f, +r.base_sleeper || 0);
+        r._f = f; r.est_final = round1(now + ro); r.est_sleeper = round1(now + rs);
+        r.pace = g.st === "in" ? firstQuarterGreen(paceOf(now, now + ro, +r.pre || 0, f), f) : paceOf(now, now, +r.pre || 0, 0);
       });
     });
-    return any;
+    if (any && sc && stats) liveTeams();
+    return moved ? "moved" : any;
   }
-  // Redraw only the Game cells and the game group rows: the charts and everything else wait for the minute update.
-  function liveRefresh() {
-    document.querySelectorAll(".chop-pt tr[data-key]").forEach(function (tr) {
-      var r = tr._r, old = tr.children[3];
-      if (r && r.game && r.game.st === "in" && old && old.classList.contains("game")) tr.replaceChild(gameCell(r), old);
+  function round1(v) { return Math.round(v * 10) / 10; }
+  function scorePts(st, sc) { var p = 0; for (var k in sc) if (st[k]) p += st[k] * sc[k]; return p; }
+  function paceOf(now, fin, base, left) {            // chop_chart.pace
+    if (now > base) return "blue";
+    if (fin >= base) return "green";
+    return fin >= base - 1 || left > 1 - 7.5 / 60 ? "yellow" : "red";
+  }
+  function firstQuarterGreen(c, left) { return c === "blue" || left <= 0.75 ? c : "green"; }   // chop_chart.first_quarter_green
+  function statText(s) {                             // chop_chart.stat_line
+    function n(k) { return Math.trunc(+s[k] || 0); }
+    function count(v, one, many) { return v + " " + (v === 1 ? one : many || one + "s"); }
+    function tail(td) { return td ? ", " + td + " TD" : ""; }
+    var parts = [];
+    if (n("pass_att")) parts.push(n("pass_cmp") + "/" + n("pass_att") + " passing, " + n("pass_yd") + " yds" + tail(n("pass_td")) + (n("pass_int") ? ", " + n("pass_int") + " INT" : ""));
+    if (n("rush_att")) parts.push(count(n("rush_att"), "carry", "carries") + ", " + n("rush_yd") + " yds" + tail(n("rush_td")));
+    if (n("rec") || n("rec_tgt")) parts.push(count(n("rec"), "catch", "catches") + ", " + n("rec_yd") + " yds" + tail(n("rec_td")) + (n("rec_tgt") ? " (" + count(n("rec_tgt"), "target") + ")" : ""));
+    var fd = n("rush_fd") + n("rec_fd"); if (fd) parts.push(count(fd, "first down"));
+    if (n("fum_lost")) parts.push(count(n("fum_lost"), "fumble") + " lost");
+    if (n("off_snp") && n("tm_off_snp")) parts.push(Math.round(100 * n("off_snp") / n("tm_off_snp")) + "% of snaps");
+    return parts.join(" · ");
+  }
+  // Each team from its starters, as chop_chart.build does: Now, Final both ways, Left/In/Done, its state and pace against its
+  // locked Projected, then Chop% (20,000 simulated finishes, the same spread) and the order by our Final.
+  function liveTeams() {
+    var T = DOC.teams || [];
+    T.forEach(function (t) {
+      var R = DOC.rosters[t.team]; if (!R) return;
+      var ids = (R.rows || []).filter(function (r) { return r.slot === "START"; });
+      if (!ids.length) return;
+      var cur = 0, eo = 0, es = 0, v = 0, c = {left: 0, "in": 0, done: 0}, begun = false;
+      ids.forEach(function (r) {
+        var g = r.game, now = +r.now || 0; cur += now;
+        if (g && g.st !== "pre") begun = true;
+        if (!g || g.st === "post" || r.inj === "Out" || r.inj === "IR") { c.done++; return; }
+        var f = g.st === "in" ? (r._f != null ? r._f : 1) : 1;
+        c[g.st === "in" ? "in" : "left"]++;
+        eo += remainingPts(now, f, +r.base || 0); es += remainingPts(now, f, +r.base_sleeper || 0); v += f;
+      });
+      t.now = round1(cur); t.est_final = round1(cur + eo); t.est_sleeper = round1(cur + es); t.count = c; t._var = v;
+      t.st = !c.left && !c["in"] ? "post" : begun ? "in" : "pre";
+      if (t.pre != null) t.pace = paceOf(cur, t.st === "post" ? cur : cur + eo, +t.pre, v / ids.length);
     });
-    document.querySelectorAll(".chop-pt tr.grp").forEach(function (h) { var sub = h._sub && h.querySelector(".sub"); if (sub) { sub.textContent = ""; sub.appendChild(h._sub()); } });
+    var co = chopOdds(T, "est_final"), cs = chopOdds(T, "est_sleeper");
+    T.forEach(function (t) { t.chop = round1(co[t.team]); t.chop_sleeper = round1(cs[t.team]); });
+    T.slice().sort(function (a, b) { return b.est_final - a.est_final; }).forEach(function (t, i) { t.rank = i + 1; });
+  }
+  function chopOdds(T, key) {                        // chop_chart.chop_odds: the share of simulated finishes each team ends last
+    var n = 20000, out = {}, seed = 7;
+    function rand() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x ^= x + Math.imul(x ^ x >>> 7, 61 | x); return ((x ^ x >>> 14) >>> 0) / 4294967296; }
+    function gauss() { var u = 1 - rand(), w = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * w); }
+    T.forEach(function (t) { out[t.team] = 0; });
+    for (var i = 0; i < n; i++) {
+      var lo = Infinity, who = null;
+      T.forEach(function (t) { var v = +t[key] + 6.5 * Math.sqrt(t._var != null ? t._var : 0) * gauss(); if (v < lo) { lo = v; who = t.team; } });
+      out[who]++;
+    }
+    Object.keys(out).forEach(function (k) { out[k] = 100 * out[k] / n; });
+    return out;
+  }
+  // Redraw the tables with the live numbers; the charts and their lines wait for the minute data. A game starting or ending
+  // changes who is in Players in a game, so then that whole section is redrawn.
+  function liveRefresh(moved) {
+    drawTable(document.querySelector("#sec-teams .chop-t tbody"));
+    var md = mineRows(); if (md) drawMineTable(document.querySelector("#sec-mine .chop-t tbody"), md);
+    if (moved === "moved") renderGame();
+    else { var all = gameGroups(); if (all.length) drawGameTable(document.querySelector("#sec-game .chop-t tbody"), gameRows(all)); }
   }
   async function liveTick() {
     clearTimeout(liveTimer);
-    var on = DOC && Object.keys(DOC.rosters || {}).some(function (k) { return (DOC.rosters[k].rows || []).some(function (r) { return r.game && r.game.st === "in"; }); });
+    var on = DOC && (DOC.on || DOC.live) || DOC && Object.keys(DOC.rosters || {}).some(function (k) { return (DOC.rosters[k].rows || []).some(function (r) { return r.game && r.game.st === "in"; }); });
     if (on && !document.hidden) {
       try {
         var u = window.CHOP_ESPN_URL || "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&dates=2026&week=" + DOC.week;
-        var r = await fetch(u, {cache: "no-store"});
-        if (r.ok) { LIVE = {t: Date.now() / 1000, teams: espnLive(await r.json())}; if (applyLive()) liveRefresh(); }
+        var su = window.CHOP_STATS_URL || "https://api.sleeper.com/stats/nfl/2026/" + DOC.week + "?season_type=regular&position%5B%5D=QB&position%5B%5D=RB&position%5B%5D=WR&position%5B%5D=TE";
+        var got = await Promise.all([fetch(u, {cache: "no-store"}).then(function (x) { return x.ok ? x.json() : null; }).catch(function () { return null; }),
+          DOC.scoring ? fetch(su, {cache: "no-store"}).then(function (x) { return x.ok ? x.json() : null; }).catch(function () { return null; }) : null]);
+        if (got[0]) {
+          var stats = null;
+          if (got[1]) { stats = {}; got[1].forEach(function (row) { if (row.stats) stats[row.player_id] = row.stats; }); }
+          LIVE = {t: Date.now() / 1000, teams: espnLive(got[0]), stats: stats};
+          var res = applyLive(); if (res) liveRefresh(res);
+        }
       } catch (e) {}
     }
     liveTimer = setTimeout(liveTick, 15000);
