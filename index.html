@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '8765a65e10';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c884f1569d';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1022,7 +1022,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       tr.appendChild(nowCell); tr.appendChild(fin);
       tr.appendChild(gameCell(r));
       tr.appendChild(meterCell(r));
-      tr.setAttribute("data-key", r.id); tr.style.setProperty("--row", d.col[r.id]);
+      tr.setAttribute("data-key", r.id); tr.style.setProperty("--row", d.col[r.id]); tr._r = r;   // _r: liveRefresh() redraws his Game cell
       tr.addEventListener("click", function () { pick(st, r.id); });
       return tr;
   }
@@ -1164,7 +1164,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     tb.textContent = "";
     var byTeam = ST.game.by === "team";
     d.groups.forEach(function (g) {
-      tb.appendChild(groupRow("grp", breakable(g.name), byTeam ? " · " + players(g.rows.length) : " · " + (g.rows[0].game.clock || "Done") + " · " + players(g.rows.length), byTeam ? g.color : null, g.rows));
+      var gsub = function (g) { return byTeam ? " · " + players(g.rows.length) : " · " + (g.rows[0].game.clock || "Done") + " · " + players(g.rows.length); };
+      var gh = groupRow("grp", breakable(g.name), gsub(g), byTeam ? g.color : null, g.rows);
+      gh._sub = gsub.bind(null, g); tb.appendChild(gh);                                   // _sub: liveRefresh() updates the clock
       g.rows.forEach(function (r, i) {
         if (!byTeam && (!i || g.rows[i - 1].club !== r.club)) {      // by game: the game, then the NFL team he plays for
           var club = g.rows.filter(function (x) { return x.club === r.club; });
@@ -1282,6 +1284,72 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   var lastW = 0;
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; render(); } });
   render();
+  // Between the minute data updates, the clock, down and yard line come straight from ESPN's scoreboard every 15 seconds while a
+  // game is on and the page is in view (ESPN allows browsers to read it; about 21 KB a read). Points stay on the minute updates.
+  // The same rules as chop_chart.clock_label and game_info, so a minute update and a 15-second one always agree.
+  var LIVE = null, liveTimer = 0, ESPN_TEAM = {WSH: "WAS", JAC: "JAX"};
+  var KICK_NEXT = /extra point|two-point|two point|\bPAT\b|field goal good|safety/i;   // as chop_chart.KICK_NEXT
+  function clockLabel(st) {
+    var per = st.period || 1, c = st.displayClock || "", zero = c === "0:00" || c === "0:0";
+    if ((st.type || {}).name === "STATUS_HALFTIME" || (per === 2 && zero)) return "Halftime";
+    if ((per === 1 || per === 3) && zero) return "Start of Q" + (per + 1);
+    return (per > 4 ? "OT" : "Q" + per) + " " + c;
+  }
+  function espnLive(sb) {                            // {Sleeper club: {clock, ball?, kickoff?}} for games in progress
+    var out = {};
+    (sb.events || []).forEach(function (e) {
+      var c = e.competitions[0]; if (c.status.type.state !== "in") return;
+      var clock = clockLabel(c.status), s = c.situation || {}, last = ((s.lastPlay || {}).type || {}).text || "";
+      var pt = String(s.possessionText || ""), cut = pt.lastIndexOf(" "), side = pt.slice(0, Math.max(0, cut)), yd = pt.slice(cut + 1), down = s.down || 0;
+      c.competitors.forEach(function (t) {
+        var me = {clock: clock}, ab = t.team.abbreviation;
+        if (Object.keys(s).length && clock !== "Halftime" && last.indexOf("Touchdown") < 0 &&
+            (KICK_NEXT.test(last) || (down < 1 && (!last || s.yardLine === 35 || s.yardLine === 65)))) me.kickoff = true;
+        else if (s.possession === t.team.id && down >= 1 && down <= 4 && /^\d+$/.test(yd) && clock !== "Halftime") {
+          var n = +yd, where = n === 50 ? "mid" : side === ab ? "own" : "opp";
+          me.ball = {yd: n, where: where, down: down, rz: where === "opp" && n <= 20, togo: String(s.shortDownDistanceText || "").indexOf("Goal") >= 0 ? "G" : s.distance};
+        }
+        out[ESPN_TEAM[ab] || ab] = me;
+      });
+    });
+    return out;
+  }
+  // Lay the latest ESPN read over the doc's games in progress, when it is newer than the doc. True if anything was laid on.
+  function applyLive() {
+    if (!DOC || !LIVE || LIVE.t <= +DOC.builtAt) return false;
+    var any = false;
+    Object.keys(DOC.rosters || {}).forEach(function (k) {
+      (DOC.rosters[k].rows || []).forEach(function (r) {
+        var g = r.game, me = g && g.st === "in" && LIVE.teams[r.club];
+        if (!me) return;
+        g.clock = me.clock; any = true;
+        if (me.ball) g.ball = me.ball; else delete g.ball;
+        if (me.kickoff) g.kickoff = true; else delete g.kickoff;
+      });
+    });
+    return any;
+  }
+  // Redraw only the Game cells and the game group rows: the charts and everything else wait for the minute update.
+  function liveRefresh() {
+    document.querySelectorAll(".chop-pt tr[data-key]").forEach(function (tr) {
+      var r = tr._r, old = tr.children[3];
+      if (r && r.game && r.game.st === "in" && old && old.classList.contains("game")) tr.replaceChild(gameCell(r), old);
+    });
+    document.querySelectorAll(".chop-pt tr.grp").forEach(function (h) { var sub = h._sub && h.querySelector(".sub"); if (sub) sub.textContent = h._sub(); });
+  }
+  async function liveTick() {
+    clearTimeout(liveTimer);
+    var on = DOC && Object.keys(DOC.rosters || {}).some(function (k) { return (DOC.rosters[k].rows || []).some(function (r) { return r.game && r.game.st === "in"; }); });
+    if (on && !document.hidden) {
+      try {
+        var u = window.CHOP_ESPN_URL || "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&dates=2026&week=" + DOC.week;
+        var r = await fetch(u, {cache: "no-store"});
+        if (r.ok) { LIVE = {t: Date.now() / 1000, teams: espnLive(await r.json())}; if (applyLive()) liveRefresh(); }
+      } catch (e) {}
+    }
+    liveTimer = setTimeout(liveTick, 15000);
+  }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) liveTick(); });
   // Data: live_doc.json next to the page (the score recorder pushes it every minute during games),
   // fetched on nextDelay()'s timer: every minute while live and just before a kickoff, else every 2 minutes.
   // The page redraws in place; it reloads itself only when live_doc says a newer page is on GitHub.
@@ -1311,7 +1379,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var d = null;
         if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
         if (!d) d = await latest();
-        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; render(); }                       // never back to an older copy
+        if (+d.builtAt > built) { built = +d.builtAt; DOC = d; applyLive(); render(); }          // never back to an older copy
         else { drawStatus(); if (ST.game.mode === "summary" && pastWeek()) renderGame(); }     // Tuesday midnight passed on an open page
         if (d.page && window.CHOP_PAGE && d.page !== window.CHOP_PAGE) newPage(d.page);
       } catch (e) { failed(); }
@@ -1340,7 +1408,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       setTimeout(function () { btn.textContent = "Update"; btn.disabled = false; }, 4000);
     }
     btn.addEventListener("click", pull);
-    poll();
+    poll(); liveTick();
     document.addEventListener("visibilitychange", function () { if (!document.hidden) poll(); });   // a phone waking up
   })();
 })();
