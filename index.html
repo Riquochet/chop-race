@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c188d60887';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '733e32006d';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -740,9 +740,22 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         .map(function (t) { var v = d.rangeOnly ? +t.est_final : valAt(full[t.team] || [], b), yd = y.domain(), lo = Math.min(yd[0], yd[1]), hi = Math.max(yd[0], yd[1]);
           return {team: t.team, v: v, y: y(Math.max(lo, Math.min(hi, v)))}; })
         .sort(function (p, q) { return p.y - q.y; });
-      for (var i = 1; i < ends.length; i++) if (ends[i].y < ends[i - 1].y + 12) ends[i].y = ends[i - 1].y + 12;
-      var over = ends.length ? ends[ends.length - 1].y - (h - m.b + 4) : 0;
-      if (over > 0) ends.forEach(function (e) { e.y -= over; });
+      // Names at the right edge. A busy chart (Players in a game between games: 80 lines) names only lines it can name in place;
+      // every line still reads in the readout.
+      var lt = m.t + 4, lb = h - m.b + 4;
+      if (ends.length > 20) {                            // busy: each name at its line or within 8 px, picked first, then the highest; no room, no name
+        var placed = [];
+        ends.slice().sort(function (p, q) { return (st.sel.indexOf(q.team) >= 0) - (st.sel.indexOf(p.team) >= 0) || q.v - p.v; }).forEach(function (e) {
+          for (var k = 0; k <= 8; k++) for (var sgn = -1; sgn <= 1; sgn += 2) {
+            var yy = Math.max(lt, Math.min(lb, e.y + sgn * k));
+            if (placed.every(function (p) { return Math.abs(p.y - yy) >= 12; })) { e.y = yy; placed.push(e); return; }
+          }
+        });
+        ends = placed.sort(function (p, q) { return p.y - q.y; });
+      } else {                                           // a few names: all of them, 12 px apart, spread down and back up inside the chart
+        for (var i = 0; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, i ? ends[i - 1].y + 12 : lt);
+        for (i = ends.length - 1; i >= 0; i--) ends[i].y = Math.min(ends[i].y, i < ends.length - 1 ? ends[i + 1].y - 12 : lb);
+      }
       ends.forEach(function (e) {                         // a thin lead from where the line ends on screen to its name, when they are apart
         var tr = full[e.team] || [], lx = tr.length ? Math.min(tr[tr.length - 1].x, b) : null;
         if (d.rangeOnly || lx == null || lx < a) return;
