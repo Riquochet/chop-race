@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '31b8d7d46d';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'c188d60887';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -982,6 +982,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var td = document.createElement("td"), g = r.game; td.className = "game" + (g && g.st === "post" ? " over" : "");
     function ln(text) { var l = document.createElement("span"); l.className = "ln"; l.textContent = text; td.appendChild(l); return l; }
     if (!g) return td;                                   // a bye shows as a tag under his name
+    if (g.st !== "pre" && outThisWeek(r)) return td;     // ruled out and never played: no clock, no DONE (his status tag says why)
     if (g.st === "pre") {
       ln(windowName(g.kick)).title = clock(g.kick);
       var opp = ln(g.home ? "vs " : "at "), who = document.createElement("span");
