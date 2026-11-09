@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'f866694859';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '3eab112fb8';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -115,6 +115,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-sc .nm{width:124px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chop-sc .trk{position:relative;flex:1;height:8px;border-radius:4px;background:color-mix(in srgb,var(--chop-grid) 60%,transparent)}
 .chop-sc .bar{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.chop-sc .gl{position:absolute;inset:0;pointer-events:none;border-radius:4px}
 .chop-sc .tk{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:var(--chop-fg);box-shadow:0 0 0 1px var(--chop-bg)}
 .chop-sc .val{width:34px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
 .chop-sc .row.dim{opacity:.25}
@@ -1557,6 +1558,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var trk = document.createElement("span"); trk.className = "trk";
         var bar = document.createElement("span"); bar.className = "bar"; bar.style.width = Math.max(0, +r.now || 0) / top * 100 + "%";
         bar.style.background = PACE[r.pace] || "var(--chop-muted)"; trk.appendChild(bar);
+        var gl = document.createElement("span"); gl.className = "gl"; trk.appendChild(gl);   // the 1 / 5 / 10 point lines, over the bar
         if (r.pre != null) { var tk = document.createElement("span"); tk.className = "tk"; tk.style.left = "calc(" + (+r.pre / top * 100) + "% - 1px)"; trk.appendChild(tk); }
         var val = document.createElement("span"); val.className = "val"; val.textContent = (+r.now || 0).toFixed(1);
         row.title = r.label + ": " + (+r.now || 0).toFixed(1) + (r.pre != null ? ", projected " + (+r.pre).toFixed(1) : "") + (r.acct ? " · " + teamName(r.acct, true) : "");
@@ -1566,6 +1568,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       });
     });
     el.appendChild(box);
+    // point lines: every 10 brighter, every 5 dim, every 1 dimmer (left out when a point is under 4 px wide)
+    var tw = (box.querySelector(".trk") || {}).clientWidth || 0, unit = 100 / top;
+    function lines(step, alpha) { return "repeating-linear-gradient(to right,color-mix(in srgb,var(--chop-fg) " + alpha + "%,transparent) 0 1px,transparent 1px " + (unit * step) + "%)"; }
+    var layers = [lines(10, 45), lines(5, 22)]; if (tw / top >= 4) layers.push(lines(1, 10));
+    box.querySelectorAll(".gl").forEach(function (g) { g.style.backgroundImage = layers.join(","); });
     st.el = el; st.dismiss = function () {};
     style(st);
   }
