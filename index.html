@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '81417db565';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '637a350019';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -84,6 +84,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   box-shadow:inset var(--rw) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}   /* chop risk: red the projected chop, yellow in danger, green probably safe, blue no chance */
 .chop-redact{margin:.3rem 0 .25rem;padding:8px 10px;border:1px solid var(--chop-grid);border-radius:8px;font-size:.78rem}   /* the Redact picker, inside its roll-down */
 .chop-redact .chop-seg{margin:0 0 8px}
+.chop-redact-d summary.shut{color:var(--chop-p-qb)}.chop-redact-d summary.open{color:var(--chop-p-wr0)}   /* Redacted: red; Unredacted: green */
 .chop-redact .chop-seg button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);padding:5px 10px;cursor:pointer;border-radius:0}
 .chop-redact .chop-seg button:first-child{border-radius:6px 0 0 6px;border-right:0}
 .chop-redact .chop-seg button:last-child{border-radius:0 6px 6px 0}
@@ -149,8 +150,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-pickrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .chop-zoombar select:focus-visible,.chop-zoombar button:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
 .chop-state{color:var(--chop-muted);font-size:.875rem;padding:48px 0;text-align:center}
-.chop-status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8125rem;color:var(--chop-muted);margin:0 0 .5rem}
-.chop-sl{line-height:1.7}.chop-sl > *{vertical-align:middle}.chop-sl .chop-week,.chop-sl .chop-live{margin-right:6px}   /* Week 9, LIVE and the status read as one line */
+.chop-status{font-size:.8125rem;color:var(--chop-muted);margin:0 0 .5rem}
+.chop-status .l1{display:flex;flex-wrap:wrap;align-items:center;gap:8px}   /* Week 9 · LIVE · Game on · Update */
+.chop-status .l2{margin-top:3px}                                              /* next kickoff · last update */
 .chop-live{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#d62728;border-radius:4px;padding:2px 7px}
 .chop-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:chop-pulse 1.6s ease-in-out infinite}
 @keyframes chop-pulse{50%{opacity:.25}}
@@ -247,7 +249,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 </style>
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
-  <p class="chop-status"><span class="chop-sl"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span></span><button type="button" class="chop-update" id="chop-update">Update</button></p>
+  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div></div>
   <details class="chop-help chop-redact-d" id="chop-redact-d"><summary id="chop-redact-sum">Redact</summary><div class="chop-redact" id="chop-redact-panel"></div></details>
   <article class="chop-news" id="chop-news" hidden aria-live="polite">
     <h2 class="chop-news-h" id="news-head"></h2>
@@ -604,16 +606,17 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     }, 1000);
   }
   function drawStatus() {
-    var live = isLive(), now = Date.now() / 1000, parts = [];
+    var live = isLive(), now = Date.now() / 1000, parts = [], state = "";
     document.getElementById("chop-live").hidden = !live;
     var wk = document.getElementById("chop-week"); wk.hidden = !(DOC && DOC.week); if (DOC && DOC.week) wk.textContent = "Week " + DOC.week;
     if (DOC) {
       var soon = !live && DOC.next && DOC.next - now < 300;    // checking every minute until ESPN says the game started
-      parts.push(live && DOC.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on");
+      var state = live && DOC.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on";
       if (!live && !soon && DOC.next) parts.push("next kickoff " + clock(DOC.next));
       if (DOC.builtAt) parts.push("last update " + clock(DOC.builtAt));
     }
-    document.getElementById("chop-when").textContent = parts.join(" · ") || "—";
+    document.getElementById("chop-when").textContent = state || "—";
+    document.getElementById("chop-when2").textContent = parts.join(" · ");
     if (DOC && DOC.teams) document.getElementById("chop-alive").textContent = String(DOC.teams.length);
   }
   // When to look again: every minute during a game and from 5 minutes before a kickoff, else every 2 minutes, so a roster
@@ -1269,7 +1272,20 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   function drawRedact() {
     var n = Object.keys(REDACT).filter(function (c) { return REDACT[c]; }).length;
     if (!n) REVEAL = false;
-    document.getElementById("chop-redact-sum").textContent = "Redact" + (n ? " (" + n + (REVEAL ? ", showing" : "") + ")" : "");
+    var sum = document.getElementById("chop-redact-sum"); sum.textContent = ""; sum.className = n ? (REVEAL ? "open" : "shut") : "";
+    if (!n) sum.textContent = "Redact";
+    else {                                             // "Redacted: NE, SF · OPP GB, LV" (red), "Unredacted: …" (green)
+      var mine = Object.keys(REDACT).filter(function (c) { return REDACT[c]; }).sort(), opp = {};
+      Object.keys((DOC && DOC.rosters) || {}).forEach(function (k) {
+        (DOC.rosters[k].rows || []).forEach(function (r) {
+          var o = oppClub(r); if (!r.club || !o) return;
+          if (REDACT[r.club] && !REDACT[o]) opp[o] = 1;
+          if (REDACT[o] && !REDACT[r.club]) opp[r.club] = 1;
+        });
+      });
+      var others = Object.keys(opp).sort();
+      sum.textContent = (REVEAL ? "Unredacted: " : "Redacted: ") + mine.join(", ") + (others.length ? " · OPP " + others.join(", ") : "");
+    }
     var panel = document.getElementById("chop-redact-panel"); panel.textContent = "";
     var seg = document.createElement("span"); seg.className = "chop-seg"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Redacted players");
     [["Redacted", false], ["Unredacted", true]].forEach(function (o) {   // Unredacted shows everything for this visit; a reload hides it again
@@ -1603,7 +1619,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     drawTeamsChart();
   }
   function render() {
-    pickClubColors();
+    pickClubColors(); drawRedact();                     // the Redact title names this week's opponents, so it follows the data
     var ok = !!rows();
     document.getElementById("chop-wait").hidden = ok;
     document.getElementById("chop-body").hidden = !ok;
