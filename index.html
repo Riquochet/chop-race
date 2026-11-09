@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '18f5bccb75';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'fc6fc549e4';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -82,6 +82,15 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 #sec-teams .chop-t tr.sel td:first-child{box-shadow:none;border-radius:0}   /* picked: the rounded card starts right at the bar's edge */
 #sec-teams .chop-t tr.sel td:first-child::before{left:3px;opacity:1;border-radius:8px 0 0 8px;background:color-mix(in srgb,var(--row) 15%,transparent);
   box-shadow:inset var(--rw) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}   /* chop risk: red the projected chop, yellow in danger, green probably safe, blue no chance */
+.chop-redact{margin:0 0 .75rem;padding:8px 10px;border:1px solid var(--chop-grid);border-radius:8px;font-size:.78rem}   /* the Redact picker */
+.chop-redact .lead{margin:0 0 6px;color:var(--chop-muted)}
+.chop-redact .conf{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
+.chop-redact .div{display:flex;align-items:center;gap:6px;margin:3px 0;flex-wrap:wrap}
+.chop-redact .dl{width:42px;color:var(--chop-muted)}
+.chop-redact .chip{font:inherit;font-weight:600;min-width:44px;padding:3px 6px;border-radius:6px;cursor:pointer;color:var(--tc);background:transparent;border:1px solid color-mix(in srgb,var(--tc) 40%,transparent)}
+.chop-redact .chip[aria-pressed="true"]{color:var(--chop-bg);background:var(--tc);border-color:var(--tc);text-decoration:line-through}
+.chop-pt td.redact{text-align:left}
+.chop-pt tr.grp .clubs .score{color:var(--chop-fg)}
 .chop-sc{font-size:.8rem;padding:2px 0 6px}   /* the between-games scorecard */
 .chop-sc-key{margin:0 0 6px;color:var(--chop-muted);font-size:.72rem}
 .chop-sc-key b{font-weight:600;margin-left:.5em}.chop-sc-key b.blue{color:var(--chop-p-rb0)}.chop-sc-key b.green{color:var(--chop-p-wr0)}.chop-sc-key b.yellow{color:var(--chop-p-te1)}.chop-sc-key b.red{color:var(--chop-p-qb)}
@@ -227,7 +236,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 </style>
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
-  <p class="chop-status"><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button></p>
+  <p class="chop-status"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button><button type="button" class="chop-update" id="chop-redact" aria-expanded="false" aria-controls="chop-redact-panel">Redact</button></p>
+  <div class="chop-redact" id="chop-redact-panel" hidden></div>
   <article class="chop-news" id="chop-news" hidden aria-live="polite">
     <h2 class="chop-news-h" id="news-head"></h2>
     <p class="chop-news-meta" id="news-meta"></p>
@@ -235,9 +245,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   </article>
   <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to how far each team's projected final sits above or below the chop line, halfway between the two lowest projections, through the week: above it is safe by that many points, below it (shaded red) is going out. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
+    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to how far each team's projected final sits above or below the chop line, halfway between the two lowest projections, through the week: above it is safe by that many points, below it (shaded red) is going out. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Redact (at the top) hides the stats of players on the NFL teams you choose once their games start, so a game you are saving is not spoiled; the choice is kept on this device. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
-        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, which counts down while the game clock is running and dims while it is stopped (worked out from the last play; it lines back up with ESPN every few seconds), and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray DONE tag. Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, which counts down while the game clock is running and dims while it is stopped (worked out from the last play; it lines back up with ESPN every few seconds), and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray FINAL tag, and its game header shows the final score. Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. NFL groups them by game, split into its two NFL teams; Fantasy groups them by fantasy team; or show just one. Lines are in each player's NFL team color, dimmer for bench players. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players. Between games the chart becomes a scorecard: a bar for each player who played, as long as his points, with a tick at his Projected, blue if he beat it, green if he met it, yellow if he missed by a point or less, red if by more.</p>
   </details>
   <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
@@ -408,7 +418,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     if (!P || !P.rows || !P.rows.length) return null;
     var S = [], fin = {};
     P.rows.forEach(function (r) { fin[r.id] = r.est_final; });
+    var hidden = {}; P.rows.forEach(function (r) { if (isRedacted(r)) hidden[r.id] = true; });
     Object.keys(P.lines || {}).forEach(function (id) {
+      if (hidden[id]) return;                            // redacted: no line, no name
       var L = P.lines[id], py = toward(L.py, fin[id]);
       (L.ax || []).forEach(function (x, i) { S.push({team: id, x: x, pts: L.ay[i], phase: "actual"}); });
       (L.px || []).forEach(function (x, i) { S.push({team: id, x: x, pts: py[i], phase: "projected"}); });
@@ -583,6 +595,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   function drawStatus() {
     var live = isLive(), now = Date.now() / 1000, parts = [];
     document.getElementById("chop-live").hidden = !live;
+    var wk = document.getElementById("chop-week"); wk.hidden = !(DOC && DOC.week); if (DOC && DOC.week) wk.textContent = "Week " + DOC.week;
     if (DOC) {
       var soon = !live && DOC.next && DOC.next - now < 300;    // checking every minute until ESPN says the game started
       parts.push(live && DOC.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on");
@@ -994,7 +1007,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   function clockLine(g) {
     var l = document.createElement("span"), c = String(g.clock || ""), m = /^(Q\d|OT) (.+)$/.exec(c), s2 = /^Start of (Q\d)$/.exec(c);
     function tag(text, color) { var t = document.createElement("span"); t.className = "chop-tag " + color; t.textContent = text; l.appendChild(t); }
-    if (g.st !== "in") tag("DONE", "gray");
+    if (g.st !== "in") tag("FINAL", "gray");
     else if (m && g.clk) {                             // a live ESPN read: count down while the clock runs, dim while it is stopped
       tag(m[1], "blue");
       var tk = document.createElement("span"); tk.className = "tick" + (g.clk.run ? "" : " stopped"); tk._k = g.clk; tk.textContent = clockText(g.clk);
@@ -1107,7 +1120,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var benchTag = document.createElement("span"); benchTag.className = "chop-tag bench"; benchTag.textContent = "BENCH";
         who.appendChild(benchTag);
       }
-      var sub = statLine(r), tag = r.stats ? null : statusTag(r);
+      var hide = isRedacted(r), sub = hide ? "" : statLine(r), tag = r.stats || hide ? null : statusTag(r);
       if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
         var line = document.createElement("span"); line.className = "chop-pl" + (r.stats ? " st" : " pre");
         var onBye = !!tag && tag.textContent === "BYE";      // BYE closes the line; any other status opens it
@@ -1139,6 +1152,12 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         who.appendChild(tm);
       }
       tr.appendChild(who);
+      if (hide) {                                          // redacted: one tag across the rest of the row
+        var rd = document.createElement("td"); rd.colSpan = 4; rd.className = "redact";
+        var rt = document.createElement("span"); rt.className = "chop-tag gray"; rt.textContent = "REDACTED"; rd.appendChild(rt); tr.appendChild(rd);
+        tr.setAttribute("data-key", r.id); tr.style.setProperty("--row", d.col[r.id]); tr._r = r;
+        return tr;
+      }
       var nowCell = document.createElement("td"), fin = document.createElement("td");
       if (!outThisWeek(r)) {
         var numW = roomy() ? 5 : 4, gst = r.game && r.game.st;
@@ -1199,6 +1218,44 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var pick = combos.find(function (c) { return colorGap(c[0], c[1]) >= 12; }) ||
                    combos.reduce(function (a, b) { return colorGap(b[0], b[1]) > colorGap(a[0], a[1]) ? b : a; });
         pick[2].forEach(function (c) { CLUB_ALT[c] = true; });
+      });
+    });
+  }
+  // Redact: NFL teams whose players' games the viewer does not want spoiled, saved in this browser only. Once such a player's
+  // game has started, his row is his name and one REDACTED tag, his line leaves the player charts, and his game's final
+  // score stays hidden. Team totals still count him.
+  var REDACT_KEY = "chop-race-redact", REDACT = {};
+  try { (JSON.parse(localStorage.getItem(REDACT_KEY) || "[]") || []).forEach(function (c) { REDACT[c] = true; }); } catch (e) {}
+  function isRedacted(r) { return !!(r && r.club && REDACT[r.club] && r.game && r.game.st !== "pre"); }
+  var CONF = {AFC: [["East", "BUF MIA NE NYJ"], ["North", "BAL CIN CLE PIT"], ["South", "HOU IND JAX TEN"], ["West", "DEN KC LAC LV"]],
+              NFC: [["East", "DAL NYG PHI WAS"], ["North", "CHI DET GB MIN"], ["South", "ATL CAR NO TB"], ["West", "ARI LAR SEA SF"]]};
+  function saveRedact() {
+    try { localStorage.setItem(REDACT_KEY, JSON.stringify(Object.keys(REDACT).filter(function (c) { return REDACT[c]; }))); } catch (e) {}
+    drawRedact(); render();
+  }
+  function drawRedact() {
+    var n = Object.keys(REDACT).filter(function (c) { return REDACT[c]; }).length, btn = document.getElementById("chop-redact");
+    btn.textContent = n ? "Redact (" + n + ")" : "Redact";
+    var panel = document.getElementById("chop-redact-panel"); panel.textContent = "";
+    var lead = document.createElement("p"); lead.className = "lead";
+    lead.textContent = "Hide stats for these NFL teams' players once their games start (saved on this device):"; panel.appendChild(lead);
+    Object.keys(CONF).forEach(function (conf) {
+      var all = [].concat.apply([], CONF[conf].map(function (d) { return d[1].split(" "); })), on = all.every(function (c) { return REDACT[c]; });
+      var head = document.createElement("div"); head.className = "conf";
+      var b = document.createElement("button"); b.type = "button"; b.className = "chop-update"; b.setAttribute("aria-pressed", String(on));
+      b.textContent = (on ? "Show all " : "Hide all ") + conf;
+      b.addEventListener("click", function () { all.forEach(function (c) { REDACT[c] = !on; }); saveRedact(); });
+      var t = document.createElement("b"); t.textContent = conf; head.appendChild(t); head.appendChild(b); panel.appendChild(head);
+      CONF[conf].forEach(function (d) {
+        var row = document.createElement("div"); row.className = "div";
+        var lab = document.createElement("span"); lab.className = "dl"; lab.textContent = d[0]; row.appendChild(lab);
+        d[1].split(" ").forEach(function (c) {
+          var chip = document.createElement("button"); chip.type = "button"; chip.className = "chip"; chip.textContent = c;
+          chip.setAttribute("aria-pressed", String(!!REDACT[c])); chip.style.setProperty("--tc", "var(--chop-n-" + c + ")");
+          chip.addEventListener("click", function () { REDACT[c] = !REDACT[c]; saveRedact(); });
+          row.appendChild(chip);
+        });
+        panel.appendChild(row);
       });
     });
   }
@@ -1264,6 +1321,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       };
       var nowM = clk[clk.length - 1][1], endM = Math.max(60, nowM);
       items.forEach(function (r) {
+        if (isRedacted(r)) return;
         var L = R[r.acct].lines[r.id] || {}, px = L.px || [], p0 = px[0], pn = px[px.length - 1], py = toward(L.py, r.est_final);
         (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: at(x), pts: L.ay[i], phase: "actual"}); });
         if (px.length > 1 && pn > p0) px.forEach(function (x, i) { S.push({team: r.id, x: nowM + (endM - nowM) * (x - p0) / (pn - p0), pts: py[i], phase: "projected"}); });
@@ -1290,6 +1348,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       var wins = first < 0 ? allWins.filter(function (w) { return +w.x1 > lo && +w.x0 < hi - 1; }) : allWins.slice(first, last + 1);
       var base = wins.length ? +wins[0].x0 : lo;
       items.forEach(function (r) {
+        if (isRedacted(r)) return;
         var L = R[r.acct].lines[r.id] || {}, py = toward(L.py, r.est_final);
         (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.ay[i], phase: "actual"}); });
         (L.px || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: py[i], phase: "projected"}); });
@@ -1331,11 +1390,16 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     return head;
   }
   // NFL game header: the two teams in their colors, then (dim) how many players, the clock, and who has the ball, where and what down.
-  function gameLabel(name) {
+  function gameLabel(name, row) {                     // "GB vs NE"; once final "GB 24 vs NE 17" (no score if either team is redacted)
     var out = document.createElement("span"), p = String(name).split(" vs "); out.className = "clubs";
+    var g = row && row.game, score = {};
+    if (g && g.st === "post" && g.pts != null && !p.some(function (c) { return REDACT[c]; })) {
+      score[row.club] = g.pts; p.forEach(function (c) { if (c !== row.club) score[c] = g.opp_pts; });
+    }
     p.forEach(function (club, i) {
       if (i) out.appendChild(document.createTextNode(" vs "));
       var c = document.createElement("span"); c.textContent = club; c.style.color = clubColor(club, true); out.appendChild(c);
+      if (score[club] != null) { var n = document.createElement("span"); n.className = "score"; n.textContent = " " + score[club]; out.appendChild(n); }
     });
     return out;
   }
@@ -1356,7 +1420,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var byTeam = ST.game.by === "team";
     d.groups.forEach(function (g) {
       var gsub = function (g) { return byTeam ? document.createTextNode(" · " + players(g.rows.length)) : gameSub(g); };
-      var gh = groupRow("grp", byTeam ? breakable(g.name) : gameLabel(g.name), gsub(g), byTeam ? g.color : null, g.rows);
+      var gh = groupRow("grp", byTeam ? breakable(g.name) : gameLabel(g.name, g.rows[0]), gsub(g), byTeam ? g.color : null, g.rows);
       gh._sub = gsub.bind(null, g); tb.appendChild(gh);                                   // _sub: liveRefresh() redraws the clock and the ball
       g.rows.forEach(function (r, i) {
         if (!byTeam && (!i || g.rows[i - 1].club !== r.club)) {      // by game: the game, then the NFL team he plays for
@@ -1400,11 +1464,15 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     var PACE = {red: "var(--chop-p-qb)", yellow: "var(--chop-p-te1)", green: "var(--chop-p-wr0)", blue: "var(--chop-p-rb0)"};
     groups.forEach(function (g) {
       var h = document.createElement("div"); h.className = "grp";
-      if (st.by === "team") { h.textContent = g.name; h.style.color = teamColor(g.key); } else h.appendChild(gameLabel(g.name));
+      if (st.by === "team") { h.textContent = g.name; h.style.color = teamColor(g.key); } else h.appendChild(gameLabel(g.name, g.rows[0]));
       box.appendChild(h);
       g.rows.slice().sort(function (a, b) { return (+b.now || 0) - (+a.now || 0); }).forEach(function (r) {
         var row = document.createElement("div"); row.className = "row" + (r.slot === "START" ? "" : " bench"); row.setAttribute("data-team", r.id);
         var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = r.pos + " " + r.short; nm.style.color = clubColor(r.club, true);
+        if (isRedacted(r)) {                               // redacted: his name and one tag
+          var rt2 = document.createElement("span"); rt2.className = "chop-tag gray"; rt2.textContent = "REDACTED";
+          row.appendChild(nm); row.appendChild(rt2); box.appendChild(row); return;
+        }
         var trk = document.createElement("span"); trk.className = "trk";
         var bar = document.createElement("span"); bar.className = "bar"; bar.style.width = Math.max(0, +r.now || 0) / top * 100 + "%";
         bar.style.background = PACE[r.pace] || "var(--chop-muted)"; trk.appendChild(bar);
@@ -1509,6 +1577,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     });
   }, true);
   document.getElementById("chop-reset").addEventListener("click", function () { ST.teams.reset(); });
+  document.getElementById("chop-redact").addEventListener("click", function () {
+    var p = document.getElementById("chop-redact-panel"), open = p.hidden;
+    p.hidden = !open; this.setAttribute("aria-expanded", String(open)); if (open) drawRedact();
+  });
+  drawRedact();
   document.getElementById("chart-points").addEventListener("click", function () { setTeamsMode("points"); });
   document.getElementById("chart-rank").addEventListener("click", function () { setTeamsMode("cushion"); });
   document.getElementById("mine-reset").addEventListener("click", function () { ST.mine.reset(); });
@@ -1564,7 +1637,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     (sb.events || []).forEach(function (e) {
       var c = e.competitions[0], state = c.status.type.state;
       if (state !== "in") {
-        c.competitors.forEach(function (t) { var ab = t.team.abbreviation; out[ESPN_TEAM[ab] || ab] = {st: state, f: state === "pre" ? 1 : 0}; });
+        c.competitors.forEach(function (t) {
+          var ab = t.team.abbreviation, o = c.competitors.find(function (x) { return x !== t; }) || {}, me = {st: state, f: state === "pre" ? 1 : 0};
+          if (state === "post") { me.pts = +t.score || 0; me.opp_pts = +o.score || 0; }
+          out[ESPN_TEAM[ab] || ab] = me;
+        });
         return;
       }
       var clock = clockLabel(c.status), s = c.situation || {}, last = ((s.lastPlay || {}).type || {}).text || "";
@@ -1601,6 +1678,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         if (!me) return;
         if (g.st === "pre" && me.st === "in") { g.st = "in"; moved = true; }
         if (g.st === "in" && me.st === "post") { g.st = "post"; delete g.clock; delete g.poss; delete g.kickoff; moved = true; }
+        if (g.st === "post" && me.pts != null) { g.pts = me.pts; g.opp_pts = me.opp_pts; }
         if (g.st === "in" && me.st === "in") {
           g.clock = me.clock; if (me.clk) g.clk = me.clk; else delete g.clk;
           if (me.poss) g.poss = me.poss; else delete g.poss;
