@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '637a350019';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2704545799';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -85,6 +85,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-redact{margin:.3rem 0 .25rem;padding:8px 10px;border:1px solid var(--chop-grid);border-radius:8px;font-size:.78rem}   /* the Redact picker, inside its roll-down */
 .chop-redact .chop-seg{margin:0 0 8px}
 .chop-redact-d summary.shut{color:var(--chop-p-qb)}.chop-redact-d summary.open{color:var(--chop-p-wr0)}   /* Redacted: red; Unredacted: green */
+.chop-redact-d summary .chop-tag.team{margin:0 4px 0 0;vertical-align:1px;color:color-mix(in srgb,var(--tc) 80%,var(--chop-fg));border-color:color-mix(in srgb,var(--tc) 45%,transparent);background:color-mix(in srgb,var(--tc) 12%,transparent)}
 .chop-redact .chop-seg button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);padding:5px 10px;cursor:pointer;border-radius:0}
 .chop-redact .chop-seg button:first-child{border-radius:6px 0 0 6px;border-right:0}
 .chop-redact .chop-seg button:last-child{border-radius:0 6px 6px 0}
@@ -1284,7 +1285,13 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         });
       });
       var others = Object.keys(opp).sort();
-      sum.textContent = (REVEAL ? "Unredacted: " : "Redacted: ") + mine.join(", ") + (others.length ? " · OPP " + others.join(", ") : "");
+      function tags(list) {                             // each team as a small tag in its own colors
+        list.forEach(function (c) {
+          var t = document.createElement("span"); t.className = "chop-tag team"; t.textContent = c; t.style.setProperty("--tc", clubColor(c, true)); sum.appendChild(t);
+        });
+      }
+      sum.appendChild(document.createTextNode(REVEAL ? "Unredacted " : "Redacted ")); tags(mine);
+      if (others.length) { sum.appendChild(document.createTextNode(" · OPP ")); tags(others); }
     }
     var panel = document.getElementById("chop-redact-panel"); panel.textContent = "";
     var seg = document.createElement("span"); seg.className = "chop-seg"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Redacted players");
