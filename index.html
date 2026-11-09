@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'f255060d86';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '511e4f28e4';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -108,7 +108,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-t td.game .fs{font-weight:600}.chop-t td.game .fs .score{color:var(--chop-muted)}
 .chop-sc{font-size:.8rem;padding:2px 0 6px}   /* the between-games scorecard */
 .chop-sc-key{margin:0 0 6px;color:var(--chop-muted);font-size:.72rem}
-.chop-sc-key b{font-weight:600;margin-left:.5em}.chop-sc-key b.blue{color:var(--chop-p-rb0)}.chop-sc-key b.green{color:var(--chop-p-wr0)}.chop-sc-key b.yellow{color:var(--chop-p-te1)}.chop-sc-key b.red{color:var(--chop-p-qb)}
+.chop-sc-key b{font-weight:600;margin-left:.5em}.chop-sc-key b.blue{color:var(--chop-p-rb0)}.chop-sc-key b.green{color:var(--chop-p-wr0)}.chop-sc-key b.yellow{color:var(--chop-p-te1)}.chop-sc-key b.red{color:var(--chop-p-qb)}.chop-sc-key b.purple{color:#c77dff;margin-left:0}
 .chop-sc .grp{font-weight:700;margin:12px 0 4px}.chop-sc .grp .clubs{font-size:1.15em}
 .chop-sc .row{display:flex;align-items:center;gap:8px;min-height:20px;cursor:pointer}
 .chop-sc .row.bench{opacity:.6}
@@ -116,7 +116,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-sc .trk{position:relative;flex:1;height:8px;border-radius:4px;background:color-mix(in srgb,var(--chop-grid) 60%,transparent)}
 .chop-sc .bar{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
 .chop-sc .gl{position:absolute;inset:0;pointer-events:none;border-radius:4px}
-.chop-sc .tk{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:var(--chop-p-rb0);box-shadow:0 0 0 1px var(--chop-bg)}   /* Projected: bright blue */
+.chop-sc .tk{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#c77dff;box-shadow:0 0 0 1px var(--chop-bg)}   /* Projected: bright purple */
 .chop-sc .val{min-width:34px;flex:none;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .chop-sc .val .sl{color:var(--chop-muted);margin:0 1px}.chop-sc .val .pj{color:var(--chop-muted)}
 .chop-sc.narrow .val .pj{display:none}
@@ -1539,7 +1539,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     top = Math.ceil(top / 5) * 5;
     var box = document.createElement("div"); box.className = "chop-sc";
     var key = document.createElement("p"); key.className = "chop-sc-key";
-    key.innerHTML = "Blue tick = Projected: <b class=\"blue\">beat</b> <b class=\"green\">met</b> <b class=\"yellow\">just missed</b> <b class=\"red\">missed</b>";
+    key.innerHTML = "<b class=\"purple\">Purple tick</b> = Projected: <b class=\"blue\">beat</b> <b class=\"green\">met</b> <b class=\"yellow\">just missed</b> <b class=\"red\">missed</b>";
     box.appendChild(key);
     var PACE = {red: "var(--chop-p-qb)", yellow: "var(--chop-p-te1)", green: "var(--chop-p-wr0)", blue: "var(--chop-p-rb0)"};
     groups.forEach(function (g) {
