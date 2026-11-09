@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '511e4f28e4';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '947bc1237e';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1574,10 +1574,13 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     });
     el.appendChild(box);
     if (box.clientWidth < 330) box.classList.add("narrow");   // no room: points only
+    var vw = 0; box.querySelectorAll(".val").forEach(function (v) { vw = Math.max(vw, v.scrollWidth); });
+    box.querySelectorAll(".val").forEach(function (v) { v.style.width = Math.ceil(vw) + "px"; });   // one width, so every bar ends at the same spot
     // point lines: every 10 brighter, every 5 dim, every 1 dimmer (left out when a point is under 4 px wide)
     var tw = (box.querySelector(".trk") || {}).clientWidth || 0, unit = 100 / top;
     function lines(step, alpha) { return "repeating-linear-gradient(to right,color-mix(in srgb,var(--chop-fg) " + alpha + "%,transparent) 0 1px,transparent 1px " + (unit * step) + "%)"; }
-    var layers = [lines(10, 45), lines(5, 22)]; if (tw / top >= 4) layers.push(lines(1, 10));
+    tw = (box.querySelector(".trk") || {}).clientWidth || tw;
+    var layers = [lines(10, 24), lines(5, 13)]; if (tw / top >= 4) layers.push(lines(1, 6));
     box.querySelectorAll(".gl").forEach(function (g) { g.style.backgroundImage = layers.join(","); });
     st.el = el; st.dismiss = function () {};
     style(st);
