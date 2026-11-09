@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '2704545799';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '8a82cc0148';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1291,7 +1291,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         });
       }
       sum.appendChild(document.createTextNode(REVEAL ? "Unredacted " : "Redacted ")); tags(mine);
-      if (others.length) { sum.appendChild(document.createTextNode(" · OPP ")); tags(others); }
+      if (others.length) { sum.appendChild(document.createTextNode(others.length > 1 ? " · Opponents " : " · Opponent ")); tags(others); }
     }
     var panel = document.getElementById("chop-redact-panel"); panel.textContent = "";
     var seg = document.createElement("span"); seg.className = "chop-seg"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Redacted players");
