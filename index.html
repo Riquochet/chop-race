@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'd01aa5662c';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'ed09ac179a';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -284,13 +284,23 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   ST.teams.mode = "points";
   try { ST.mine.team = localStorage.getItem(PICK_KEY); ST.game.by = localStorage.getItem(GAME_BY_KEY) === "team" ? "team" : "game";
         ST.teams.mode = /^(rank|cushion)$/.test(localStorage.getItem(MODE_KEY) || "") ? "cushion" : "points"; } catch (e) {}
+  // A dashed projection from the minute data, stretched so it ends at the live Final the name shows (the 5-second reads move
+  // Final between minute updates); its start stays where the scored line ends.
+  function toward(py, target) {
+    py = py || []; target = +target;
+    if (py.length < 2 || !isFinite(target)) return py;
+    var a = +py[0], b = +py[py.length - 1];
+    if (Math.abs(b - target) < 0.05) return py;
+    return py.map(function (v, i) { return b !== a ? a + (v - a) * (target - a) / (b - a) : a + (target - a) * i / (py.length - 1); });
+  }
   function rows() {
     if (!DOC || !DOC.teams) return null;
-    var S = [];
+    var S = [], fin = {};
+    DOC.teams.forEach(function (t) { fin[t.team] = t.est_final; });
     Object.keys(DOC.lines || {}).forEach(function (t) {
-      var L = DOC.lines[t];
+      var L = DOC.lines[t], py = toward(L.py, fin[t]);
       (L.ax || []).forEach(function (x, i) { S.push({team: t, x: x, pts: L.ay[i], phase: "actual"}); });
-      (L.px || []).forEach(function (x, i) { S.push({team: t, x: x, pts: L.py[i], phase: "projected"}); });
+      (L.px || []).forEach(function (x, i) { S.push({team: t, x: x, pts: py[i], phase: "projected"}); });
     });
     var W = {data: DOC.windows || []};
     var teams = DOC.teams.map(function (d) { return Object.assign({}, d, {color: +d.color}); });
@@ -380,11 +390,12 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   function mineRows() {
     var P = DOC && DOC.rosters ? DOC.rosters[mineTeam()] : DOC && DOC.players;
     if (!P || !P.rows || !P.rows.length) return null;
-    var S = [];
+    var S = [], fin = {};
+    P.rows.forEach(function (r) { fin[r.id] = r.est_final; });
     Object.keys(P.lines || {}).forEach(function (id) {
-      var L = P.lines[id];
+      var L = P.lines[id], py = toward(L.py, fin[id]);
       (L.ax || []).forEach(function (x, i) { S.push({team: id, x: x, pts: L.ay[i], phase: "actual"}); });
-      (L.px || []).forEach(function (x, i) { S.push({team: id, x: x, pts: L.py[i], phase: "projected"}); });
+      (L.px || []).forEach(function (x, i) { S.push({team: id, x: x, pts: py[i], phase: "projected"}); });
     });
     var items = P.rows.map(function (r) { return Object.assign({}, r, {team: r.id}); });
     var col = {}, name = {}, slot = {};
@@ -736,6 +747,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
         var tr = full[e.team] || [], lx = tr.length ? Math.min(tr[tr.length - 1].x, b) : null;
         if (d.rangeOnly || lx == null || lx < a) return;
         var x1 = x(lx), y1 = y(Math.max(Math.min(y.domain()[0], y.domain()[1]), Math.min(Math.max(y.domain()[0], y.domain()[1]), valAt(tr, lx))));
+        if (d.signed) {                                  // Cushion: straight across from Now at its value, to the right edge
+          if (width - m.r - x1 >= 2) gTop.append("line").attr("class", "lead").attr("data-team", e.team).attr("x1", x1).attr("y1", y1)
+            .attr("x2", width - m.r).attr("y2", y1).style("stroke", col[e.team]);
+          return;
+        }
         if (width - m.r - x1 < 6 && Math.abs(y1 - e.y) < 3) return;
         gTop.append("line").attr("class", "lead").attr("data-team", e.team).attr("x1", x1).attr("y1", y1)
           .attr("x2", width - m.r + 3).attr("y2", e.y).style("stroke", col[e.team]);
@@ -1189,9 +1205,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       };
       var nowM = clk[clk.length - 1][1], endM = Math.max(60, nowM);
       items.forEach(function (r) {
-        var L = R[r.acct].lines[r.id] || {}, px = L.px || [], p0 = px[0], pn = px[px.length - 1];
+        var L = R[r.acct].lines[r.id] || {}, px = L.px || [], p0 = px[0], pn = px[px.length - 1], py = toward(L.py, r.est_final);
         (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: at(x), pts: L.ay[i], phase: "actual"}); });
-        if (px.length > 1 && pn > p0) px.forEach(function (x, i) { S.push({team: r.id, x: nowM + (endM - nowM) * (x - p0) / (pn - p0), pts: L.py[i], phase: "projected"}); });
+        if (px.length > 1 && pn > p0) px.forEach(function (x, i) { S.push({team: r.id, x: nowM + (endM - nowM) * (x - p0) / (pn - p0), pts: py[i], phase: "projected"}); });
       });
       shifted = [1, 2, 3, 4].map(function (q) { return {kind: "window", label: "Q" + q, short: "Q" + q, when: "", x0: (q - 1) * 15, x1: q * 15, kicks: []}; });
       if (nowM > 60) shifted.push({kind: "window", label: "OT", short: "OT", when: "", x0: 60, x1: Math.max(70, nowM), kicks: []});
@@ -1215,9 +1231,9 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       var wins = first < 0 ? allWins.filter(function (w) { return +w.x1 > lo && +w.x0 < hi - 1; }) : allWins.slice(first, last + 1);
       var base = wins.length ? +wins[0].x0 : lo;
       items.forEach(function (r) {
-        var L = R[r.acct].lines[r.id] || {};
+        var L = R[r.acct].lines[r.id] || {}, py = toward(L.py, r.est_final);
         (L.ax || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.ay[i], phase: "actual"}); });
-        (L.px || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: L.py[i], phase: "projected"}); });
+        (L.px || []).forEach(function (x, i) { S.push({team: r.id, x: x - base, pts: py[i], phase: "projected"}); });
       });
       shifted = wins.map(function (w) {
         return Object.assign({}, w, {x0: +w.x0 - base, x1: +w.x1 - base, kicks: (w.kicks || []).map(function (k) { return {x: k.x - base, t: k.t}; })});
