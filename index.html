@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = '4dd95addfe';</script>
+<script>window.CHOP_DATA_URL = 'live_doc.json'; window.CHOP_PAGE = 'cfc77e89d8';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -915,8 +915,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       tap = null;
     });
     node.addEventListener("touchcancel", function () { g0 = null; tap = null; multi = false; cancelTip(); });
-    el.addEventListener("contextmenu", function (e) { e.preventDefault(); });          // no copy menu on a long press
-    el.addEventListener("selectstart", function (e) { e.preventDefault(); });          // no text selection while dragging
+    if (!el._noMenu) {                                   // once per chart box: a new pair each redraw kept every old chart alive (Safari ran out of memory)
+      el._noMenu = true;
+      el.addEventListener("contextmenu", noDefault);    // no copy menu on a long press
+      el.addEventListener("selectstart", noDefault);    // no text selection while dragging
+    }
     ["gesturestart", "gesturechange"].forEach(function (n) { node.addEventListener(n, function (e) { e.preventDefault(); }); });
 
     node.addEventListener("pointerdown", function (ev) {
@@ -1673,6 +1676,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
     drawTeamsChart();
   }
+  function noDefault(e) { e.preventDefault(); }
   function render() {
     pickClubColors(); drawRedact();                     // the Redact title names this week's opponents, so it follows the data
     var ok = !!rows();
