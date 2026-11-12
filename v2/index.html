@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '44756a98a0';</script>
+<script>window.CHOP_V2 = '2c5c1222cf';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -181,7 +181,10 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}
 .tmb>.kv,.tmb>.note,.tmb>.plh,.tmb>.sub.in,.tmb>.inch{margin-left:36px}.tmb>.pr{grid-template-columns:28px minmax(0,1fr)}
 .gmh>.car{margin-left:1px}
-.zt{font-size:.75rem;font-weight:600;color:var(--chop-muted);margin:18px 0 5px 2px}h3+.zt{margin-top:2px}   /* a game window's small title, with more air above it than between its own games */
+.zt{display:flex;align-items:center;gap:8px;font-size:.75rem;font-weight:600;margin:18px 0 5px 2px}   /* a game window's small title, with more air above it than between its own games */
+.zt>span:first-child{color:var(--chop-muted);opacity:.55}
+.zt.first{margin-top:22px}.sech+.zt{margin-top:4px}
+.pill{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#1f6fd1;border-radius:4px;padding:2px 7px}
 @media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
 .pr3 .pt{white-space:nowrap}
@@ -1047,11 +1050,16 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (!all.length) { box.innerHTML = h + '<p class="note">No players have played yet.</p>'; return; }
     function byKick(a, b) { return a.kick - b.kick || (a.name < b.name ? -1 : 1); }
     if (live.length === 1) live[0].auto = true;         // one game on: it is the whole show, so it starts open
-    [["On now", live.sort(byKick)], ["Up next", pre.sort(byKick)], ["Final", post.sort(function (a, b) { return -byKick(a, b); })]].forEach(function (grp) {
-      if (!grp[1].length) return;
-      h += "<h3>" + grp[0] + "</h3>" + grp[1].map(function (g, i) {                        // a small title over each game window's cards
-        var zone = !i || windowName(g.kick) !== windowName(grp[1][i - 1].kick);
-        return (zone ? '<div class="zt">' + esc(windowName(g.kick)) + "</div>" : "") + gameCard(g, w); }).join("");
+    // Each game window gets a very dim title; a tag beside it says what it is: LIVE on a window with a game on, UP NEXT on the
+    // next window to kick off, FINAL on the latest finished one. On now first, then to play, then finished (newest first).
+    [["live", live.sort(byKick)], ["next", pre.sort(byKick)], ["final", post.sort(function (a, b) { return -byKick(a, b); })]].forEach(function (grp) {
+      grp[1].forEach(function (g, i) {
+        if (!i || windowName(g.kick) !== windowName(grp[1][i - 1].kick)) {
+          var mark = grp[0] === "live" ? '<span class="live">LIVE</span>' : i ? "" : grp[0] === "next" ? '<span class="pill">UP NEXT</span>' : tag("FINAL", "gray");
+          h += '<div class="zt' + (i ? "" : " first") + '"><span>' + esc(windowName(g.kick)) + "</span>" + mark + "</div>";
+        }
+        h += gameCard(g, w);
+      });
     });
     box.innerHTML = h;
   }
