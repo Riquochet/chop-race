@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '5edcd3407a';</script>
+<script>window.CHOP_V2 = 'b2466aa022';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -153,7 +153,8 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr1{display:flex;align-items:baseline;gap:8px}
 .pr1 .who{flex:1;min-width:0;font-size:.875rem}
 .pr1 .who b{font-weight:600}
-.pr1 .pos,.pr1 .no{color:var(--chop-muted);font-size:.72rem}
+.pr1 .no{color:var(--chop-muted);font-size:.72rem}
+.pr1 .pos{color:var(--chop-fg);font-size:.72rem;font-weight:700}
 .pr1 .cb{font-weight:700;font-size:.72rem}
 .pr1 .tag{margin-left:2px;vertical-align:middle;position:relative;top:-1px}
 .nums{flex:none;display:flex;gap:8px;align-items:baseline;white-space:nowrap;font-size:.875rem}
@@ -179,7 +180,8 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tm.open>.tmh>.car,.gm.open>.gmh>.car{transform:rotate(90deg)}
 .tmh>.car{grid-column:1;grid-row:2;align-self:center}
 .gmh>.car{grid-column:1;grid-row:1;align-self:center}
-.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note{margin-left:30px}
+.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}
+.gm.zone{margin-top:20px}h3+.gm.zone{margin-top:6px}   /* a new game window: more air than between its own games */
 @media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
 .pr3 .pt{white-space:nowrap}
@@ -969,7 +971,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         if (isBench && !bench) { h += '<div class="sub in">Bench</div>'; bench = true; }
         h += playerRow(r, "t:" + t.team, top);
       });
-      h += teamChart(t.team, w);
+      var tc = teamChart(t.team, w - 30); if (tc) h += '<div class="inch">' + tc + "</div>";
     }
     return h + "</div>";
   }
@@ -992,7 +994,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     return list;
   }
-  function gameCard(g, w) {
+  function gameCard(g, w, zone) {
     var open = S.game[g.name] != null ? S.game[g.name] : !!g.auto, row = g.g, gm = row ? row.game : {st: g.st, kick: g.kick};
     var p = g.name.split(" vs "), hid = gm.st !== "pre" && p.some(function (c) { return redactOn(c); }), score = {};
     if (row && gm.st !== "pre" && gm.pts != null && !hid) { score[row.club] = gm.pts; p.forEach(function (c) { if (c !== row.club) score[c] = gm.opp_pts; }); }
@@ -1008,7 +1010,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var lead = g.rows.filter(function (r) { return !isRedacted(r); }).sort(function (a, b) { return gm.st === "pre" ? (+b.pre || 0) - (+a.pre || 0) : b.now - a.now; }).slice(0, roomy() ? 4 : 3);
       lead.forEach(function (r) { sub.push('<span class="ld"><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + n1(gm.st === "pre" ? r.pre : r.now) + "</span>"); });
     }
-    var h = '<div class="gm ' + gm.st + (open ? " open" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
+    var h = '<div class="gm ' + gm.st + (open ? " open" : "") + (zone ? " zone" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
       '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="car"></i></button>';
     if (open) {
       h += '<div class="gmb">';
@@ -1020,7 +1022,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
           if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + "</div>";
           h += playerRow(r, "g:" + g.name, top, {team: r.acct, benchTag: true, c: clubColor(r.club), cls: sel.indexOf(r.id) >= 0 ? "sel" : sel.length ? "dim" : ""});
         });
-        h += gameChart(g, w - 26);
+        var gc = gameChart(g, w - 56); if (gc) h += '<div class="inch">' + gc + "</div>";
       }
       h += "</div>";
     }
@@ -1037,7 +1039,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (live.length === 1) live[0].auto = true;         // one game on: it is the whole show, so it starts open
     [["On now", live.sort(byKick)], ["Up next", pre.sort(byKick)], ["Final", post.sort(function (a, b) { return -byKick(a, b); })]].forEach(function (grp) {
       if (!grp[1].length) return;
-      h += "<h3>" + grp[0] + "</h3>" + grp[1].map(function (g) { return gameCard(g, w); }).join("");
+      h += "<h3>" + grp[0] + "</h3>" + grp[1].map(function (g, i) { return gameCard(g, w, !i || windowName(g.kick) !== windowName(grp[1][i - 1].kick)); }).join("");
     });
     box.innerHTML = h;
   }
