@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'b2466aa022';</script>
+<script>window.CHOP_V2 = '0c8e43d4af';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -224,13 +224,16 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .zm button{font-size:.72rem;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 8px;cursor:pointer}
 .zm button[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
 .rdh{font-size:.72rem;color:var(--chop-muted);margin:6px 0 4px;min-height:1.35em}
-.lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:2px 10px}
-.lg button{all:unset;box-sizing:border-box;display:flex;align-items:baseline;gap:0;font-size:.78rem;padding:4px 2px;cursor:pointer;min-width:0;border-radius:6px}
-.lg button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:color-mix(in srgb,var(--c) 88%,var(--chop-fg))}
-.lg button b{font-weight:600;margin-left:6px}
-.lg button.bold span{font-weight:700}
+.lg button,.lgh{display:grid;column-gap:4px;align-items:baseline;font-size:.78rem}
+.lgh{font-size:.66rem;color:var(--chop-muted);padding:0 4px 2px}
+.lgh span,.lg button span,.lg button b{text-align:right;white-space:nowrap}
+.lgh .v{color:var(--chop-fg);font-weight:600}
+.lg button{all:unset;box-sizing:border-box;display:grid;column-gap:4px;align-items:baseline;width:100%;font-size:.78rem;padding:5px 4px;cursor:pointer;border-radius:6px;border-top:1px solid var(--chop-grid);color:var(--chop-muted)}
+.lg button .nm{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;color:color-mix(in srgb,var(--c) 88%,var(--chop-fg))}
+.lg button b{font-weight:700;color:var(--chop-fg)}
+.lg button.bold .nm{font-weight:700}
 .lg button.dim{opacity:.35}
-.lg button.on{box-shadow:inset 0 0 0 var(--hair) var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);padding-inline:6px}
+.lg button.on{box-shadow:inset 0 0 0 var(--hair) var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border-top-color:transparent}
 /* help */
 .help{margin-top:30px;font-size:.8125rem;color:var(--chop-muted)}
 .help summary{cursor:pointer;color:var(--chop-fg);font-weight:600;padding:6px 0}
@@ -775,8 +778,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     }
     h += '<div class="cvw"><svg class="cv" data-ch="' + esc(id) + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(c.aria || "") + '"><defs><clipPath id="clip-' + esc(id.replace(/[^\w-]/g, "_")) + '"><rect x="' + m.l + '" y="' + (m.t - 2) + '" width="' + (R - m.l) + '" height="' + (B - m.t + 4) + '"/></clipPath></defs>' +
       g + '<g clip-path="url(#clip-' + esc(id.replace(/[^\w-]/g, "_")) + ')">' + lines + '</g><line class="rule" y1="' + m.t + '" y2="' + B + '" x1="0" x2="0" style="display:none"/></svg></div>';
-    h += '<div class="rdh">' + esc(c.idle || "") + '</div><div class="lg">' + legend.map(function (s) {
-      return '<button type="button" class="' + (s.bold ? "bold " : "") + (sel.indexOf(s.k) >= 0 ? "on" : sel.length ? "dim" : "") + '" data-act="sel" data-ch="' + esc(id) + '" data-k="' + esc(s.k) + '" style="--c:' + s.color + '" aria-pressed="' + (sel.indexOf(s.k) >= 0) + '"><i class="dot" style="--c:' + s.color + '"></i><span>' + esc(s.name) + "</span><b>" + fmt(end(s)) + "</b></button>"; }).join("") + "</div>";
+    // The list under the chart: one line per series. heads = its columns; column vi is the chart's own value, which follows the finger.
+    var heads = c.heads || [c.vhead || ""], vi = c.vi || 0, cols = "grid-template-columns:minmax(0,1fr) repeat(" + heads.length + "," + (heads.length > 4 ? "3.4rem" : "3rem") + ")";
+    h += '<div class="rdh">' + esc(c.idle || "") + '</div><div class="lg"><div class="lgh" style="' + cols + '"><span></span>' + heads.map(function (t, i) { return "<span" + (i === vi ? ' class="v"' : "") + ">" + esc(t) + "</span>"; }).join("") + "</div>" + legend.map(function (s) {
+      return '<button type="button" class="' + (s.bold ? "bold " : "") + (sel.indexOf(s.k) >= 0 ? "on" : sel.length ? "dim" : "") + '" data-act="sel" data-ch="' + esc(id) + '" data-k="' + esc(s.k) + '" style="--c:' + s.color + ";" + cols + '" aria-pressed="' + (sel.indexOf(s.k) >= 0) + '"><span class="nm"><i class="dot" style="--c:' + s.color + '"></i>' + esc(s.name) + "</span>" +
+        heads.map(function (t, i) { return i === vi ? '<b class="v">' + fmt(end(s)) + "</b>" : "<span>" + esc((s.cells || [])[i] != null ? s.cells[i] : "") + "</span>"; }).join("") + "</button>"; }).join("") + "</div>";
     return h;
   }
   // Sliding a finger (or the mouse) across a chart reads every line at that moment into the list under it.
@@ -793,7 +799,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (head) head.textContent = (win ? win.label : "Between games") + (started ? " · " + shortTime(started.t) + " games on" : "") + (c.nowX != null && xv > c.nowX ? " · projected" : "") + " · at this point";
     box.querySelectorAll(".lg button").forEach(function (b) {
       var s = c.series.find(function (s) { return s.k === b.getAttribute("data-k"); });
-      if (s) b.lastChild.textContent = c.fmt(valAt(s.full, xv));
+      if (s) b.querySelector(".v").textContent = c.fmt(valAt(s.full, xv));
     });
   }
   function unscrub() {
@@ -804,7 +810,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var head = box.querySelector(".rdh"); if (head) head.textContent = c.idle;
       box.querySelectorAll(".lg button").forEach(function (b) {
         var s = c.series.find(function (s) { return s.k === b.getAttribute("data-k"); });
-        if (s) b.lastChild.textContent = c.fmt(s.end != null ? s.end : valAt(s.full, c.b));
+        if (s) b.querySelector(".v").textContent = c.fmt(s.end != null ? s.end : valAt(s.full, c.b));
       });
     });
     S.scrubT = 0;
@@ -819,7 +825,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   // The teams through the week. Points: scored (solid) and projected (dashed), thick while a starter plays, thin between,
   // hair-thin once done. Cushion: each team's projected final at every moment up to now, minus the team on the block's.
   function raceChart(cushion, w) {
-    var T = teams(), xmax = weekMax(), me = myTeam(), series = [], nx = nowX();
+    var T = teams(), xmax = weekMax(), me = myTeam(), series = [], nx = nowX(), cuNow = cushions();
     var cush = {};
     if (cushion) {
       var plan = T.map(function (t) {
@@ -863,10 +869,13 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         iv.forEach(function (q) { seg(act, q[0], q[1], wd.thick); seg(pro, q[0], q[1], wd.thick, true); });
         if (cushion) { var e = full[full.length - 1]; if (xmax - e.x > 1) paths.push({pts: [e, {x: xmax, pts: e.pts}], w: 0.8, op: 0.55}); }   // from Now straight across at its value
       }
-      series.push({k: t.team, name: teamName(t.team, false), color: teamColor(t.team), bold: mine, full: full, paths: paths});
+      var cn = t.count || {};
+      series.push({k: t.team, name: teamName(t.team, false), color: teamColor(t.team), bold: mine, full: full, paths: paths,
+        cells: [n1(t.now), n1(t.est_final), signed(cuNow[t.team]), chopPct(t.chop, !roomy())].concat(roomy() ? [t.pre != null ? n1(t.pre) : "", (cn.left || 0) + "·" + (cn["in"] || 0) + "·" + (cn.done || 0)] : [])});
     });
     return lineChart("race-" + (cushion ? "c" : "p"), {w: w, h: innerWidth < 560 ? 330 : 400, series: series, wins: DOC.windows, nowX: nx, xmax: xmax, signed: cushion, zeroLabel: "Chop line",
-      fmt: cushion ? signed : n1, zoomable: true, idle: cushion ? "Cushion over the block now" : "Final, at the end of Monday night",
+      fmt: cushion ? signed : n1, zoomable: true, idle: "Tap a team to pick out its line. Slide across the chart to read " + (cushion ? "Cushion" : "points") + " at any moment.",
+      heads: ["Now", "Final", "Cushion", "Chop"].concat(roomy() ? ["Proj", "L·I·D"] : []), vi: cushion ? 2 : 1,
       aria: cushion ? "Each team's projected points above or below the chop line through the week" : "Points by team through the week, scored and projected"});
   }
   // One team's players through the week: thick during each one's game (solid scored, dashed projected), hair-thin around it.
@@ -886,10 +895,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     series = series.map(function (s) {
       var start = s.r.slot === "START", wd = start ? 3.6 : 2.4, f = s.full;
       return {k: s.r.id, name: (s.r.pos ? s.r.pos + " " : "") + s.r.short, color: col[s.r.id], bold: start, full: f, end: +s.r.est_final,
+        cells: [s.r.game && s.r.game.st !== "pre" ? n1(s.r.now) : "–", null, s.r.pre != null ? n1(s.r.pre) : ""],
         paths: [{pts: [{x: 0, pts: f[0].pts}].concat(f, [{x: xmax, pts: f[f.length - 1].pts}]), w: 1, op: 0.85}, {pts: s.act, w: wd}, {pts: s.pro, w: wd, dash: "8 5"}]};
     });
     if (!series.length) return "";
-    return '<div class="sub">Points through the week</div>' + lineChart("team-" + acct, {w: w, h: 250, series: series, wins: DOC.windows, nowX: nowX(), xmax: xmax, zoomable: true, idle: "Final for each player",
+    return '<div class="sub">Points through the week</div>' + lineChart("team-" + acct, {w: w, h: 250, series: series, wins: DOC.windows, nowX: nowX(), xmax: xmax, zoomable: true, idle: "Tap a player to pick out his line. Slide across the chart to read any moment.", heads: ["Now", "Final", "Proj"], vi: 1,
       zoomOk: function (w) { return spans.some(function (q) { return q[0] < +w.x1 && q[1] > +w.x0; }); },   // only windows one of these players plays in
       aria: "Points by player for " + teamName(acct, true) + ", scored and projected"});
   }
@@ -911,13 +921,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var full = act.concat(pro); if (!full.length) return;
       var start = r.slot === "START", wd = start ? (crowd ? 2.2 : 3.4) : (crowd ? 1.2 : 2.2);
       series.push({k: r.id, name: (r.pos ? r.pos + " " : "") + r.short, color: start ? clubColor(r.club) : "color-mix(in srgb," + clubColor(r.club) + " 45%,var(--chop-bg))", full: full, end: g.st === "in" ? +r.est_final : +r.now,
+        cells: g.st === "in" ? [n1(r.now), null, r.pre != null ? n1(r.pre) : ""] : [null, r.pre != null ? n1(r.pre) : ""],
         paths: [{pts: act, w: wd}, {pts: pro, w: wd, dash: "8 5"}]});
     });
     if (!series.length) return "";
     var wins = [1, 2, 3, 4].map(function (q) { return {kind: "window", label: "Q" + q, short: "Q" + q, x0: (q - 1) * 15, x1: q * 15, kicks: []}; });
     if (nowM > 60) wins.push({kind: "window", label: "OT", short: "OT", x0: 60, x1: Math.max(70, nowM), kicks: []});
     return '<div class="sub">Points by quarter</div>' + lineChart("game-" + g.name, {w: w, h: 230, series: series, wins: wins, nowX: g.st === "in" ? nowM : null, xmax: nowM > 60 ? Math.max(70, nowM) : 60,
-      grid: [{x: 15}, {x: 30, strong: true}, {x: 45}].concat(nowM > 60 ? [{x: 60}] : []), idle: g.st === "in" ? "Final for each player" : "Points for each player",
+      grid: [{x: 15}, {x: 30, strong: true}, {x: 45}].concat(nowM > 60 ? [{x: 60}] : []), idle: "Slide across the chart to read any moment.", heads: g.st === "in" ? ["Now", "Final", "Proj"] : ["Points", "Proj"], vi: g.st === "in" ? 1 : 0,
       aria: "Points for each player in " + g.name + " by quarter"});
   }
 
