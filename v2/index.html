@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '0c8e43d4af';</script>
+<script>window.CHOP_V2 = '52d2b7275c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -109,14 +109,14 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
 .olds .story{border-radius:10px;margin-top:6px}
 /* the ladder */
-.lh{display:grid;grid-template-columns:22px minmax(0,1fr) auto 3.3rem;column-gap:8px;padding:0 8px 2px 11px;font-size:.68rem;color:var(--chop-muted)}
+.lh{display:grid;grid-template-columns:32px minmax(0,1fr) auto 3.3rem;column-gap:8px;padding:0 8px 2px 11px;font-size:.68rem;color:var(--chop-muted)}
 .lh span:nth-child(n+3){text-align:right}
 .tm{position:relative;border-radius:10px;margin:3px 0;--rowbg:transparent}
 .tm::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:3px;border-radius:1.5px;background:var(--risk);pointer-events:none}
 .tm.open{background:color-mix(in srgb,var(--row) 9%,transparent);box-shadow:inset 0 0 0 var(--hair) color-mix(in srgb,var(--row) 75%,transparent)}
 .tm.open::before{left:0;top:8px;bottom:8px}
-.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:22px minmax(0,1fr) auto 3.3rem;column-gap:8px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tmh .pl{color:var(--chop-muted);font-size:.8rem}
+.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:32px minmax(0,1fr) auto 3.3rem;column-gap:8px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tmh .pl{color:var(--chop-fg);font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:6px}
 .tmh .tn{font-weight:600;color:color-mix(in srgb,var(--row) 88%,var(--chop-fg));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tm.mine .tn{font-weight:800}
 .tmh .tn small{font-weight:400;color:var(--chop-muted);font-size:.75rem}
@@ -153,8 +153,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr1{display:flex;align-items:baseline;gap:8px}
 .pr1 .who{flex:1;min-width:0;font-size:.875rem}
 .pr1 .who b{font-weight:600}
-.pr1 .no{color:var(--chop-muted);font-size:.72rem}
-.pr1 .pos{color:var(--chop-fg);font-size:.72rem;font-weight:700}
+.pr1 .pos,.pr1 .no{color:var(--chop-muted);font-size:.72rem}
 .pr1 .cb{font-weight:700;font-size:.72rem}
 .pr1 .tag{margin-left:2px;vertical-align:middle;position:relative;top:-1px}
 .nums{flex:none;display:flex;gap:8px;align-items:baseline;white-space:nowrap;font-size:.875rem}
@@ -175,12 +174,12 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .hm .line{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
 .hm .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--chop-fg);box-shadow:0 0 0 1.5px var(--chop-bg)}
 /* a dim caret at the left of every team and game; it turns down when open. Players have none, but sit in the same column, so everything under a row lines up with its bar. */
-.car{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent color-mix(in srgb,var(--chop-fg) 38%,transparent);transition:transform .15s;justify-self:start;margin-left:1px}
+.car{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent color-mix(in srgb,var(--chop-fg) 24%,transparent);transition:transform .15s;flex:none;justify-self:start;margin-left:1px}
 .pr{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px}
-.tm.open>.tmh>.car,.gm.open>.gmh>.car{transform:rotate(90deg)}
-.tmh>.car{grid-column:1;grid-row:2;align-self:center}
+.tm.open>.tmh .car,.gm.open>.gmh>.car{transform:rotate(90deg)}
 .gmh>.car{grid-column:1;grid-row:1;align-self:center}
 .tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}
+.tmb>.kv,.tmb>.note,.tmb>.plh,.tmb>.sub.in,.tmb>.inch{margin-left:40px}.tmb>.pr{grid-template-columns:32px minmax(0,1fr)}
 .gm.zone{margin-top:20px}h3+.gm.zone{margin-top:6px}   /* a new game window: more air than between its own games */
 @media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
@@ -245,7 +244,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 @media (min-width:560px){
   .hm{width:64px}
   .tmh .slp,.nums .slp{display:inline}
-  .tmh,.lh{grid-template-columns:22px minmax(0,1fr) auto 6.6rem}
+  .tmh,.lh{grid-template-columns:32px minmax(0,1fr) auto 6.6rem}
   .b-s{display:none}.b-m{display:inline}
   .hl{font-size:1.45rem}
 }
@@ -958,9 +957,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       }
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
-        '<span class="pl">' + esc(t.rank) + '</span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
+        '<span class="pl"><i class="car"></i>' + esc(t.rank) + '</span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
         '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
-        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + '<i class="car"></i></button>';
+        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + "</button>";
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
     });
@@ -982,7 +981,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         if (isBench && !bench) { h += '<div class="sub in">Bench</div>'; bench = true; }
         h += playerRow(r, "t:" + t.team, top);
       });
-      var tc = teamChart(t.team, w - 30); if (tc) h += '<div class="inch">' + tc + "</div>";
+      var tc = teamChart(t.team, w - 40); if (tc) h += '<div class="inch">' + tc + "</div>";
     }
     return h + "</div>";
   }
