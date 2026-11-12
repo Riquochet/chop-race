@@ -1,0 +1,1924 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
+<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = '02096ac63d';</script>
+</head><body>
+<title>Sleeper - The Chopping Block</title>
+<style>
+/* Layout: one full-width chart (game time only), then the standings table; tap rows or line ends to pick out teams. */
+[hidden]{display:none!important}   /* the GitHub copy has no host stylesheet; without this a styled badge ignores hidden */
+:root{--chop-tag-gray-t:#a3a6ab;--chop-tag-gray-b:rgba(139,143,150,.25);--chop-tag-gray-f:rgba(139,143,150,.04);--chop-tag-blue-t:#2a62a6;--chop-tag-blue-b:rgba(42,98,166,.4);--chop-tag-blue-f:rgba(42,98,166,.08);--chop-tag-red-t:#a63a3a;--chop-tag-red-b:rgba(166,58,58,.4);--chop-tag-red-f:rgba(166,58,58,.08);--chop-tag-yellow-t:#86680a;--chop-tag-yellow-b:rgba(134,104,10,.4);--chop-tag-yellow-f:rgba(134,104,10,.08);--chop-tag-orange-t:#a85a12;--chop-tag-orange-b:rgba(168,90,18,.4);--chop-tag-orange-f:rgba(168,90,18,.08);--chop-rank-s:50%;--chop-rank-l:36%;--chop-p-qb:#c62828;--chop-p-rb0:#0d47a1;--chop-p-rb1:#42a5f5;--chop-p-rb2:#00838f;--chop-p-wr0:#1b7f2f;--chop-p-wr1:#7cb342;--chop-p-wr2:#00695c;--chop-p-te0:#e65100;--chop-p-te1:#b8860b;--chop-b-qb:#b88f8f;--chop-b-rb0:#7f9ab8;--chop-b-rb1:#99aec6;--chop-b-wr0:#84a688;--chop-b-wr1:#9cb89f;--chop-b-te0:#b89a7a;--chop-b-te1:#c4ae92;--chop-c0:#d62728;--chop-c1:#1f6fd1;--chop-c2:#e8730c;--chop-c3:#2a9d3a;--chop-c4:#8e44c9;--chop-c5:#8c564b;
+  --chop-c6:#e377c2;--chop-c7:#7a7a80;--chop-c8:#a3a31a;--chop-c9:#10a2b6;--chop-c10:#111111;
+  --chop-n2-ARI:#B57D00;--chop-n2-ATL:#828C90;--chop-n2-BAL:#A58615;--chop-n2-BUF:#FF3E50;--chop-n2-CAR:#898B89;--chop-n2-CHI:#5B7BD5;--chop-n2-CIN:#8A8A8A;--chop-n2-CLE:#F05400;--chop-n2-DAL:#4F7BD9;--chop-n2-DEN:#4A6FD6;--chop-n2-DET:#828B93;--chop-n2-GB:#B57D00;--chop-n2-HOU:#4D6BD1;--chop-n2-IND:#738BB0;--chop-n2-JAX:#AD8221;--chop-n2-KC:#B57C00;--chop-n2-LAC:#AC8100;--chop-n2-LAR:#A38600;--chop-n2-LV:#858B91;--chop-n2-MIA:#DC6603;--chop-n2-MIN:#B48200;--chop-n2-NE:#E8384F;--chop-n2-NO:#898989;--chop-n2-NYG:#E8384F;--chop-n2-NYJ:#8A8A8A;--chop-n2-PHI:#778E9C;--chop-n2-PIT:#808C97;--chop-n2-SEA:#4E7BD6;--chop-n2-SF:#AA843B;--chop-n2-TB:#988779;--chop-n2-TEN:#E8384F;--chop-n2-WAS:#B57D00;--chop-n-ARI:#B02A53;--chop-n-ATL:#D42A48;--chop-n-BAL:#9371FF;--chop-n-BUF:#2358E0;--chop-n-CAR:#1592CC;--chop-n-CHI:#F05700;--chop-n-CIN:#D96A00;--chop-n-CLE:#7E5530;--chop-n-DAL:#6E8FC0;--chop-n-DEN:#E25E00;--chop-n-DET:#0E90DC;--chop-n-GB:#279E4B;--chop-n-HOU:#D42A48;--chop-n-IND:#2358E0;--chop-n-JAX:#119889;--chop-n-KC:#D42046;--chop-n-LAC:#0091DB;--chop-n-LAR:#5F7FFF;--chop-n-LV:#7C8C99;--chop-n-MIA:#008F8A;--chop-n-MIN:#A45CFF;--chop-n-NE:#6F87C4;--chop-n-NO:#A67F2E;--chop-n-NYG:#3C5AE8;--chop-n-NYJ:#1E9A3A;--chop-n-PHI:#009988;--chop-n-PIT:#A38B00;--chop-n-SEA:#5C9A18;--chop-n-SF:#E0401A;--chop-n-TB:#E0651F;--chop-n-TEN:#3F9BE0;--chop-n-WAS:#B8325F;
+  --chop-bg:#fbfbfd;--chop-fg:#1d1d1f;--chop-muted:#6b6b72;--chop-grid:#e3e3e8;
+  --chop-panel:#ffffff;--chop-future:rgba(120,120,140,.07);
+}
+body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-system,system-ui,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;
+  padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chop{max-width:1000px;margin-inline:auto}
+.chop-sec{margin-top:28px;padding-top:16px;border-top:1px solid var(--chop-grid)}
+.chop-h2{font-size:1.0625rem;margin:0;color:var(--chop-fg)}
+.chop-story{border-bottom:1px solid var(--chop-grid);max-width:65ch}
+.chop-story summary{cursor:pointer;padding:10px 0;list-style-position:outside;margin-left:1.1em}
+.chop-story summary b{display:block;font-size:.9375rem;line-height:1.3}
+.chop-story summary span{display:block;font-size:.75rem;color:var(--chop-muted);margin-top:2px}
+.chop-story p{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
+.chop-story[open]{padding-bottom:.4rem}
+#stories-list{margin-top:6px}
+.chop-pt td:nth-child(1),.chop-pt th:nth-child(1){text-align:left}
+.chop-pt td.game,.chop-pt th:nth-last-child(2){text-align:left;white-space:normal;color:var(--chop-muted);font-size:.72rem;line-height:1.35}
+.chop-pt td.game .ln{display:block;white-space:nowrap}
+/* the Players in a game section: group rows in its table, the By game / By team switch */
+.chop-pt tr.grp td{text-align:left;font-weight:700;color:var(--chop-fg);padding-top:12px;border-bottom:1px solid color-mix(in srgb,var(--chop-grid) 78%,var(--chop-fg))}
+.chop-pt tr.grp .sub{font-weight:400;color:var(--chop-muted)}
+.chop-pt tr.grp.club td{font-weight:600;font-size:.72rem;color:var(--chop-muted);padding-top:7px;padding-bottom:3px;border-bottom-color:var(--chop-grid)}
+.chop-pl.tm{white-space:normal}
+.chop-seg{display:inline-flex}
+.chop-zoombar .chop-seg button{border-radius:0;padding:5px 9px}
+.chop-zoombar .chop-seg button:first-child{border-radius:6px 0 0 6px;border-right:0}
+.chop-zoombar .chop-seg button:last-child{border-radius:0 6px 6px 0}
+.chop-zoombar .chop-seg button[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
+.chop-update{font:inherit;font-size:.75rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:2px 9px;cursor:pointer}
+.chop-update:disabled{color:var(--chop-muted);cursor:default}
+.chop-update:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
+.chop-none{color:var(--chop-muted);font-size:.875rem;margin:.25rem 0 0}
+/* the small line after the Game column: before kickoff the matchup's rank, red 1st to green 32nd; in a game, points so far against the predicted final */
+.chop-meter{display:block;position:relative;width:64px;height:1.2em}
+.chop-meter .line,.chop-meter .fill{position:absolute;left:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px}
+.chop-meter .line{right:0;background:var(--chop-grid)}
+.chop-meter .fill{background:var(--row)}
+.chop-meter.rank .line{background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
+.chop-meter .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--row);box-shadow:0 0 0 1.5px var(--chop-bg)}
+.chop-meter.rank .mark{background:var(--chop-fg)}
+.chop-meter .tick{position:absolute;top:50%;width:1.5px;height:11px;margin:-5.5px 0 0 -.75px;border-radius:1px;background:var(--row);box-shadow:0 0 0 1px var(--chop-bg)}   /* his projection, once he is past it: in his pace color (blue), ringed so it shows on the dot */
+.chop-pt tr.bench .chop-meter.rank{opacity:.6}
+.chop-meter.red{--row:var(--chop-p-qb)}.chop-meter.yellow{--row:var(--chop-p-te1)}.chop-meter.green{--row:var(--chop-p-wr0)}.chop-meter.blue{--row:var(--chop-p-rb0)}   /* in a game: pace against his projection */
+/* stats under a name: light bullets between the parts, none where a line wraps (the one at the start of each line is clipped) */
+.chop-pl.st{overflow:hidden}
+.chop-pl.st .parts{display:flex;flex-wrap:wrap;margin-left:-1em}
+.chop-pl.st .pt{position:relative;margin:0;padding-left:1em}
+.chop-pl.st .pt::before{content:"•";position:absolute;left:.35em;color:var(--chop-muted);opacity:.45}
+/* a status tag: muted text in a soft outline of the same color, on a very light tint of it */
+.chop-tag{display:inline-block;padding:0 5px;border:1px solid;border-radius:4px;font-size:.62rem;font-weight:600;letter-spacing:.02em;line-height:1.45;margin-right:.6em}
+.chop-tag.red{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f)}
+.chop-tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
+.chop-tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
+.chop-tag.bench{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f);margin-left:.4em;font-weight:400;vertical-align:1px}
+.chop-tag.blue{color:var(--chop-tag-blue-t);border-color:var(--chop-tag-blue-b);background:var(--chop-tag-blue-f)}
+.chop-tag.gray{color:var(--chop-tag-gray-t);border-color:var(--chop-tag-gray-b);background:var(--chop-tag-gray-f)}
+#sec-teams .chop-t .chop-tag.gray{margin:0;padding:0 2px;letter-spacing:0;font-size:.58rem}   /* Left In Done: a finished team, as narrow as the old word */
+.chop-t td.game .chop-tag{margin-right:.35em;vertical-align:1px}
+.chop-t .ball .chop-tag{margin-right:0}
+.chop-t .ball .b-m,.chop-t .ball .b-l{display:none}   /* his team's ball: ◄40 • 3&2 on phones, ◄40 yrd • 3rd & 2 mid, ◄ 40 yard line • 3rd down & 2 to go wide */
+@media (min-width:560px) and (max-width:999px){.chop-t .ball .b-s{display:none}.chop-t .ball .b-m{display:inline}}
+@media (min-width:1000px){.chop-t .ball .b-s{display:none}.chop-t .ball .b-l{display:inline}}
+.chop-pt tr.grp .chop-tag{margin-right:.35em;vertical-align:1px}
+.chop-t .tick{font-variant-numeric:tabular-nums}.chop-t .tick.stopped{opacity:.55}   /* the game clock: counting while it runs, dim while stopped */
+.chop-pt tr.grp .chop-tag.team{color:color-mix(in srgb,var(--tc) 80%,var(--chop-fg));border-color:color-mix(in srgb,var(--tc) 45%,transparent);background:color-mix(in srgb,var(--tc) 12%,transparent)}   /* who has the ball, dim in his team's color */
+.chop-pt tr.grp .clubs{white-space:nowrap;font-size:1.45em;vertical-align:-2px}   /* NFL game header: the game's name, larger */
+#sec-teams .chop-t td:first-child{position:relative;padding-left:9px}
+#sec-teams .chop-t td:first-child::after{content:"";position:absolute;left:0;top:2px;bottom:1px;width:3px;border-radius:1.5px;background:var(--risk,transparent);pointer-events:none}   /* the chop-risk bar: its own line, a segment per row with a small gap between rows */
+#sec-teams .chop-t tr.sel td:first-child{box-shadow:none;border-radius:0}   /* picked: the rounded card starts right at the bar's edge */
+#sec-teams .chop-t tr.sel td:first-child::before{left:3px;opacity:1;border-radius:8px 0 0 8px;background:color-mix(in srgb,var(--row) 15%,transparent);
+  box-shadow:inset var(--rw) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}   /* chop risk: red the projected chop, yellow in danger, green probably safe, blue no chance */
+.chop-redact{margin:.3rem 0 .25rem;padding:8px 10px;border:1px solid var(--chop-grid);border-radius:8px;font-size:.78rem}   /* the Redact picker, inside its roll-down */
+.chop-redact .chop-seg{margin:0 0 8px}
+.chop-redact-d summary.shut{color:var(--chop-p-qb)}.chop-redact-d summary.open{color:var(--chop-p-wr0)}   /* Redacted: red; Unredacted: green */
+.chop-redact-d summary .chop-tag.team{margin:0 4px 0 0;vertical-align:1px;color:color-mix(in srgb,var(--tc) 80%,var(--chop-fg));border-color:color-mix(in srgb,var(--tc) 45%,transparent);background:color-mix(in srgb,var(--tc) 12%,transparent)}
+.chop-redact .chop-seg button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);padding:5px 10px;cursor:pointer;border-radius:0}
+.chop-redact .chop-seg button:first-child{border-radius:6px 0 0 6px;border-right:0}
+.chop-redact .chop-seg button:last-child{border-radius:0 6px 6px 0}
+.chop-redact .chop-seg button[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
+.chop-redact .chop-seg button:disabled{opacity:.45;cursor:default}
+.chop-redact .lead{margin:0 0 6px;color:var(--chop-muted)}
+.chop-redact .conf{display:flex;align-items:center;gap:10px;margin:8px 0 4px}
+.chop-redact .div{display:flex;align-items:center;gap:6px;margin:3px 0;flex-wrap:wrap}
+.chop-redact .grpb{font:inherit;background:none;border:0;padding:2px 0;cursor:pointer;color:var(--chop-muted);text-align:left;text-decoration:underline dotted;text-underline-offset:3px}
+.chop-redact .grpb[aria-pressed="true"]{color:var(--chop-fg)}
+.chop-redact .conf-b{font-weight:700;color:var(--chop-fg)}
+.chop-redact .dl{width:42px}
+.chop-redact .chip{font:inherit;font-weight:600;min-width:44px;padding:3px 6px;border-radius:6px;cursor:pointer;color:var(--tc);background:transparent;border:1px solid color-mix(in srgb,var(--tc) 40%,transparent)}
+.chop-redact .chip[aria-pressed="true"]{color:var(--chop-bg);background:var(--tc);border-color:var(--tc);text-decoration:line-through}
+.chop-pt td.redact{text-align:left}
+.chop-t .clubs .score,.chop-sc .clubs .score{color:var(--chop-muted);font-weight:600}   /* final scores: dim */
+.chop-tag.redact{color:var(--chop-p-qb);border-color:var(--chop-p-qb);background:color-mix(in srgb,var(--chop-p-qb) 16%,transparent);font-weight:700}
+.chop-tag.oppredact{color:var(--chop-p-te1);border-color:var(--chop-p-te1);background:color-mix(in srgb,var(--chop-p-te1) 14%,transparent);font-weight:700}
+.chop-t .clubs .chop-tag,.chop-sc .clubs .chop-tag{font-size:.5em;vertical-align:.3em;margin-left:4px}
+.chop-t td.game .fs{font-weight:600}.chop-t td.game .fs .score{color:var(--chop-muted)}
+.chop-sc{font-size:.8rem;padding:2px 0 6px}   /* the between-games scorecard */
+.chop-sc-key{margin:0 0 6px;color:var(--chop-muted);font-size:.72rem}
+.chop-sc-key b{font-weight:600;margin-left:.5em}.chop-sc-key b.blue{color:var(--chop-p-rb0)}.chop-sc-key b.green{color:var(--chop-p-wr0)}.chop-sc-key b.yellow{color:var(--chop-p-te1)}.chop-sc-key b.red{color:var(--chop-p-qb)}.chop-sc-key b.purple{color:#c77dff;margin-left:0}
+.chop-sc .grp{font-weight:700;margin:12px 0 4px}.chop-sc .grp .clubs{font-size:1.15em}
+.chop-sc .row{display:flex;align-items:center;gap:8px;min-height:20px;cursor:pointer}
+.chop-sc .row.bench{opacity:.6}
+.chop-sc .nm{width:124px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chop-sc .trk{position:relative;flex:1;height:8px;border-radius:4px;background:color-mix(in srgb,var(--chop-grid) 60%,transparent)}
+.chop-sc .bar{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.chop-sc .grp.empty{font-weight:600}.chop-sc .grp.empty .sub{color:var(--chop-muted);font-weight:400}   /* a game with none of our players */
+.chop-sc .gl{position:absolute;inset:0;pointer-events:none;border-radius:4px}
+.chop-sc .tk{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#c77dff;box-shadow:0 0 0 1px var(--chop-bg)}   /* Projected: bright purple */
+.chop-sc .val{min-width:34px;flex:none;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chop-sc .val .sl{color:var(--chop-muted);margin:0 1px}.chop-sc .val .pj{color:var(--chop-muted)}
+.chop-sc.narrow .val .pj{display:none}
+.chop-sc .row.dim{opacity:.25}
+.chop-chart .rankband{fill:var(--chop-p-qb);opacity:.08}   /* Cushion: below the chop line */
+.chop-chart .lead{stroke-width:.8;opacity:.55}.chop-chart .lead.dim{opacity:.12}   /* from a line's end at Now to its name */
+.chop-chart .chopline{stroke:var(--chop-p-qb);stroke-width:1.2;opacity:.75}
+.chop-chart .chopline-l{fill:var(--chop-muted);opacity:.75;font-size:10px}   /* the Game column: the quarter (blue) before the clock, DONE (gray) */
+/* paired numbers meet at a light bullet, so the bullets line up down the column */
+.chop-t{font-variant-numeric:tabular-nums}
+.chop-t .n{display:inline-block;text-align:right}
+.chop-t .n.b{text-align:left}
+.chop-t .dot{font-weight:400;color:var(--chop-muted);opacity:.45;margin:0 .3em}
+.chop-t .n.gap{margin-left:.8em}
+.chop-pl.pre{white-space:nowrap}
+.chop-pl.pre .pt{margin-right:0}
+.chop-pl.pre .chop-tag{margin-right:0}
+.chop-t .chop-pl .dot{margin:0 .4em}
+.chop-pt tr.bench td{color:var(--chop-muted)}
+.chop-pt tr.first-bench td{border-top:2px solid var(--chop-grid);border-top-color:color-mix(in srgb,var(--chop-grid) 78%,var(--chop-fg))}
+.chop-t td{vertical-align:middle}
+.chop-t td.nm{white-space:normal}
+.chop-t .slp{color:var(--chop-muted);font-weight:400}
+.chop-t td.prefinal,.chop-t td.prefinal .slp{color:var(--chop-muted);font-weight:400}   /* before kickoff Projected is only a prediction */
+.chop-t td.preweek,.chop-t td.preweek .slp{color:var(--chop-muted)}   /* the team's projection, locked at the week's first kickoff */
+.chop-t .pregame.phone{display:none}
+.chop-t td.struck .n{text-decoration:line-through}      /* his game is over: what we predicted, crossed out */
+.chop-t td.final{font-weight:700}                       /* once he has kicked off, and through the actual final */
+.chop-t td.final .slp{color:inherit;font-weight:700}
+.chop-t .pregame{display:block;font-weight:300;color:var(--chop-muted);opacity:.7}   /* under Projected during his game: the pregame prediction */
+.chop-t td.final .pregame .slp{color:var(--chop-muted);font-weight:300}
+.chop-pl{display:block;margin-left:15px;font-size:.72rem;font-weight:400;line-height:1.35;color:var(--chop-muted)}
+.chop-pl.st{color:var(--chop-fg)}
+.chop-pl .pt{white-space:nowrap;margin-right:.8em}
+.chop-zoombar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;color:var(--chop-muted);font-size:.75rem;margin-bottom:6px}
+.chop-zoombar button{font:inherit;font-size:.8125rem;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 10px;cursor:pointer}
+.chop-zoombar select{font:inherit;font-size:.9375rem;font-weight:600;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:5px 8px;max-width:100%}
+.chop-pickrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chop-zoombar select:focus-visible,.chop-zoombar button:focus-visible{outline:2px solid var(--chop-c1);outline-offset:2px}
+.chop-state{color:var(--chop-muted);font-size:.875rem;padding:48px 0;text-align:center}
+.chop-status{font-size:.8125rem;color:var(--chop-muted);margin:0 0 .5rem}
+.chop-status .l1{display:flex;flex-wrap:wrap;align-items:center;gap:8px}   /* Week 9 · LIVE · Game on · Update */
+.chop-status .l2{margin-top:3px}                                              /* next kickoff · last update */
+.chop-live{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#d62728;border-radius:4px;padding:2px 7px}
+.chop-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:chop-pulse 1.6s ease-in-out infinite}
+@keyframes chop-pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.chop-live::before{animation:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--chop-tag-gray-t:#80848b;--chop-tag-gray-b:rgba(128,132,139,.35);--chop-tag-gray-f:rgba(128,132,139,.06);--chop-tag-blue-t:#8fb3d9;--chop-tag-blue-b:rgba(143,179,217,.45);--chop-tag-blue-f:rgba(143,179,217,.1);--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;
+  --chop-c3:#4cc864;--chop-c4:#b98bef;--chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;
+  --chop-c10:#f2f2f7;--chop-n2-ARI:#FFB612;--chop-n2-ATL:#A5ACAF;--chop-n2-BAL:#E8C547;--chop-n2-BUF:#FF4D5E;--chop-n2-CAR:#BFC0BF;--chop-n2-CHI:#5B7BD5;--chop-n2-CIN:#D9D9D9;--chop-n2-CLE:#FF6A1A;--chop-n2-DAL:#4F7BD9;--chop-n2-DEN:#4A6FD6;--chop-n2-DET:#C4C8CC;--chop-n2-GB:#FFB612;--chop-n2-HOU:#4D6BD1;--chop-n2-IND:#E8ECF2;--chop-n2-JAX:#D7A22A;--chop-n2-KC:#FFB81C;--chop-n2-LAC:#FFC20E;--chop-n2-LAR:#FFD100;--chop-n2-LV:#8A9096;--chop-n2-MIA:#FC8A2A;--chop-n2-MIN:#FFC62F;--chop-n2-NE:#E8384F;--chop-n2-NO:#E0E0E0;--chop-n2-NYG:#E8384F;--chop-n2-NYJ:#EDEDED;--chop-n2-PHI:#C4CED4;--chop-n2-PIT:#C9CED3;--chop-n2-SEA:#4E7BD6;--chop-n2-SF:#D2B57E;--chop-n2-TB:#B3A69C;--chop-n2-TEN:#E8384F;--chop-n2-WAS:#FFB612;--chop-n-ARI:#C9305E;--chop-n-ATL:#E5304F;--chop-n-BAL:#9B7BFF;--chop-n-BUF:#2F6BFF;--chop-n-CAR:#1CA8E8;--chop-n-CHI:#FF7A2E;--chop-n-CIN:#FF8A1F;--chop-n-CLE:#B98A5E;--chop-n-DAL:#A3BBDD;--chop-n-DEN:#FF7A1A;--chop-n-DET:#19A0F0;--chop-n-GB:#2FBF5B;--chop-n-HOU:#E0314F;--chop-n-IND:#2F6BFF;--chop-n-JAX:#14B8A6;--chop-n-KC:#E8234A;--chop-n-LAC:#5CC8FF;--chop-n-LAR:#5F7FFF;--chop-n-LV:#C4CBD1;--chop-n-MIA:#00D1C7;--chop-n-MIN:#A45CFF;--chop-n-NE:#8C9FD0;--chop-n-NO:#D9BE85;--chop-n-NYG:#4F6FFF;--chop-n-NYJ:#2BC24A;--chop-n-PHI:#00A896;--chop-n-PIT:#FFD60A;--chop-n-SEA:#7ED321;--chop-n-SF:#FF5A2B;--chop-n-TB:#FF8A4D;--chop-n-TEN:#7CC4F5;--chop-n-WAS:#B8325F;
+  --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
+  --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}}
+:root[data-theme="dark"]{color-scheme:dark;--chop-tag-gray-t:#80848b;--chop-tag-gray-b:rgba(128,132,139,.35);--chop-tag-gray-f:rgba(128,132,139,.06);--chop-tag-blue-t:#8fb3d9;--chop-tag-blue-b:rgba(143,179,217,.45);--chop-tag-blue-f:rgba(143,179,217,.1);--chop-tag-red-t:#d68a8a;--chop-tag-red-b:rgba(214,138,138,.45);--chop-tag-red-f:rgba(214,138,138,.1);--chop-tag-yellow-t:#c9ae5e;--chop-tag-yellow-b:rgba(201,174,94,.45);--chop-tag-yellow-f:rgba(201,174,94,.1);--chop-tag-orange-t:#cf9a66;--chop-tag-orange-b:rgba(207,154,102,.45);--chop-tag-orange-f:rgba(207,154,102,.1);--chop-rank-s:42%;--chop-rank-l:64%;--chop-p-qb:#ff6b6b;--chop-p-rb0:#4a90ff;--chop-p-rb1:#8cc4ff;--chop-p-rb2:#4dd0e1;--chop-p-wr0:#3fc45a;--chop-p-wr1:#a5d86a;--chop-p-wr2:#4db6a0;--chop-p-te0:#ff9f40;--chop-p-te1:#e0c14a;--chop-b-qb:#8a6161;--chop-b-rb0:#66809e;--chop-b-rb1:#7f95ad;--chop-b-wr0:#6f8f74;--chop-b-wr1:#87a58b;--chop-b-te0:#9c8264;--chop-b-te1:#ab9677;--chop-c0:#ff5a5f;--chop-c1:#5aa2ff;--chop-c2:#ff9f40;--chop-c3:#4cc864;--chop-c4:#b98bef;
+  --chop-c5:#c9907a;--chop-c6:#f58fd3;--chop-c7:#a9a9b0;--chop-c8:#d8d84a;--chop-c9:#3fd6e8;--chop-c10:#f2f2f7;
+  --chop-n2-ARI:#FFB612;--chop-n2-ATL:#A5ACAF;--chop-n2-BAL:#E8C547;--chop-n2-BUF:#FF4D5E;--chop-n2-CAR:#BFC0BF;--chop-n2-CHI:#5B7BD5;--chop-n2-CIN:#D9D9D9;--chop-n2-CLE:#FF6A1A;--chop-n2-DAL:#4F7BD9;--chop-n2-DEN:#4A6FD6;--chop-n2-DET:#C4C8CC;--chop-n2-GB:#FFB612;--chop-n2-HOU:#4D6BD1;--chop-n2-IND:#E8ECF2;--chop-n2-JAX:#D7A22A;--chop-n2-KC:#FFB81C;--chop-n2-LAC:#FFC20E;--chop-n2-LAR:#FFD100;--chop-n2-LV:#8A9096;--chop-n2-MIA:#FC8A2A;--chop-n2-MIN:#FFC62F;--chop-n2-NE:#E8384F;--chop-n2-NO:#E0E0E0;--chop-n2-NYG:#E8384F;--chop-n2-NYJ:#EDEDED;--chop-n2-PHI:#C4CED4;--chop-n2-PIT:#C9CED3;--chop-n2-SEA:#4E7BD6;--chop-n2-SF:#D2B57E;--chop-n2-TB:#B3A69C;--chop-n2-TEN:#E8384F;--chop-n2-WAS:#FFB612;--chop-n-ARI:#C9305E;--chop-n-ATL:#E5304F;--chop-n-BAL:#9B7BFF;--chop-n-BUF:#2F6BFF;--chop-n-CAR:#1CA8E8;--chop-n-CHI:#FF7A2E;--chop-n-CIN:#FF8A1F;--chop-n-CLE:#B98A5E;--chop-n-DAL:#A3BBDD;--chop-n-DEN:#FF7A1A;--chop-n-DET:#19A0F0;--chop-n-GB:#2FBF5B;--chop-n-HOU:#E0314F;--chop-n-IND:#2F6BFF;--chop-n-JAX:#14B8A6;--chop-n-KC:#E8234A;--chop-n-LAC:#5CC8FF;--chop-n-LAR:#5F7FFF;--chop-n-LV:#C4CBD1;--chop-n-MIA:#00D1C7;--chop-n-MIN:#A45CFF;--chop-n-NE:#8C9FD0;--chop-n-NO:#D9BE85;--chop-n-NYG:#4F6FFF;--chop-n-NYJ:#2BC24A;--chop-n-PHI:#00A896;--chop-n-PIT:#FFD60A;--chop-n-SEA:#7ED321;--chop-n-SF:#FF5A2B;--chop-n-TB:#FF8A4D;--chop-n-TEN:#7CC4F5;--chop-n-WAS:#B8325F;
+  --chop-bg:#111113;--chop-fg:#f2f2f7;--chop-muted:#a1a1a6;--chop-grid:#2c2c2e;
+  --chop-panel:#1c1c1e;--chop-future:rgba(200,200,220,.06)}
+.chop-h{font-size:1.25rem;line-height:1.25;margin:0 0 .25rem;text-wrap:balance}
+.chop-help{font-size:.8125rem;color:var(--chop-muted);margin:0 0 .75rem}
+.chop-help summary{cursor:pointer;color:var(--chop-fg);font-weight:600;padding:4px 0;list-style-position:inside}
+.chop-help p{line-height:1.4;margin:.4rem 0;max-width:65ch}
+.chop-race{line-height:1.4;margin:.4rem 0;max-width:65ch}
+.chop-news{margin:.25rem 0 .75rem;max-width:65ch}
+.chop-news-h{font-size:1.0625rem;line-height:1.3;margin:0 0 .2rem;text-wrap:balance}
+.chop-news-meta{font-size:.75rem;color:var(--chop-muted);margin:0 0 .4rem}
+.chop-news p.b{font-size:.9375rem;line-height:1.5;margin:0 0 .55rem}
+.chop-news a.ref,.chop-story a.ref{color:var(--ref);color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;
+  text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
+.chop-news a.ref:focus-visible,.chop-story a.ref:focus-visible{outline:2px solid var(--ref);outline-offset:2px;border-radius:2px}
+.chop-sub{color:var(--chop-muted);font-size:.8125rem;line-height:1.4;margin:0 0 .75rem;max-width:65ch}
+.chop-chart{position:relative;width:100%;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.chop-chart *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.chop-chart svg{display:block;width:100%;height:auto}
+.chop-chart .ax{fill:var(--chop-muted);font-size:11px}
+.chop-chart .grid{stroke:var(--chop-grid);stroke-width:1}
+.chop-chart .sec{stroke:color-mix(in srgb,var(--chop-grid) 85%,var(--chop-fg));stroke-width:1}   /* Players in a game: 30 minutes, or a quarter */
+.chop-chart .sec.hr{stroke:color-mix(in srgb,var(--chop-grid) 50%,var(--chop-fg))}                  /* the hour, or halftime */
+.chop-chart .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
+.chop-chart .nowln{stroke:var(--chop-fg);stroke-width:1.2}
+.chop-chart .kick{stroke:var(--chop-fg);stroke-width:1.5}
+.chop-chart .kickzone{fill:var(--chop-fg);fill-opacity:.06;pointer-events:none}
+.chop-chart .kickend{stroke:var(--chop-muted);stroke-opacity:.5;stroke-dasharray:3 4;stroke-width:1}
+.chop-chart .fut{fill:var(--chop-future)}
+.chop-chart path.ln{fill:none;stroke-linejoin:round;stroke-linecap:round;transition:opacity .15s}
+.chop-chart .lab{font-size:10.5px;cursor:pointer}
+.chop-chart .hit{fill:transparent;cursor:pointer}
+.chop-chart .dim{opacity:.12}
+.chop-tip{position:absolute;pointer-events:none;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;
+  padding:6px 8px;font-size:12px;line-height:1.35;box-shadow:0 2px 10px rgba(0,0,0,.18);min-width:150px;z-index:2}
+.chop-tip b{display:block;margin-bottom:2px}
+.chop-tip .r{display:flex;gap:6px;align-items:center;justify-content:space-between}
+.chop-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+.chop-tw{overflow-x:auto;margin-top:.75rem}
+.chop-t{border-collapse:separate;border-spacing:0;font-size:.78rem}
+.chop-t th{color:var(--chop-muted);font-weight:500;text-align:right;padding:4px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
+.chop-t td{text-align:right;padding:5px 4px;border-bottom:1px solid var(--chop-grid);white-space:nowrap}
+.chop-t th:nth-child(2),.chop-t td:nth-child(2){text-align:left}
+.chop-t tbody tr{cursor:pointer}
+.chop-t tr.us td{font-weight:700}
+.chop-t td.nm{font-weight:600}
+/* a picked row: a rounded box in its line's color around the whole row (inset shadows, so nothing shifts) */
+.chop-t{--rw:1px}
+@media (min-resolution:2dppx){.chop-t{--rw:.5px}}   /* a hairline: half a point on phone screens */
+.chop-t tr.sel td{position:relative;isolation:isolate;border-bottom-color:transparent;
+  box-shadow:inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}
+.chop-t tr.sel td::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--row);opacity:.15;border-radius:inherit;pointer-events:none}
+.chop-t tr.sel td:first-child{border-radius:8px 0 0 8px;box-shadow:inset var(--rw) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}
+.chop-t tr.sel td:last-child{border-radius:0 8px 8px 0;box-shadow:inset calc(-1 * var(--rw)) 0 0 var(--row),inset 0 var(--rw) 0 var(--row),inset 0 calc(-1 * var(--rw)) 0 var(--row)}
+.chop-t .chop-dot{margin-right:6px;vertical-align:-1px}
+@media (min-width:560px){                        /* wide screens: the table is as wide as its contents, with air between columns */
+  .chop-t th,.chop-t td{padding-left:12px;padding-right:12px}
+  .chop-t th:first-child,.chop-t td:first-child{padding-left:4px}
+  .chop-t .dot{margin:0 .55em}
+  .chop-pl{max-width:60ch}
+}
+@media (max-width:559px){                        /* phones: the team table fits without sideways scrolling */
+  .chop-t{font-size:.72rem;width:100%}
+  .chop-t td.nm,.chop-t th.nm{width:100%}
+  .chop-t td.preweek,.chop-t th.preweek{display:none}
+  .chop-t .pregame.phone{display:block}
+  .chop-t .n.gap{margin-left:.5em}
+  .chop-t th{white-space:normal;vertical-align:bottom}
+  .chop-t th,.chop-t td{padding-left:1px;padding-right:1px}
+  .chop-t .dot{margin:0 .1em}
+  .chop-t .chop-pl .tagdot{display:none}               /* phones: a status tag gets its own line, no bullet after it */
+  .chop-pl.pre .chop-tag{display:block;width:fit-content;margin-bottom:1px}
+  .chop-pl.pre .chop-tag.blue,.chop-pl.pre .chop-tag.atend{display:inline-block;margin:0;padding:0 3px}
+  .chop-pl{margin-left:0;font-size:.67rem}
+  .chop-meter{width:24px;margin-left:1px}
+  .chop-pl.st .pt{white-space:normal;min-width:0}        /* a long passing line wraps rather than pushing the table wide */
+  .chop-pt td.game .ln:first-child{white-space:normal}   /* "Sun international" wraps rather than pushing the table wide */
+  .chop-pt td.game .ln.clk{white-space:nowrap}   /* the quarter tag stays with its clock */
+  .chop-pt td.game,.chop-pt th:nth-last-child(2){padding-left:3px}
+  .chop-t .chop-pl .dot{margin:0 .2em}
+}
+@media (prefers-reduced-motion:reduce){.chop-chart path.ln{transition:none}}
+/* v1: on phones the pre-game line may break between its parts when it cannot fit (WR112 • 39% (93%) • 11 pushed the table 1px past a 375px screen) */
+@media (max-width:559px){.chop-pl.pre{white-space:normal}.chop-pl.pre .pt{display:inline-block}}
+/* v1: a live game's header row (teams, score, clock, ball) wraps on phones instead of pushing the table up to 40px wide */
+@media (max-width:559px){.chop-pt tr.grp td{white-space:normal}}
+/* v1: the narrowest phones (375px): slightly smaller table text, so three-digit scores and a 10-team table still fit */
+@media (max-width:389px){.chop-t{font-size:.7rem}}
+</style>
+<div class="chop">
+  <h1 class="chop-h">Sleeper - The Chopping Block</h1>
+  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div></div>
+  <details class="chop-help chop-redact-d" id="chop-redact-d"><summary id="chop-redact-sum">Redact</summary><div class="chop-redact" id="chop-redact-panel"></div></details>
+  <article class="chop-news" id="chop-news" hidden aria-live="polite">
+    <h2 class="chop-news-h" id="news-head"></h2>
+    <p class="chop-news-meta" id="news-meta"></p>
+    <div id="news-body"></div>
+  </article>
+  <details class="chop-help"><summary>About the race, and how to read the charts</summary>
+  <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
+    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to each team's margin through the week: how far its projected final sits above the projected chop team, and for the chop team itself how far it sits behind the next team up, so the bottom two always show the same gap, one above the line and one below. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Redact (the roll-down under Update) hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games (OPP REDACTED), along with the score and the down, so a game you are saving is not spoiled; the choice is kept on this device (tap AFC, NFC, or a division's name to select or clear all of it). Its Redacted / Unredacted switch shows them all until you switch back, and the device remembers which way it was left; redacted players always count in their team's totals. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
+    <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
+        <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. During his game it fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, which counts down while the game clock is running and dims while it is stopped (worked out from the last play; it lines back up with ESPN every few seconds), and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray FINAL tag; a game's header shows its score while it is on and once it is final (in Fantasy, the Game column shows the winner and score beside FINAL, the loser under it). Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
+    <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. NFL groups them by game, split into its two NFL teams; Fantasy groups them by fantasy team; or show just one. Lines are in each player's NFL team color, dimmer for bench players. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players. Between games the chart becomes a scorecard: a bar for each player who played, as long as his points, with a tick at his Projected, blue if he beat it, green if he met it, yellow if he missed by a point or less, red if by more. Before the week's first kickoff it shows everyone due to play, each bar his Projected in his NFL team's color; under NFL, the games with none of them follow at the end.</p>
+  </details>
+  <p class="chop-state" id="chop-wait">Waiting for the first scores. The chart fills in as soon as the next update lands.</p>
+  <div id="chop-body" hidden>
+    <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2">The Chopping Block</h2>
+      <span class="chop-seg" role="group" aria-label="The chart shows"><button type="button" id="chart-points">Points</button><button type="button" id="chart-rank">Cushion</button></span></div>
+      <button type="button" class="chop-reset" id="chop-reset" hidden>Show whole week</button></div>
+    <section id="sec-teams">
+    <div class="chop-chart" id="chop-chart"></div>
+    <div class="chop-tw">
+      <table class="chop-t">
+        <thead><tr><th>#</th><th class="nm">Team</th><th>Now</th><th>Final • Sleeper<span class="pregame phone">Projected • Sleeper</span></th><th class="preweek">Projected • Sleeper</th><th>Chop • Sleeper</th><th>Left In Done</th><th aria-label="Place in the race, or points so far against the projected final"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    </section>
+    <section id="sec-mine" class="chop-sec">
+      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2"><label for="mine-team">Players for</label></h2>
+        <select id="mine-team"></select></div>
+        <button type="button" class="chop-reset" id="mine-reset" hidden>Show whole week</button></div>
+      <div class="chop-chart" id="mine-chart"></div>
+      <div class="chop-tw">
+        <table class="chop-t chop-pt">
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Projected • Sleeper</th><th>Game</th><th aria-label="Matchup rank, or points so far against the predicted final"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <section id="sec-game" class="chop-sec">
+      <div class="chop-zoombar"><div class="chop-pickrow"><h2 class="chop-h2" id="game-title">Players in a game</h2>
+        <span class="chop-seg" role="group" aria-label="Organize by"><button type="button" id="game-by-game">NFL</button><button type="button" id="game-by-team">Fantasy</button></span>
+        <select id="game-group" aria-label="Show one game or team"></select></div>
+        <button type="button" class="chop-reset" id="game-reset" hidden>Zoom out</button></div>
+      <p class="chop-none" id="game-none" hidden>No players have played yet.</p>
+      <div id="game-body">
+      <div class="chop-chart" id="game-chart"></div>
+      <div class="chop-tw">
+        <table class="chop-t chop-pt">
+          <thead><tr><th class="nm">Player</th><th>Now</th><th>Projected • Sleeper</th><th>Game</th><th aria-label="Points so far against the predicted final"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      </div>
+    </section>
+  </div>
+  <section id="sec-stories" class="chop-sec" hidden>
+    <h2 class="chop-h2">Stories from the last 7 days</h2>
+    <div id="stories-list"></div>
+  </section>
+</div>
+<script>
+(() => {
+  "use strict";
+  /* Chop Race v1.
+     SINGLE SOURCE: the page keeps the three feeds exactly as they arrive (FEEDS.doc = the minute live_doc.json, FEEDS.live = the
+     latest 5-second read of ESPN's scoreboard + Sleeper's stats) and never changes them. fold() is the ONE place that combines
+     them, into one state object M. Every chart, table, tag and color is drawn from M and from the viewer's choices in UI, and from
+     nothing else. A new doc or a new live read means: fold again, then render(). Nothing downstream patches numbers.
+     Sections: 1 helpers · 2 rules (copies of chop_chart.py) · 3 viewer's choices · 4 fold · 5 chart · 6 views · 7 render · 8 feeds. */
+
+  // ---------- 1. helpers ----------
+  const $ = id => document.getElementById(id);
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function sv(tag, attrs, parent) {
+    const n = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  const txt = t => document.createTextNode(t);
+  const round1 = v => Math.round(v * 10) / 10;
+  const roomy = () => innerWidth >= 560;
+  const nowS = () => Date.now() / 1000;
+  function shortTime(t) {                                // "6:19pm", the viewer's time zone
+    const d = new Date(t * 1000), hr = d.getHours();
+    return (hr % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0") + (hr < 12 ? "am" : "pm");
+  }
+  const clock = t => new Date(t * 1000).toLocaleDateString([], {weekday: "short"}) + " " + shortTime(t);   // "Mon 6:19pm"
+  function ordinal(n) { const t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? "th" : u === 1 ? "st" : u === 2 ? "nd" : u === 3 ? "rd" : "th"); }
+  function shortName(n, k) { const c = Array.from(n); return c.length > k ? c.slice(0, k - 1).join("") + "…" : n; }   // by character, so emoji count once
+  const players = n => n + (n === 1 ? " player" : " players");
+  function breakLong(s, min, at) {                       // phones: a very long word may break, so a table fits
+    return String(s).replace(new RegExp("\\S{" + min + ",}", "g"), w => w.replace(new RegExp("(.{" + at + "})", "g"), "$1​"));
+  }
+  function valAt(pts, x) {                               // value of a step/linear path at x
+    let v = pts.length ? pts[0].pts : 0;
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      if (p.x <= x) { v = p.pts; continue; }
+      const q = pts[i - 1];
+      if (q && p.x > q.x) v = q.pts + (p.pts - q.pts) * (x - q.x) / (p.x - q.x);
+      break;
+    }
+    return v;
+  }
+  function clip(pts, a, b) {                             // the part of a path between x = a and x = b, ends interpolated
+    if (!pts.length) return [];
+    const lo = Math.max(a, pts[0].x), hi = Math.min(b, pts[pts.length - 1].x);
+    if (hi <= lo) return [];
+    const out = [{x: lo, pts: valAt(pts, lo)}];
+    pts.forEach(p => { if (p.x > lo && p.x < hi) out.push(p); });
+    out.push({x: hi, pts: valAt(pts, hi)});
+    return out;
+  }
+  // A dashed projection from the minute data, stretched so it ends at the Final the tables show; its start stays put.
+  function toward(py, target) {
+    py = py || []; target = +target;
+    if (py.length < 2 || !isFinite(target)) return py;
+    const a = +py[0], b = +py[py.length - 1];
+    if (Math.abs(b - target) < 0.05) return py;
+    return py.map((v, i) => b !== a ? a + (v - a) * (target - a) / (b - a) : a + (target - a) * i / (py.length - 1));
+  }
+  // The two things the charts needed d3 for: a straight-line scale with "nice" round ends, and its tick values (d3-scale / d3-array rules).
+  const E10 = Math.sqrt(50), E5 = Math.sqrt(10), E2 = Math.sqrt(2);
+  function tickSpec(start, stop, count) {
+    const step = (stop - start) / Math.max(0, count), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power),
+          factor = error >= E10 ? 10 : error >= E5 ? 5 : error >= E2 ? 2 : 1;
+    let i1, i2, inc;
+    if (power < 0) {
+      inc = Math.pow(10, -power) / factor; i1 = Math.round(start * inc); i2 = Math.round(stop * inc);
+      if (i1 / inc < start) ++i1; if (i2 / inc > stop) --i2; inc = -inc;
+    } else {
+      inc = Math.pow(10, power) * factor; i1 = Math.round(start / inc); i2 = Math.round(stop / inc);
+      if (i1 * inc < start) ++i1; if (i2 * inc > stop) --i2;
+    }
+    if (i2 < i1 && 0.5 <= count && count < 2) return tickSpec(start, stop, count * 2);
+    return [i1, i2, inc];
+  }
+  function ticks(start, stop, count) {                   // start < stop here
+    if (!(count > 0)) return [];
+    if (start === stop) return [start];
+    const s = tickSpec(start, stop, count), i1 = s[0], i2 = s[1], inc = s[2], out = [];
+    if (!(i2 >= i1)) return out;
+    for (let i = 0; i <= i2 - i1; i++) out.push(inc < 0 ? (i1 + i) / -inc : (i1 + i) * inc);
+    return out;
+  }
+  function nice(start, stop, count) {
+    let prestep, step, maxIter = 10;
+    while (maxIter-- > 0) {
+      step = tickSpec(start, stop, count)[2];
+      if (step === prestep) return [start, stop];
+      else if (step > 0) { start = Math.floor(start / step) * step; stop = Math.ceil(stop / step) * step; }
+      else if (step < 0) { start = Math.ceil(start * step) / step; stop = Math.floor(stop * step) / step; }
+      else break;
+      prestep = step;
+    }
+    return [start, stop];
+  }
+  function linear(d0, d1, r0, r1) {
+    const f = v => { const t = d1 === d0 ? 0.5 : (v - d0) / (d1 - d0); return r0 * (1 - t) + r1 * t; };
+    f.invert = px => { const t = r1 === r0 ? 0.5 : (px - r0) / (r1 - r0); return d0 * (1 - t) + d1 * t; };
+    f.d0 = d0; f.d1 = d1;
+    return f;
+  }
+
+  // ---------- 2. rules: copies of chop_chart.py. Change both sides together. ----------
+  const CLUB_FIX = {WSH: "WAS", JAC: "JAX"};             // ESPN's abbreviations -> Sleeper's
+  const fixClub = c => CLUB_FIX[c] || c;
+  const ST_ORDER = {pre: 0, "in": 1, post: 2};
+  const KICK_NEXT = /extra point|two-point|two point|\bPAT\b|field goal good|safety/i;   // chop_chart.KICK_NEXT
+  function clockLabel(status) {                          // chop_chart.clock_label
+    const per = status.period || 1, c = status.displayClock || "", zero = c === "0:00" || c === "0:0";
+    if ((status.type || {}).name === "STATUS_HALFTIME" || (per === 2 && zero)) return "Halftime";
+    if ((per === 1 || per === 3) && zero) return "Start of Q" + (per + 1);
+    return (per > 4 ? "OT" : "Q" + per) + " " + c;
+  }
+  function fracLeft(status) {                            // chop_chart.frac_left: the share of a game still to play
+    const q = status.period || 1, mm = String(status.displayClock || "15:00").split(":");
+    return Math.max(0, Math.min(1, q > 4 ? 0.05 : ((4 - q) * 15 + (+mm[0] || 0) + (+mm[1] || 0) / 60) / 60));
+  }
+  function remainingPts(now, f, base) {                  // chop_chart.remaining: points still to come for one player
+    if (f >= 1) return base; if (f <= 0) return 0;
+    const played = 1 - f, pace = base > 0 ? Math.min(now / played, 2 * base) : base, w = 0.5 * played;
+    return f * (w * pace + (1 - w) * base);
+  }
+  function paceOf(now, fin, base, left) {                // chop_chart.pace
+    if (now > base) return "blue";
+    if (fin >= base) return "green";
+    return fin >= base - 1 || left > 1 - 7.5 / 60 ? "yellow" : "red";
+  }
+  const firstQuarterGreen = (c, left) => c === "blue" || left <= 0.75 ? c : "green";   // chop_chart.first_quarter_green
+  function scorePts(stats, sc) { let p = 0; for (const k in sc) if (stats[k]) p += stats[k] * sc[k]; return p; }
+  function roundHalfEven(v) { const r = Math.round(v); return Math.abs(v % 1) === 0.5 && r % 2 ? r - 1 : r; }   // Python's round()
+  function statText(s) {                                 // chop_chart.stat_line
+    const n = k => Math.trunc(+s[k] || 0), count = (v, one, many) => v + " " + (v === 1 ? one : many || one + "s"), tail = td => td ? ", " + td + " TD" : "";
+    const parts = [];
+    if (n("pass_att")) parts.push(n("pass_cmp") + "/" + n("pass_att") + " passing, " + n("pass_yd") + " yds" + tail(n("pass_td")) + (n("pass_int") ? ", " + n("pass_int") + " INT" : ""));
+    if (n("rush_att")) parts.push(count(n("rush_att"), "carry", "carries") + ", " + n("rush_yd") + " yds" + tail(n("rush_td")));
+    if (n("rec") || n("rec_tgt")) parts.push(count(n("rec"), "catch", "catches") + ", " + n("rec_yd") + " yds" + tail(n("rec_td")) + (n("rec_tgt") ? " (" + count(n("rec_tgt"), "target") + ")" : ""));
+    const fd = n("rush_fd") + n("rec_fd"); if (fd) parts.push(count(fd, "first down"));
+    if (n("fum_lost")) parts.push(count(n("fum_lost"), "fumble") + " lost");
+    if (n("off_snp") && n("tm_off_snp")) parts.push(roundHalfEven(100 * n("off_snp") / n("tm_off_snp")) + "% of snaps");
+    return parts.join(" · ");
+  }
+  // chop_chart.chop_odds: the share of 20,000 simulated finishes each team ends last. rows = [{team, now, est, v}], est = its
+  // projected final, v = the game-fractions its starters still have to play. Seeded, so the same inputs give the same odds;
+  // the last answer is kept, because between plays the inputs do not change.
+  const ODDS_MEMO = {};
+  function chopOdds(rows, slot) {
+    const sig = JSON.stringify(rows), memo = ODDS_MEMO[slot];
+    if (memo && memo.sig === sig) return memo.out;
+    const n = 20000, out = {}, sd = rows.map(r => 6.5 * Math.sqrt(r.v));
+    let seed = 7;
+    const rand = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let x = Math.imul(seed ^ seed >>> 15, 1 | seed); x ^= x + Math.imul(x ^ x >>> 7, 61 | x); return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+    const gauss = () => { const u = 1 - rand(), w = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * w); };
+    rows.forEach(r => { out[r.team] = 0; });
+    for (let i = 0; i < n; i++) {
+      let lo = Infinity, who = null;
+      for (let k = 0; k < rows.length; k++) {
+        const v = Math.max(rows[k].now, rows[k].est + sd[k] * gauss());   // never below the points it already has
+        if (v < lo) { lo = v; who = rows[k].team; }
+      }
+      out[who]++;
+    }
+    for (const k in out) out[k] = 100 * out[k] / n;
+    ODDS_MEMO[slot] = {sig: sig, out: out};
+    return out;
+  }
+  // ESPN's clock does not tick: it jumps after each play to where the clock stood. A run, a caught pass or a sack keeps it running,
+  // unless the ball went out of bounds in the last 2:00 of the half or the last 5:00 of the game; anything else stops it.
+  function clockRuns(type, text, per, secs) {
+    if (!/^(Rush|Pass Reception|Sack|Fumble Recovery \(Own\))$/i.test(type || "")) return false;
+    const late = (per === 2 && secs <= 120) || (per >= 4 && secs <= 300);
+    return !(late && /out of bounds|\bob\b/i.test(text || ""));
+  }
+  function clockText(k) {                                // a counting clock's time now, never below 0:00
+    const left = Math.max(0, k.run ? k.secs - (nowS() - k.seen) : k.secs), m = Math.floor(left / 60), sec = Math.floor(left % 60);
+    return m + ":" + (sec < 10 ? "0" : "") + sec;
+  }
+  // ESPN's scoreboard -> {Sleeper club: {st, f, kick, clock?, clk?, poss?, kickoff?, pts?, opp_pts?}} for every game this week
+  // (chop_chart.game_info's ball and kickoff rules). seen = {event id: {key, t}}: when each clock reading first arrived.
+  function readScoreboard(sb, seen) {
+    const out = {}, keep = {};
+    (sb.events || []).forEach(e => {
+      const c = e.competitions[0], state = c.status.type.state, kick = Date.parse(e.date) / 1000;
+      const each = make => c.competitors.forEach(t => {
+        const o = c.competitors.find(x => x !== t) || {};
+        out[fixClub(t.team.abbreviation)] = Object.assign({st: state, kick: kick}, make(t, o));
+      });
+      if (state !== "in") { each((t, o) => state === "post" ? {f: 0, pts: +t.score || 0, opp_pts: +o.score || 0} : {f: 1}); return; }
+      const label = clockLabel(c.status), s = c.situation || {}, lp = s.lastPlay || {}, last = (lp.type || {}).text || "";
+      const pt = String(s.possessionText || ""), cut = pt.lastIndexOf(" "), side = pt.slice(0, Math.max(0, cut)), yd = pt.slice(cut + 1), down = s.down || 0;
+      const secs = +c.status.clock || 0, key = c.status.period + "|" + c.status.displayClock + "|" + (lp.id || last);
+      const first = seen[e.id] && seen[e.id].key === key ? seen[e.id].t : nowS();
+      keep[e.id] = {key: key, t: first};
+      const clk = /^(Q\d|OT) /.test(label) ? {secs: secs, seen: first, run: clockRuns(last, lp.text || "", c.status.period, secs)} : null;
+      const kickoff = !!(Object.keys(s).length && label !== "Halftime" && last.indexOf("Touchdown") < 0 &&
+                         (KICK_NEXT.test(last) || (down < 1 && (!last || s.yardLine === 35 || s.yardLine === 65))));
+      const has = c.competitors.find(t => t.team.id === s.possession);
+      let poss = null;
+      if (!kickoff && has && down >= 1 && down <= 4 && /^\d+$/.test(yd) && label !== "Halftime") {
+        const n = +yd, ab = has.team.abbreviation, where = n === 50 ? "mid" : side === ab ? "own" : "opp";
+        poss = {club: fixClub(ab), yd: n, where: where, down: down, rz: where === "opp" && n <= 20,
+                togo: String(s.shortDownDistanceText || "").indexOf("Goal") >= 0 ? "G" : s.distance};
+      }
+      const f = fracLeft(c.status);
+      each((t, o) => {
+        const me = {f: f, clock: label, clk: clk, pts: +t.score || 0, opp_pts: +o.score || 0};
+        if (kickoff) me.kickoff = true; else if (poss) me.poss = poss;
+        return me;
+      });
+    });
+    for (const k in seen) delete seen[k];                // only this scoreboard's games are remembered
+    Object.assign(seen, keep);
+    return out;
+  }
+
+  // ---------- 3. the viewer's choices (this device) ----------
+  const KEY = {team: "chop-race-player-team", by: "chop-race-ingame-by", mode: "chop-race-team-chart", redact: "chop-race-redact", reveal: "chop-race-redact-reveal"};
+  const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
+  const UI = {
+    teams: {key: "teams", sel: [], view: null, yview: null, mode: /^(rank|cushion)$/.test(store.get(KEY.mode) || "") ? "cushion" : "points"},
+    mine: {key: "mine", sel: [], view: null, yview: null, team: store.get(KEY.team)},
+    game: {key: "game", sel: [], view: null, yview: null, by: store.get(KEY.by) === "team" ? "team" : "game", group: null, base: null},
+    redact: {}, reveal: store.get(KEY.reveal) === "1", openStories: {}
+  };
+  try { (JSON.parse(store.get(KEY.redact) || "[]") || []).forEach(c => { UI.redact[c] = true; }); } catch (e) {}
+  const redactList = () => Object.keys(UI.redact).filter(c => UI.redact[c]).sort();
+  const redactOn = club => !UI.reveal && !!UI.redact[club];
+  // "self" = his own team is redacted, "opp" = the team he plays is: a redacted team's whole game is redacted, once it starts.
+  function redactKind(p) {
+    if (!p || !p.club || !p.game || p.game.st === "pre") return null;
+    return redactOn(p.club) ? "self" : redactOn(p.opp) ? "opp" : null;
+  }
+
+  // ---------- 4. fold: the feeds -> the one state object ----------
+  const FEEDS = {doc: null, live: null};                 // as they arrived; never changed
+  let M = null;                                          // fold()'s result; all drawing reads this
+  const NOLINE = {ax: [], ay: [], px: [], py: []};
+  // Out for the week, on a bye or a status that keeps him from playing, with nothing scored: no Now or Projected numbers.
+  function outThisWeek(p) { return !p.stats && !+p.now && ((!p.game && !!p.club) || ["Out", "IR", "PUP", "Sus", "NA"].indexOf(p.inj) >= 0); }
+  // Player colors by position: RBs share blues, WRs greens, TEs oranges, the QB red; bench players a dim shade of the same family.
+  function rosterColors(rows) {
+    const fam = {QB: "qb", RB: "rb", WR: "wr", TE: "te"}, seen = {}, out = {};
+    rows.forEach(r => {
+      const f = fam[r.pos] || "te", start = r.slot === "START", k = (start ? "p-" : "b-") + f;
+      if (f === "qb") { out[r.id] = "var(--chop-" + k + ")"; return; }
+      const i = seen[k] || 0; seen[k] = i + 1;
+      out[r.id] = "var(--chop-" + k + (i % (start && f !== "te" ? 3 : 2)) + ")";
+    });
+    return out;
+  }
+  function fold(doc, live, now) {
+    if (!doc) return null;
+    // The 5-second read counts only while it is fresh and for this doc's week; and for a game only when it is the same game.
+    const fresh = live && live.week === doc.week && now - live.t <= 45 ? live : null, sc = doc.scoring;
+    const m = {ok: !!doc.teams, week: doc.week, builtAt: +doc.builtAt || 0, next: doc.next, on: !!doc.on, live: !!doc.live, quiet: doc.quiet,
+               page: doc.page, article: doc.article, articles: doc.articles || [], games: doc.games || [], clocks: doc.clocks || {},
+               windows: (doc.windows || []).filter(w => w.kind === "window"), nowX: null, teams: [], team: {}, us: null,
+               rosters: {}, player: {}, hasRosters: !!doc.rosters, overlay: false, inGame: false};
+    const nowRow = (doc.windows || []).find(w => w.kind === "now"); if (nowRow) m.nowX = +nowRow.x0;
+    const seen = {}, sigs = [];
+    Object.keys(doc.rosters || {}).forEach(acct => {
+      const R = doc.rosters[acct], lines = R.lines || {};
+      const rows = (R.rows || []).map((src, i) => {
+        const p = Object.assign({}, src, {acct: acct, order: i, line: lines[src.id] || NOLINE, pts: +src.now || 0, f: null});
+        const g = p.game = src.game ? Object.assign({}, src.game) : null;
+        p.opp = g ? fixClub(g.opp) : null;
+        p.gameName = g ? (g.home ? p.opp + " vs " + p.club : p.club + " vs " + p.opp) : null;   // away team first
+        let me = fresh && g && fresh.clubs[p.club];
+        if (me && (Math.abs(me.kick - g.kick) > 43200 || ST_ORDER[me.st] < ST_ORDER[g.st])) me = null;   // another game, or a read older than the doc
+        if (me) {
+          m.overlay = true;
+          if (me.st !== g.st) { g.st = me.st; delete g.clock; delete g.clk; delete g.poss; delete g.kickoff; }   // a game only moves forward: pre, in, post
+          if (g.st === "in") {
+            g.clock = me.clock; g.pts = me.pts; g.opp_pts = me.opp_pts;
+            if (me.clk) g.clk = me.clk; else delete g.clk;
+            if (me.poss) g.poss = me.poss; else delete g.poss;
+            if (me.kickoff) g.kickoff = true; else delete g.kickoff;
+          } else if (g.st === "post" && me.pts != null) { g.pts = me.pts; g.opp_pts = me.opp_pts; }
+          if (g.st !== "pre") {                           // Sleeper's live stats, scored with the league's own rules
+            const sv = fresh.stats && sc && fresh.stats[p.id];
+            if (sv) { p.pts = scorePts(sv, sc); p.now = round1(p.pts); const line = statText(sv); if (line) p.stats = line; }
+            const out = p.inj === "Out" || p.inj === "IR", f = g.st === "in" ? me.f : 0;
+            const ro = out ? 0 : remainingPts(p.pts, f, +p.base || 0), rs = out ? 0 : remainingPts(p.pts, f, +p.base_sleeper || 0);
+            p.f = f; p.est_final = round1(p.pts + ro); p.est_sleeper = round1(p.pts + rs);
+            p.pace = g.st === "in" ? firstQuarterGreen(paceOf(p.pts, p.pts + ro, +p.pre || 0, f), f) : paceOf(p.pts, p.pts, +p.pre || 0, 0);
+          }
+        }
+        p.out = outThisWeek(p);
+        if (g && g.st === "in") m.inGame = true;
+        if (g && !p.out) seen[g.st] = 1;
+        m.player[p.id] = p;
+        return p;
+      });
+      m.rosters[acct] = {acct: acct, rows: rows, colors: rosterColors(rows)};
+      sigs.push(acct + ":" + rows.map(p => p.id + p.slot[0] + p.pos).join(","));
+    });
+    m.rosterSig = sigs.join("|");
+    // What Players in a game shows: whoever is in a game now; with no game on, everyone who has played, until Tuesday midnight;
+    // before the week's first kickoff, everyone due to play.
+    const past = !!doc.quiet && now >= +doc.quiet;
+    m.gameWant = seen["in"] ? "in" : seen.post ? (past ? null : "post") : seen.pre ? "pre" : null;
+    m.gameMode = {"in": "live", post: "summary", pre: "preview"}[m.gameWant] || "none";
+    // Teams. With live stats on, each is worked out again from its starters as chop_chart.build does (from the unrounded
+    // points, like the builder): Now, Final both ways, Left/In/Done, its state and its pace against its locked Projected.
+    const liveTeams = m.overlay && !!sc && !!fresh.stats;
+    m.teams = (doc.teams || []).map(src => {
+      const t = Object.assign({}, src, {color: "var(--chop-c" + (+src.color) + ")", line: (doc.lines || {})[src.team] || null, v: null});
+      const R = m.rosters[t.team], starters = liveTeams && R ? R.rows.filter(p => p.slot === "START") : [];
+      if (starters.length) {
+        let cur = 0, eo = 0, es = 0, v = 0, begun = false; const c = {left: 0, "in": 0, done: 0};
+        starters.forEach(p => {
+          const g = p.game; cur += p.pts;
+          if (g && g.st !== "pre") begun = true;
+          if (!g || g.st === "post" || p.inj === "Out" || p.inj === "IR") { c.done++; return; }
+          const f = g.st === "in" && p.f != null ? p.f : 1;
+          c[g.st === "in" ? "in" : "left"]++;
+          eo += remainingPts(p.pts, f, +p.base || 0); es += remainingPts(p.pts, f, +p.base_sleeper || 0); v += f;
+        });
+        t.now = round1(cur); t.est_final = round1(cur + eo); t.est_sleeper = round1(cur + es); t.v = v; t.count = c;
+        t.st = !c.left && !c["in"] ? "post" : begun ? "in" : "pre";
+        if (t.pre != null) t.pace = paceOf(cur, t.st === "post" ? cur : cur + eo, +t.pre, v / starters.length);
+      }
+      if (String(t.us) === "true") m.us = t.team;
+      m.team[t.team] = t;
+      return t;
+    });
+    if (liveTeams) {                                      // Chop% and the order, from the Final each row shows
+      const rows = key => m.teams.map(t => ({team: t.team, now: +t.now || 0, est: +t[key], v: t.v != null ? t.v : 0}));
+      const co = chopOdds(rows("est_final"), "ours"), cs = chopOdds(rows("est_sleeper"), "sleeper");
+      m.teams.forEach(t => { t.chop = round1(co[t.team]); t.chop_sleeper = round1(cs[t.team]); });
+      m.teams.slice().sort((a, b) => b.est_final - a.est_final).forEach((t, i) => { t.rank = i + 1; });
+    }
+    return m;
+  }
+
+  // ---------- 5. the chart: made once per box, repainted with new data ----------
+  function linePts(L, target, fx, fpx) {                 // one line's points: scored, then projected (stretched to end at target)
+    const out = [], py = toward(L.py, target);
+    (L.ax || []).forEach((x, i) => out.push({x: fx ? fx(x) : x, pts: L.ay[i], phase: "actual"}));
+    (L.px || []).forEach((x, i) => out.push({x: fpx ? fpx(x) : fx ? fx(x) : x, pts: py[i], phase: "projected"}));
+    return out;
+  }
+  // A window's kickoffs that start within 45 minutes of each other form a zone: [{x0, x1, t0, t1}]; the opening kickoff alone
+  // is none, and a later kickoff far from the others is a zone of one moment.
+  function kickZones(w) {
+    const out = []; let cur = {x0: +w.x0, x1: +w.x0, t0: +w.t0, t1: +w.t0, opening: true};
+    (w.kicks || []).forEach(k => {
+      if (k.t - cur.t1 <= 45 * 60) { cur.x1 = k.x; cur.t1 = k.t; return; }
+      if (!cur.opening || cur.t1 > cur.t0) out.push(cur);
+      cur = {x0: k.x, x1: k.x, t0: k.t, t1: k.t};
+    });
+    if (!cur.opening || cur.t1 > cur.t0) out.push(cur);
+    return out;
+  }
+  function windowTime(w) {                               // "5:15-8:25pm", or "10:00am-1:05pm" across noon
+    if (!w.t0) return w.when || "";
+    const a = shortTime(w.t0), b = shortTime(w.t1);
+    return (a.slice(-2) === b.slice(-2) ? a.slice(0, -2) : a) + "-" + b;
+  }
+  // d = {lines: {id: points}, wins, nowX, items: [{id, est_final}], col, name, us, width(), bold(), faint(), aria, and per chart:
+  // games()/widths() (teams), rangeOnly, noThin, grid, xFloor, noNow, minH, tipMax, signed, zeroLabel, fmt}. The zoom lives in
+  // st.view / st.yview ([a, b], null = whole week / auto-fit) so it survives new data. All listeners are added here, once.
+  function makeChart(box, st, resetBtn) {
+    const clipId = "chop-clip-" + st.key;
+    const svg = sv("svg", {width: "100%", role: "img"});
+    const clipRect = sv("rect", {}, sv("clipPath", {id: clipId}, sv("defs", {}, svg)));
+    const gBack = sv("g", {}, svg), gLines = sv("g", {"clip-path": "url(#" + clipId + ")"}, svg), gTop = sv("g", {}, svg);
+    const rule = sv("line", {"class": "grid"}, svg), tip = el("div", "chop-tip");
+    rule.style.stroke = "var(--chop-fg)"; rule.style.display = "none"; tip.style.display = "none"; svg.style.touchAction = "pan-y";
+    box.textContent = ""; box.appendChild(svg); box.appendChild(tip);
+    let d = null, G = null, x = null, raf = 0, tipAt = null;
+
+    function update(data) {
+      d = data;
+      svg.toggleAttribute("hidden", !d); if (!d) { hideTip(); gBack.textContent = gLines.textContent = gTop.textContent = ""; return; }
+      const width = Math.max(300, box.clientWidth || 360), narrow = width < 560;
+      const m = {l: 30, r: narrow ? 108 : 230, t: 10, b: 42}, h = Math.max(narrow ? 430 : 470, d.minH || 0);
+      const full = {}, span = {}; let maxX = -Infinity, top = -Infinity, bot = Infinity;
+      Object.keys(d.lines).forEach(k => {
+        const v = d.lines[k].slice().sort((p, q) => p.x - q.x); if (!v.length) return;
+        full[k] = v; span[k] = [v[0].x, v[v.length - 1].x];
+        v.forEach(r => { if (r.x > maxX) maxX = r.x; if (r.pts > top) top = r.pts; if (r.pts < bot) bot = r.pts; });
+      });
+      const winMax = d.wins.reduce((a, w) => Math.max(a, +w.x1), 0);
+      const xmax = Math.max(d.xFloor || 0, (isFinite(maxX) ? maxX : 0) || 1, winMax || 0);   // every game window, even one nobody here plays in
+      const yBot = d.signed ? Math.min(0, (isFinite(bot) ? bot : 0) || 0) : 0, t0 = (isFinite(top) ? top : 0) || 1;
+      const order = d.items.map(t => t.id).filter(t => t !== d.us); if (d.us) order.push(d.us);   // ours drawn last, on top
+      G = {width: width, narrow: narrow, m: m, h: h, pw: width - m.l - m.r, ph: h - m.t - m.b, full: full, span: span, xmax: xmax, minSpan: Math.min(xmax, 15),
+           yBot: yBot, yTop: nice(yBot, t0 + Math.max(2, t0 * 0.06), 10)[1], order: order, nowX: d.nowX != null ? d.nowX : d.noNow ? 1e9 : 0};
+      if (st.view && st.view[1] > xmax + 1e-6) st.view = st.yview = null;   // a zoom left over from a longer axis
+      svg.setAttribute("viewBox", "0 0 " + width + " " + h); svg.setAttribute("aria-label", d.aria);
+      sv_set(clipRect, {x: m.l, y: m.t - 2, width: G.pw, height: G.ph + 4}); sv_set(rule, {y1: m.t, y2: h - m.b});
+      paint();
+      if (tipAt != null) showTip(tipAt);                 // a readout being held stays up through new data
+    }
+    function sv_set(n, a) { for (const k in a) n.setAttribute(k, a[k]); }
+    function add(g, tag, attrs, style) { const n = sv(tag, attrs, g); if (style) for (const k in style) if (style[k] != null) n.style.setProperty(k, style[k]); return n; }
+    function path(pts, y) { let s = ""; for (let i = 0; i < pts.length; i++) s += (i ? "L" : "M") + x(pts[i].x) + "," + y(pts[i].pts); return s; }
+    function schedule() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (d) paint(); }); }
+    // x: game minutes, never narrower than 15; y: points, never narrower than 2.
+    function setView(a, b, ya, yb) {
+      const span = Math.max(G.minSpan, Math.min(G.xmax, b - a));
+      a = Math.max(0, Math.min(G.xmax - span, a));
+      st.view = span >= G.xmax - 1e-6 ? null : [a, a + span];
+      if (ya !== undefined) {                            // points stay between 0 (Cushion: the week's lowest) and the week's top
+        const ys = Math.min(G.yTop - G.yBot, Math.max(2, yb - ya));
+        ya = Math.max(G.yBot, Math.min(G.yTop - ys, ya));
+        st.yview = [ya, ya + ys];
+      }
+      if (!st.view) st.yview = null;                     // zoomed all the way out: whole week, points auto-fit
+      hideTip(); schedule();
+    }
+    function resetView() { if (!d) return; st.view = null; st.yview = null; hideTip(); schedule(); }
+    function paint() {
+      const width = G.width, m = G.m, h = G.h, pw = G.pw, ph = G.ph, full = G.full, narrow = G.narrow, nowX = G.nowX, col = d.col, right = width - m.r, base = h - m.b;
+      const dom = st.view || [0, G.xmax], a = dom[0], b = dom[1];
+      x = linear(a, b, m.l, right);
+      let y;
+      if (st.yview) y = linear(st.yview[0], st.yview[1], base, m.t);
+      else {
+        let lo = Infinity, hi = -Infinity;               // fit y to what is on screen
+        G.order.forEach(t => {
+          const pts = full[t]; if (!pts) return;
+          [valAt(pts, a), valAt(pts, b)].concat(pts.filter(r => r.x >= a && r.x <= b).map(r => r.pts)).forEach(v => { if (v < lo) lo = v; if (v > hi) hi = v; });
+        });
+        if (!isFinite(lo)) { lo = 0; hi = 1; }
+        if (!st.view && !d.signed) lo = 0;
+        const pad = Math.max(2, (hi - lo) * 0.06), nd = nice(d.signed ? Math.min(lo - pad, -pad) : Math.max(0, lo - pad), hi + pad, 10);
+        y = linear(nd[0], nd[1], base, m.t);
+      }
+      st.ycur = [y.d0, y.d1];
+      const yLo = Math.min(y.d0, y.d1), yHi = Math.max(y.d0, y.d1), yIn = v => y(Math.max(yLo, Math.min(yHi, v)));
+      gBack.textContent = gLines.textContent = gTop.textContent = "";
+
+      const fx = Math.max(m.l, Math.min(right, x(nowX)));
+      add(gBack, "rect", {"class": "fut", x: fx, y: m.t, width: Math.max(0, right - fx), height: ph});
+      if (d.signed) {                                    // Cushion: below the chop line is shaded
+        const y0 = Math.max(m.t, Math.min(base, y(0)));
+        add(gBack, "rect", {"class": "rankband", x: m.l, width: pw, y: y0, height: Math.max(0, base - y0)});
+      }
+      ticks(y.d0, y.d1, 6).forEach(yv => {
+        if (y(yv) < m.t - 1 || y(yv) > base + 1) return;
+        add(gBack, "line", {"class": "grid", x1: m.l, x2: right, y1: y(yv), y2: y(yv)});
+        add(gBack, "text", {"class": "ax", x: m.l - 5, y: y(yv) + 4, "text-anchor": "end"}).textContent = d.signed && yv > 0 ? "+" + yv : yv;
+      });
+      if (d.signed && y(0) >= m.t && y(0) <= base) {
+        add(gBack, "line", {"class": "chopline", x1: m.l, x2: right, y1: y(0), y2: y(0)});
+        add(gBack, "text", {"class": "ax chopline-l", x: right - 4, y: y(0) - 4, "text-anchor": "end"}).textContent = d.zeroLabel;
+      }
+      (d.grid || []).forEach(g => {                      // Players in a game: its sections
+        const gx = x(g.x);
+        if (gx < m.l || gx > right) return;
+        add(gBack, "line", {"class": "sec" + (g.strong ? " hr" : ""), x1: gx, x2: gx, y1: m.t, y2: base});
+        if (g.label) add(gBack, "text", {"class": "ax", x: gx, y: base + 29, "text-anchor": "middle"}, {"font-size": "10px"}).textContent = g.label;
+      });
+      let lastEnd = -Infinity;
+      d.wins.forEach((w, i) => {
+        const wa = x(+w.x0), wb = x(+w.x1);
+        if (i && !d.grid && wa > m.l && wa < right) add(gBack, "line", {"class": "div", x1: wa, x2: wa, y1: m.t, y2: base});
+        const ca = Math.max(m.l, wa), cb = Math.min(right, wb);
+        kickZones(w).filter(z => x(z.x1) >= m.l && x(z.x0) <= right).forEach(z => {   // staggered kickoffs: a shaded zone; a lone later kickoff: a short tick
+          const za = Math.max(m.l, x(z.x0)), zb = Math.min(right, x(z.x1));
+          if (z.t1 > z.t0) {
+            add(gBack, "rect", {"class": "kickzone", x: za, y: m.t, width: Math.max(zb - za, 1), height: base - m.t});
+            if (x(z.x1) <= right) add(gBack, "line", {"class": "kickend", x1: zb, x2: zb, y1: m.t, y2: base});   // the last kickoff
+          }
+          else add(gBack, "line", {"class": "kick", x1: za, x2: za, y1: base - 4, y2: base + 5});
+        });
+        if (cb - ca < 24) return;                        // window mostly off screen
+        const label = cb - ca >= w.label.length * 5.8 + 6 ? w.label : w.short, cx = (ca + cb) / 2, half = label.length * 2.6 + 1;   // the full name only where it fits
+        const row = narrow && cx - half < lastEnd ? 1 : 0;   // phones: a crowded label drops to a second row
+        if (!row) lastEnd = cx + half;
+        add(gBack, "text", {"class": "ax", x: cx, y: base + 15 + row * 13, "text-anchor": "middle"}).textContent = label;
+        const when = windowTime(w);                      // its real time, only where it fits
+        if (!d.grid && !narrow && cb - ca >= when.length * 5.4 + 6)
+          add(gBack, "text", {"class": "ax", x: (ca + cb) / 2, y: base + 29, "text-anchor": "middle"}, {"font-size": "10px"}).textContent = when;
+      });
+      if (x(nowX) >= m.l && x(nowX) <= right) {
+        add(gBack, "line", {"class": "nowln", x1: x(nowX), x2: x(nowX), y1: m.t, y2: base});
+        add(gBack, "text", {"class": "ax", x: x(nowX) + 4, y: m.t + 10}, {fill: "var(--chop-fg)"}).textContent = "Now";
+      }
+      const ln = (t, pts, style) => add(gLines, "path", {"class": "ln", "data-team": t, d: path(pts, y)}, Object.assign({stroke: col[t]}, style));
+      G.order.forEach(t => {
+        const tr = full[t] || [];
+        if (d.games && tr.length) {                      // teams: thick while a starter is playing, thin between, very thin once done
+          const gx = d.games(t), iv = [];
+          for (let gi = 0; gi + 1 < gx.length; gi += 2) {
+            if (iv.length && gx[gi] - iv[iv.length - 1][1] < 0.5) iv[iv.length - 1][1] = Math.max(iv[iv.length - 1][1], gx[gi + 1]);
+            else iv.push([gx[gi], gx[gi + 1]]);
+          }
+          const doneX = iv.length ? iv[iv.length - 1][1] : 0, w = d.widths(t);
+          const act = tr.filter(r => r.phase === "actual"), pro = tr.filter(r => r.phase === "projected");
+          const seg = (pts, a2, b2, wd, dash) => { const s2 = clip(pts, a2, b2); if (s2.length >= 2) ln(t, s2, {"stroke-width": wd, "stroke-dasharray": dash ? "5 4" : null}); };
+          seg(act, 0, doneX, w.thin, false); seg(pro, 0, doneX, w.thin, true);
+          seg(tr, doneX, G.xmax, w.done, false);
+          iv.forEach(g => { seg(act, g[0], g[1], w.thick, false); seg(pro, g[0], g[1], w.thick, true); });
+          return;
+        }
+        if (d.rangeOnly && !d.noThin && tr.length)       // out of his game: one very thin line across the whole week
+          ln(t, [{x: 0, pts: tr[0].pts}].concat(tr, [{x: G.xmax, pts: tr[tr.length - 1].pts}]), {"stroke-width": 1, opacity: d.faint(t) ? 0.5 : 0.85});
+        ["actual", "projected"].forEach(phs => {
+          const pts = tr.filter(r => r.phase === phs);
+          if (pts.length) ln(t, pts, {"stroke-width": d.width(t), opacity: d.faint(t) ? 0.6 : null, "stroke-dasharray": phs === "projected" ? (d.rangeOnly ? "8 5" : "5 4") : null});
+        });
+      });
+      // Names at the right edge: the value at the right edge of what is on screen (players: projected final).
+      let ends = d.items.filter(t => full[t.id]).map(t => { const v = d.rangeOnly ? +t.est_final : valAt(full[t.id], b); return {team: t.id, v: v, y: yIn(v)}; })
+        .sort((p, q) => p.y - q.y);
+      const lt = m.t + 4, lb = base + 4;
+      if (ends.length > 20) {                            // busy: each name at its line or within 8 px, picked first, then the highest; no room, no name
+        const placed = [];
+        ends.slice().sort((p, q) => (st.sel.indexOf(q.team) >= 0) - (st.sel.indexOf(p.team) >= 0) || q.v - p.v).forEach(e => {
+          for (let k = 0; k <= 8; k++) for (let sgn = -1; sgn <= 1; sgn += 2) {
+            const yy = Math.max(lt, Math.min(lb, e.y + sgn * k));
+            if (placed.every(p => Math.abs(p.y - yy) >= 12)) { e.y = yy; placed.push(e); return; }
+          }
+        });
+        ends = placed.sort((p, q) => p.y - q.y);
+      } else {                                           // a few names: all of them, 12 px apart, spread down and back up inside the chart
+        for (let i = 0; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, i ? ends[i - 1].y + 12 : lt);
+        for (let i = ends.length - 1; i >= 0; i--) ends[i].y = Math.min(ends[i].y, i < ends.length - 1 ? ends[i + 1].y - 12 : lb);
+      }
+      ends.forEach(e => {                                // a thin lead from where the line ends on screen to its name, when they are apart
+        const tr = full[e.team], lx = Math.min(tr[tr.length - 1].x, b);
+        if (d.rangeOnly || lx < a) return;
+        const x1 = x(lx), y1 = yIn(valAt(tr, lx));
+        if (d.signed) {                                  // Cushion: straight across from Now at its value, to the right edge
+          if (right - x1 >= 2) add(gTop, "line", {"class": "lead", "data-team": e.team, x1: x1, y1: y1, x2: right, y2: y1}, {stroke: col[e.team]});
+          return;
+        }
+        if (right - x1 < 6 && Math.abs(y1 - e.y) < 3) return;
+        add(gTop, "line", {"class": "lead", "data-team": e.team, x1: x1, y1: y1, x2: right + 3, y2: e.y}, {stroke: col[e.team]});
+      });
+      ends.forEach(e => {                                // the whole label column, name height, picks the line (see the click listener)
+        add(gTop, "rect", {"class": "hit", x: right + 2, y: e.y - 7, width: m.r - 2, height: 12})._pick = e.team;
+        const lab = add(gTop, "text", {"class": "lab", "data-team": e.team, x: right + 6, y: e.y + 4}, {fill: col[e.team], "font-weight": d.bold(e.team) ? 700 : 400});
+        lab.textContent = shortName(d.name[e.team], narrow ? 11 : 32) + " " + (d.fmt ? d.fmt(e.v) : e.v.toFixed(1)); lab._pick = e.team;
+      });
+      if (resetBtn) resetBtn.hidden = !st.view && !st.yview;
+      applyPicks(st);
+    }
+
+    function hideTip() { tipAt = null; tip.style.display = "none"; rule.style.display = "none"; }
+    function showTip(px) {
+      if (!d || px < G.m.l || px > G.width - G.m.r || !x) return hideTip();
+      tipAt = px;
+      const xv = x.invert(px), inGame = (t, v) => !d.rangeOnly || (G.span[t] && v >= G.span[t][0] && v <= G.span[t][1]);
+      let vals = d.items.filter(t => G.full[t.id]).map(t => ({team: t.id, v: valAt(G.full[t.id], xv), on: inGame(t.id, xv)})).sort((p, q) => q.v - p.v);
+      const win = d.wins.find(w => xv >= +w.x0 && xv <= +w.x1);
+      rule.style.display = ""; rule.setAttribute("x1", px); rule.setAttribute("x2", px);
+      tip.style.display = ""; tip.textContent = "";
+      const started = win && (win.kicks || []).filter(k => xv >= k.x).pop();   // the latest kickoff reached in this window
+      let more = 0;                                      // a crowded chart: the picked lines, else the leaders, and a count of the rest
+      if (d.tipMax) {
+        if (st.sel.length) vals = vals.filter(r => st.sel.indexOf(r.team) >= 0);
+        more = Math.max(0, vals.length - d.tipMax); vals = vals.slice(0, d.tipMax);
+      }
+      tip.appendChild(el("b", "", (win ? win.label : "Between games") + (started ? " · " + shortTime(started.t) + " games on" : "") + (xv > G.nowX ? " · projected" : "")));
+      vals.forEach(r => {
+        const row = el("div", "r"), l = el("span"), dot = el("span", "chop-dot"), nm = el("span", "", " " + shortName(d.name[r.team], G.narrow ? 16 : 32));
+        if (!r.on) row.style.opacity = 0.55;
+        dot.style.background = d.col[r.team]; if (d.bold(r.team)) nm.style.fontWeight = 700;
+        l.appendChild(dot); l.appendChild(nm); row.appendChild(l); row.appendChild(el("span", "", d.fmt ? d.fmt(r.v) : r.v.toFixed(1)));
+        tip.appendChild(row);
+      });
+      if (more) tip.appendChild(el("div", "r", "and " + more + " more"));
+      const tw = tip.offsetWidth, left = px > G.width / 2 ? px - tw - 14 : px + 14;
+      tip.style.left = Math.max(0, Math.min(G.width - tw, left)) + "px"; tip.style.top = (G.m.t + 4) + "px";
+    }
+
+    // Gestures. Mouse: hover reads values, drag scrolls, trackpad pinch / ctrl- or shift-wheel zooms, double-click resets.
+    // Touch: one finger slides to read values (up/down still scrolls the page); two fingers pinch to zoom both axes
+    // together around the spot between them, and drag to move; double-tap resets.
+    let g0 = null, drag = null, lastTap = 0, tap = null;
+    const loc = e => { const r = svg.getBoundingClientRect(); return [(e.clientX - r.left) * G.width / r.width, (e.clientY - r.top) * G.h / r.height]; };
+    const dom = () => st.view ? st.view.slice() : [0, G.xmax], ydom = () => (st.ycur || [0, 1]).slice();
+    function zoomAt(xd, yd, ax, ay, k, bx, by) {         // one factor for both axes; (ax, ay) = the anchor before, (bx, by) = where it is now, in pixels
+      const m = G.m, xs = (xd[1] - xd[0]) / k, ys = (yd[1] - yd[0]) / k;
+      const xv = xd[0] + (ax - m.l) / G.pw * (xd[1] - xd[0]), yv = yd[0] + (G.h - m.b - ay) / G.ph * (yd[1] - yd[0]);
+      const xa = xv - (bx - m.l) / G.pw * xs, ya = yv - (G.h - m.b - by) / G.ph * ys;
+      setView(xa, xa + xs, ya, ya + ys);
+    }
+    function pinchStart(t) {
+      const p = loc(t[0]), q = loc(t[1]);
+      g0 = {mx: (p[0] + q[0]) / 2, my: (p[1] + q[1]) / 2, dist: Math.max(30, Math.hypot(p[0] - q[0], p[1] - q[1])), xd: dom(), yd: ydom()};
+    }
+    function pinchMove(t) {
+      const p = loc(t[0]), q = loc(t[1]), k = Math.max(0.05, Math.hypot(p[0] - q[0], p[1] - q[1]) / g0.dist);
+      zoomAt(g0.xd, g0.yd, g0.mx, g0.my, k, (p[0] + q[0]) / 2, (p[1] + q[1]) / 2);
+    }
+    // The readout waits TIP_DELAY ms after one finger lands, so a pinch's first finger never pops it up;
+    // once a second finger touches, it stays hidden until every finger is off the glass.
+    const TIP_DELAY = 300; let tipTimer = 0, tipOn = false, multi = false, lastX = 0;
+    function cancelTip() { clearTimeout(tipTimer); tipTimer = 0; tipOn = false; hideTip(); }
+    svg.addEventListener("touchstart", e => {
+      if (!d) return;
+      if (e.touches.length >= 2) { e.preventDefault(); multi = true; cancelTip(); tap = null; pinchStart(e.touches); return; }
+      if (multi) return;
+      const p = loc(e.touches[0]); lastX = p[0]; tap = {x: p[0], y: p[1], t: Date.now()};
+      clearTimeout(tipTimer);
+      tipTimer = setTimeout(() => { tipTimer = 0; if (!multi) { tipOn = true; showTip(lastX); } }, TIP_DELAY);
+    }, {passive: false});
+    svg.addEventListener("touchmove", e => {
+      if (!d) return;
+      if (e.touches.length >= 2) { e.preventDefault(); multi = true; cancelTip(); if (!g0) pinchStart(e.touches); pinchMove(e.touches); return; }
+      if (multi) return;
+      const p = loc(e.touches[0]); lastX = p[0];
+      if (tap && (Math.abs(p[0] - tap.x) > 10 || Math.abs(p[1] - tap.y) > 10)) tap = null;
+      if (tipOn) showTip(p[0]);
+    }, {passive: false});
+    svg.addEventListener("touchend", e => {
+      if (!d) return;
+      if (e.touches.length >= 2) { pinchStart(e.touches); return; }   // a third finger lifted: carry on from here
+      g0 = null;
+      if (e.touches.length === 0) { multi = false; clearTimeout(tipTimer); tipTimer = 0; tipOn = false; }
+      if (e.touches.length === 0 && tap && Date.now() - tap.t < 250) {
+        if (Date.now() - lastTap < 350) { lastTap = 0; resetView(); }   // double-tap: two quick, still taps
+        else lastTap = Date.now();
+      }
+      tap = null;
+    });
+    svg.addEventListener("touchcancel", () => { g0 = null; tap = null; multi = false; cancelTip(); });
+    const noDefault = e => e.preventDefault();
+    box.addEventListener("contextmenu", noDefault);      // no copy menu on a long press
+    box.addEventListener("selectstart", noDefault);      // no text selection while dragging
+    svg.addEventListener("gesturestart", noDefault); svg.addEventListener("gesturechange", noDefault);
+    svg.addEventListener("click", e => { if (e.target._pick != null) pick(st, e.target._pick); });   // a name at the right edge
+    svg.addEventListener("pointerdown", ev => {
+      if (!d || ev.pointerType !== "mouse" || ev.button !== 0) return;
+      const l = loc(ev); drag = {x: l[0], y: l[1], xd: dom(), yd: ydom()}; hideTip(); svg.setPointerCapture(ev.pointerId);
+    });
+    svg.addEventListener("pointermove", ev => {
+      if (!d || ev.pointerType !== "mouse") return;
+      if (drag) { const l = loc(ev); if (st.view) zoomAt(drag.xd, drag.yd, drag.x, drag.y, 1, l[0], l[1]); }
+      else showTip(loc(ev)[0]);
+    });
+    svg.addEventListener("pointerup", ev => { if (ev.pointerType === "mouse") drag = null; });
+    svg.addEventListener("pointercancel", () => { drag = null; });
+    svg.addEventListener("pointerleave", ev => { if (ev.pointerType === "mouse" && !drag) hideTip(); });
+    svg.addEventListener("dblclick", resetView);
+    svg.addEventListener("wheel", ev => {
+      if (!d || !(ev.ctrlKey || ev.shiftKey)) return;    // plain scrolling still scrolls the page
+      ev.preventDefault();
+      const l = loc(ev);
+      zoomAt(dom(), ydom(), l[0], l[1], Math.exp(-(ev.deltaY || ev.deltaX) * 0.01), l[0], l[1]);
+    }, {passive: false});
+    if (resetBtn) resetBtn.addEventListener("click", resetView);
+    return {update: update, dismiss: cancelTip, svg: svg};
+  }
+
+  // ---------- 6. views: every one draws from M and UI only ----------
+  // A team's name: its Sleeper team name where space is short (phones), "Team name (account)" where there is room.
+  function teamName(acct, long) {
+    const t = M.team[acct], nm = t && t.name || acct;
+    return (long === undefined ? roomy() : long) && nm !== acct ? nm + " (" + acct + ")" : nm;
+  }
+  const teamColor = acct => M.team[acct] ? M.team[acct].color : null;
+  // The roster the player chart shows: the picked team if it is still alive, else ours.
+  function mineTeam() {
+    if (UI.mine.team && M.rosters[UI.mine.team]) return UI.mine.team;
+    return M.us && M.rosters[M.us] ? M.us : Object.keys(M.rosters)[0] || null;
+  }
+  // The chart's name for the game window a kickoff falls in: "Thu night", "Sun early".
+  function windowName(kick) { const w = M.windows.find(w => kick >= w.t0 && kick < w.t1); return w ? w.label : clock(kick); }
+  // NFL team colors. Two teams in a game whose colors are too close (under 12 apart in OKLab x100, in this theme): the visitor
+  // switches to its second color, or if that is not enough the home team, or both, whichever first clears 12.
+  let ALT = {}, ALT_SIG = "";
+  function oklab(hex) {
+    const m = /#?([0-9a-f]{6})/i.exec(String(hex || "")); if (!m) return null;
+    const c = [0, 2, 4].map(i => { const v = parseInt(m[1].substr(i, 2), 16) / 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    const l = Math.cbrt(.4122214708 * c[0] + .5363325363 * c[1] + .0514459929 * c[2]), mm = Math.cbrt(.2119034982 * c[0] + .6806995451 * c[1] + .1073969566 * c[2]),
+          s = Math.cbrt(.0883024619 * c[0] + .2817188376 * c[1] + .6299787005 * c[2]);
+    return [.2104542553 * l + .7936177850 * mm - .0040720468 * s, 1.9779984951 * l - 2.4285922050 * mm + .4505937099 * s, .0259040371 * l + .7827717662 * mm - .8086757660 * s];
+  }
+  function colorGap(a, b) { const A = oklab(a), B = oklab(b); return A && B ? 100 * Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]) : 99; }
+  function pickClubColors() {
+    const cs = getComputedStyle(document.documentElement), v = k => cs.getPropertyValue(k).trim(), pairs = {};
+    for (const id in M.player) { const p = M.player[id]; if (p.game && p.opp && p.club) pairs[p.game.home ? p.opp + "@" + p.club : p.club + "@" + p.opp] = 1; }
+    const sig = v("--chop-bg") + "|" + Object.keys(pairs).sort().join(",");
+    if (sig === pickClubColors.sig) return;              // same games, same theme: same answer
+    pickClubColors.sig = sig; ALT = {};
+    Object.keys(pairs).forEach(key => {
+      const away = key.split("@")[0], home = key.split("@")[1];
+      const pa = v("--chop-n-" + away), ph = v("--chop-n-" + home), sa = v("--chop-n2-" + away), sh = v("--chop-n2-" + home);
+      const combos = [[pa, ph, []], [sa, ph, [away]], [pa, sh, [home]], [sa, sh, [away, home]]];
+      (combos.find(c => colorGap(c[0], c[1]) >= 12) || combos.reduce((a, b) => colorGap(b[0], b[1]) > colorGap(a[0], a[1]) ? b : a))[2].forEach(c => { ALT[c] = true; });
+    });
+    ALT_SIG = v("--chop-bg") + Object.keys(ALT).sort().join(",");
+  }
+  function clubColor(club, start) {                      // bright for a starter, mixed into the background for the bench
+    const c = club ? "var(--chop-n" + (ALT[club] ? "2" : "") + "-" + club + ",var(--chop-muted))" : "var(--chop-muted)";
+    return start ? c : "color-mix(in srgb," + c + " 45%,var(--chop-bg))";
+  }
+  // Picked lines: a tap adds one or drops it; the charts dim the rest and the tables box the picked rows.
+  function pick(st, id) { const i = st.sel.indexOf(id); if (i < 0) st.sel.push(id); else st.sel.splice(i, 1); applyPicks(st); }
+  function applyPicks(st) {
+    const root = $("sec-" + st.key);
+    root.querySelectorAll(".chop-chart [data-team]").forEach(n => n.classList.toggle("dim", st.sel.length > 0 && st.sel.indexOf(n.getAttribute("data-team")) < 0));
+    root.querySelectorAll(".chop-t tbody tr").forEach(r => r.classList.toggle("sel", st.sel.indexOf(r.getAttribute("data-key")) >= 0));
+  }
+  // Table rows are kept by key: a row is rebuilt only when what it shows (its sig) changed, so a 5-second read touches only
+  // the rows that moved. specs = [{key, sig, build}] in display order.
+  let GEN = 0, VSIG = "";                                // GEN: bumped to force every row to rebuild; VSIG: what all rows depend on
+  function syncRows(tb, specs) {
+    const old = tb._rows || new Map(), next = new Map(); let at = tb.firstChild;
+    specs.forEach(s => {
+      const hit = old.get(s.key), sig = VSIG + s.sig, node = hit && hit.sig === sig ? hit.node : s.build();
+      next.set(s.key, {sig: sig, node: node});
+      if (node === at) at = at.nextSibling;
+      else if (hit && hit.node === at && node !== at) { tb.replaceChild(node, at); at = node.nextSibling; }
+      else tb.insertBefore(node, at);
+    });
+    while (at) { const n = at.nextSibling; tb.removeChild(at); at = n; }
+    tb._rows = next;
+  }
+  function rowClicks(tb, st) {                           // one listener per table, for good: a row says what it picks in tr._pick
+    tb.addEventListener("click", e => {
+      const tr = e.target.closest("tr"); if (!tr || !tr._pick) return;
+      if (!tr._group) return pick(st, tr._pick[0]);
+      const ids = tr._pick, all = ids.every(i => st.sel.indexOf(i) >= 0);   // a header row: all of its players, or none
+      st.sel = st.sel.filter(i => ids.indexOf(i) < 0).concat(all ? [] : ids);
+      applyPicks(st);
+    });
+  }
+
+  // ----- table cells -----
+  function num(td, text, ch, cls) {                      // a number in a fixed width, so a column's bullets line up
+    const n = el("span", "n" + (cls ? " " + cls : ""), text); n.style.minWidth = ch + "ch"; td.appendChild(n);
+  }
+  const dot = td => td.appendChild(el("span", "dot", "•"));
+  // "88.8 • 109.4": our number, then Sleeper's. pct = a Chop cell; whole = phones' Chop, "<1%" under 1.
+  function ours(td, a, b, whole, pct, width) {
+    const fmt = v => { v = +v; return (!whole ? v.toFixed(1) : v > 0 && v < 1 ? "<1" : String(Math.round(v))) + (pct ? "%" : ""); };
+    const ch = width || (pct ? (whole ? 4 : 6) : 5);
+    num(td, fmt(a), ch); dot(td); num(td, fmt(b), ch, "b slp");
+  }
+  // A team's starters: left to play, in a game, done, a dash for none; DONE once nobody is left or playing.
+  function leftInDone(td, c) {
+    if (!c.left && !c["in"]) { td.appendChild(el("span", "chop-tag gray", "DONE")); return; }
+    [c.left, c["in"], c.done].forEach((v, i) => num(td, v ? String(v) : "-", 1, i ? "gap" : ""));
+  }
+  // The untitled last column. Before kickoff: a line from 1st (red) to 32nd (green) with a dot at this opponent's rank (a team: its
+  // place in the race). In the game: the line fills in the pace color, the dot at points so far against the predicted final.
+  // Over: the whole line is the Projected number, the dot where it ended. Past Projected: dot at the end, a tick at Projected.
+  function meterCell(r) {
+    const td = el("td", "meter"), g = r.game; let f = null, cls = "", tick = null;
+    if (g && !r.out) {
+      if (g.st === "pre" && r.place) { f = r.of > 1 ? (r.of - r.place) / (r.of - 1) : 1; cls = " rank"; td.title = ordinal(r.place) + " of " + r.of + " in the race"; }
+      else if (g.st === "pre" && r.hard) { f = (r.hard - 1) / 31; cls = " rank"; td.title = ordinal(r.hard) + " of 32 against " + r.pos + "s: 1st hardest, 32nd easiest"; }
+      else if (g.st === "in" && r.pre != null && +r.now > Math.max(0, +r.pre)) {
+        f = 1; tick = Math.max(0, +r.pre) / +r.now; td.title = (+r.now).toFixed(1) + " so far, past " + (+r.pre).toFixed(1) + " projected";
+      }
+      else if (g.st === "in") { f = +r.est_final > 0 ? Math.max(0, Math.min(1, +r.now / +r.est_final)) : 0; td.title = (+r.now).toFixed(1) + " of " + (+r.est_final).toFixed(1) + " predicted"; }
+      else if (g.st === "post") {
+        const pts = Math.max(0, +r.now), proj = Math.max(0, +r.pre || 0), whole = Math.max(pts, proj);
+        f = whole > 0 ? pts / whole : 1;                 // no points and no projection: nothing to fall short of
+        if (r.pre != null && pts > proj) tick = proj / whole;
+        if (r.pre != null) td.title = (+r.now).toFixed(1) + " final, " + (+r.pre).toFixed(1) + " projected";
+      }
+    }
+    if (f === null) return td;
+    const box = el("span", "chop-meter" + cls + (r.pace ? " " + r.pace : "")), part = name => box.appendChild(el("span", name));
+    part("line");
+    if (!cls) part("fill").style.width = f * 100 + "%";
+    part("mark").style.left = "calc(3.5px + (100% - 7px) * " + f + ")";
+    if (tick !== null) part("tick").style.left = "calc(3.5px + (100% - 7px) * " + tick + ")";
+    td.appendChild(box);
+    return td;
+  }
+  // The team with the ball: where and what down, in three lengths (CSS shows the one that fits). The arrow sits before the yard
+  // line on the other team's side and after it on his own; inside the 20 the yard line is a red tag; G = goal to go.
+  function ballLine(b) {
+    const line = el("span", "ln ball"), nth = ["", "1st", "2nd", "3rd", "4th"][b.down], goal = b.togo === "G";
+    const where = b.where === "mid" ? "opp" : b.where;   // midfield reads like the other side: ◄50
+    [["b-s", where === "opp" ? "◄" + b.yd : where === "own" ? b.yd + "►" : "" + b.yd, b.down + "&" + (goal ? "G" : b.togo)],
+     ["b-m", where === "opp" ? "◄" + b.yd + " yrd" : where === "own" ? b.yd + " yrd ►" : b.yd + " yrd", nth + " & " + (goal ? "goal" : b.togo)],
+     ["b-l", where === "opp" ? "◄ " + b.yd + " yard line" : where === "own" ? b.yd + " yard line ►" : b.yd + " yard line", nth + " down & " + (goal ? "goal" : b.togo + " to go")]
+    ].forEach(v => {
+      const part = el("span", v[0]);
+      part.appendChild(el("span", b.rz ? "chop-tag red" : "", v[1])); part.appendChild(el("span", "dot", "•")); part.appendChild(txt(v[2]));
+      line.appendChild(part);
+    });
+    line.title = nth + " & " + (goal ? "goal" : b.togo) + (b.yd === 50 ? " at midfield" : " on " + (where === "opp" ? "the other team's " : "his own ") + b.yd);
+    return line;
+  }
+  // A game's clock: the quarter as a blue tag, then the time left (HALF at halftime); over: a gray FINAL tag; not started: its slot.
+  function clockLine(g) {
+    const l = el("span"), c = String(g.clock || ""), m = /^(Q\d|OT) (.+)$/.exec(c), s2 = /^Start of (Q\d)$/.exec(c);
+    const tag = (text, color) => l.appendChild(el("span", "chop-tag " + color, text));
+    if (g.st === "pre" && g.kick) { l.textContent = windowName(g.kick); l.title = clock(g.kick); }
+    else if (g.st !== "in") tag("FINAL", "gray");
+    else if (m && g.clk) {                               // a live ESPN read: counts down while the clock runs, dim while it is stopped
+      tag(m[1], "blue");
+      const tk = el("span", "tick" + (g.clk.run ? "" : " stopped"), clockText(g.clk)); tk._k = g.clk;
+      tk.title = g.clk.run ? "Clock running" : "Clock stopped"; l.appendChild(tk);
+    }
+    else if (m) { tag(m[1], "blue"); l.appendChild(txt(m[2])); }
+    else if (s2) { tag(s2[1], "blue"); l.appendChild(txt("15:00")); l.title = c; }
+    else if (c === "Halftime") { tag("HALF", "blue"); l.title = c; }
+    else l.textContent = c;
+    return l;
+  }
+  // The Game column: when he plays (the chart's window name) and how hard the matchup is, or how much of his game is left. Never a live score.
+  function gameCell(p, inGame) {
+    const g = p.game, td = el("td", "game" + (g && g.st === "post" ? " over" : ""));
+    const ln = text => td.appendChild(el("span", "ln", text));
+    if (!g) return td;                                   // a bye shows as a tag under his name
+    if (g.st !== "pre" && p.out) return td;              // ruled out and never played: no clock, no DONE (his status tag says why)
+    let l;
+    if (g.st === "pre") {
+      ln(windowName(g.kick)).title = clock(g.kick);
+      const opp = ln(g.home ? "vs " : "at "), who = el("span", "", g.opp);
+      if (p.hard) {                                      // 1st = the hardest defense for his position (red), 32nd = the easiest (green)
+        who.textContent += " (" + ordinal(p.hard) + ")";
+        who.style.color = "hsl(" + Math.round((p.hard - 1) / 31 * 120) + ",var(--chop-rank-s),var(--chop-rank-l))";
+        who.title = "How hard this defense is on " + p.pos + "s: 1st hardest, 32nd easiest";
+      }
+      opp.appendChild(who);
+    } else {
+      l = clockLine(g); l.className = "ln clk"; td.appendChild(l);
+      if (g.st === "in" && g.poss && g.poss.club === p.club) td.appendChild(ballLine(g.poss));   // only his team's ball here; the game row says who has it
+      else if (g.st === "in" && g.kickoff) ln("Kickoff");
+    }
+    if (inGame && UI.game.by === "team") {               // Fantasy only: under NFL the group row already names the game
+      if (g.st === "post" && g.pts != null) {            // final: the winner and score beside FINAL, the loser and score under it
+        const me = {club: p.club, pts: +g.pts}, them = {club: p.opp, pts: +g.opp_pts}, win = me.pts >= them.pts ? me : them, lose = win === me ? them : me;
+        const side = (to, t) => { const c = el("span", "fs", t.club); c.style.color = clubColor(t.club, true); c.appendChild(el("span", "score", " " + t.pts)); to.appendChild(c); };
+        side(l, win); side(ln(""), lose);
+      } else ln(p.gameName);
+    }
+    return td;
+  }
+  // A status tag for a player with no stats yet: QUES yellow, DOUB orange; OUT, a bye and anything else keeping him out red.
+  function statusTag(p) {
+    const name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[p.inj] || (p.inj ? String(p.inj).toUpperCase() : (!p.game && p.club ? "BYE" : ""));
+    if (!name) return null;
+    const tag = el("span", "chop-tag " + (name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red"), name);
+    if (p.body) tag.title = p.body;
+    return tag;
+  }
+  // Under a player's name: his stats, or away from a game "RB10 · 26% (74%)": his season rank at his position in our scoring,
+  // then the share of Sleeper teams starting (rostering) him.
+  function statLine(p) {
+    if (p.stats) return p.stats;
+    if (p.game && p.game.st === "in") return "";
+    const parts = [];
+    if (p.prank) parts.push(p.prank);
+    if (p.start != null) parts.push(Math.round(p.start) + "%" + (p.own != null ? " (" + Math.round(p.own) + "%)" : ""));
+    else if (p.own != null) parts.push("(" + Math.round(p.own) + "%)");
+    return parts.join(" · ");
+  }
+  function redactTag(kind) { return el("span", "chop-tag " + (kind === "opp" ? "oppredact" : "redact"), kind === "opp" ? "OPP REDACTED" : "REDACTED"); }
+  // One player's row, the same cells in both player tables. inGame (Players in a game) adds the BENCH tag, his fantasy team
+  // under NFL, and his game under Fantasy.
+  function playerRow(p, color, cls, inGame) {
+    const tr = el("tr", cls), who = el("td", "nm"), mark = el("span", "chop-dot");
+    mark.style.background = color; who.appendChild(mark); who.style.color = color;
+    who.appendChild(txt((p.flex ? "FLEX " : "") + (p.pos ? p.pos + ": " : "") + p.name + " (" + (p.club || "FA") + ", #" + p.num + ")"));
+    if (inGame && p.slot !== "START") who.appendChild(el("span", "chop-tag bench", "BENCH"));   // bench points do not count
+    const kind = redactKind(p), sub = kind ? "" : statLine(p), tag = p.stats || kind ? null : statusTag(p);
+    if (sub || tag) {                                    // a stat line breaks only between its parts, never inside one
+      const line = el("span", "chop-pl" + (p.stats ? " st" : " pre")), onBye = !!tag && tag.textContent === "BYE";   // BYE closes the line; any other status opens it
+      if (tag && !onBye) line.appendChild(tag);
+      const holder = p.stats ? line.appendChild(el("span", "parts")) : line;
+      (sub ? sub.split(" · ") : []).forEach((part, k) => {
+        if (!p.stats && ((tag && !onBye) || k)) {        // before a game: QUES • RB10 • 26% (74%)
+          dot(line);
+          if (!k) line.lastChild.classList.add("tagdot");
+        }
+        holder.appendChild(el("span", "pt", part));
+      });
+      if (onBye) { if (sub) dot(line); tag.classList.add("atend"); line.appendChild(tag); }   // RB16 • 11% (90%) • BYE
+      if (!p.stats && p.bye && p.game && p.game.st === "pre") {   // a bye still to come: a blue tag with its week
+        if (sub) dot(line);
+        const bye = el("span", "chop-tag blue", p.bye); bye.title = "Bye in week " + p.bye; line.appendChild(bye);
+      }
+      who.appendChild(line);
+    }
+    if (inGame && UI.game.by === "game") {               // NFL: which fantasy team he is on (under Fantasy the group row says it)
+      const tm = el("span", "chop-pl tm", roomy() ? teamName(p.acct, false) : breakLong(teamName(p.acct, false), 13, 10)); tm.style.color = teamColor(p.acct);
+      who.appendChild(tm);
+    }
+    tr.appendChild(who); tr.setAttribute("data-key", p.id); tr.style.setProperty("--row", color);
+    if (kind) {                                          // redacted: one tag across the rest of the row, and the row cannot be picked
+      const rd = el("td", "redact"); rd.colSpan = 4; rd.appendChild(redactTag(kind)); tr.appendChild(rd);
+      return tr;
+    }
+    const nowCell = el("td"), fin = el("td");
+    if (!p.out) {
+      const numW = roomy() ? 5 : 4, gst = p.game && p.game.st;
+      nowCell.textContent = gst === "pre" ? "-" : (+p.now).toFixed(1);   // no score until he has kicked off
+      if (gst === "post") {                              // over: his points in Now, bold; the Projected number, struck through
+        nowCell.className = "final";
+        if (p.pre != null) { ours(fin, p.pre, p.pre_sleeper, false, false, numW); fin.className = "prefinal struck"; fin.title = "Projected at the week's first kickoff"; }
+      } else {
+        const early = gst !== "in" && p.pre != null;     // before his game: the numbers locked at the week's first kickoff
+        ours(fin, early ? p.pre : p.est_final, early ? p.pre_sleeper : p.est_sleeper, false, false, numW);
+        fin.className = gst === "in" ? "final" : "prefinal";
+        if (gst === "in" && p.pre != null) {             // under it, his Projected
+          const was = el("span", "pregame"); was.title = "Projected at the week's first kickoff";
+          ours(was, p.pre, p.pre_sleeper, false, false, numW); fin.appendChild(was);
+        }
+      }
+    }
+    tr.appendChild(nowCell); tr.appendChild(fin); tr.appendChild(gameCell(p, inGame)); tr.appendChild(meterCell(p));
+    tr._pick = [p.id];
+    return tr;
+  }
+  const playerSig = (p, color, cls, inGame) => JSON.stringify(p, (k, v) => k === "line" ? undefined : v) + color + cls + inGame + (inGame ? teamName(p.acct, false) + teamColor(p.acct) : "");
+
+  // ----- status, the story, the stories -----
+  // The LIVE light: on from the recorder's wake-up before kickoff until the last game ends, unless the feed has gone quiet (15 minutes).
+  const isLive = () => !!(M && (M.on || M.live) && nowS() - M.builtAt < 15 * 60);
+  function drawStatus() {
+    const live = isLive(), now = nowS(), parts = []; let state = "";
+    $("chop-live").hidden = !live;
+    const wk = $("chop-week"); wk.hidden = !(M && M.week); if (M && M.week) wk.textContent = "Week " + M.week;
+    if (M) {
+      const soon = !live && M.next && M.next - now < 300;   // checking every minute until ESPN says the game started
+      state = live && M.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on";
+      if (!live && !soon && M.next) parts.push("next kickoff " + clock(M.next));
+      if (M.builtAt) parts.push("last update " + clock(M.builtAt));
+    }
+    $("chop-when").textContent = state || "—";
+    $("chop-when2").textContent = parts.join(" · ");
+    if (M && M.ok) $("chop-alive").textContent = String(M.teams.length);
+  }
+  // Names in a story are links in their chart colors: [[t:account|text]] is a team, [[p:player id|text]] a player (chop_news.py
+  // marks them). A story without marks gets its exact team names and player labels linked.
+  const MARK = /\[\[([tp]):([^|\]]+)\|([^\]]+)\]\]/g;
+  const linkSig = () => M.rosterSig + "|" + M.teams.map(t => t.team + t.name + t.color).join(",");
+  function autoMark(text) {
+    if (!M._names) {                                     // worked out once per data update, not per paragraph
+      let names = [];
+      M.teams.forEach(t => { names.push([t.name || t.team, "t", t.team]); names.push([t.team, "t", t.team]); });
+      for (const id in M.player) { const p = M.player[id]; names.push([p.label, "p", p.id]); names.push([p.name, "p", p.id]); }
+      names = names.filter(n => n[0]).sort((p, q) => q[0].length - p[0].length);
+      const by = {}; names.forEach(n => { if (!by[n[0]]) by[n[0]] = n; });
+      M._names = {by: by, re: names.length ? new RegExp(names.map(n => n[0].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"), "g") : null};
+    }
+    return M._names.re ? text.replace(M._names.re, s => { const n = M._names.by[s]; return "[[" + n[1] + ":" + n[2] + "|" + s + "]]"; }) : text;
+  }
+  function refLink(kind, key, label) {
+    const p = kind === "p" ? M.player[key] : null, team = kind === "t" ? key : p && p.acct;
+    const color = kind === "t" ? teamColor(key) : p && M.rosters[team].colors[key];
+    if (!team || !color) return txt(label);              // not on the page (chopped, dropped): plain text
+    const link = el("a", "ref", label); link.style.setProperty("--ref", color);
+    link.href = kind === "t" ? "#sec-teams" : "#sec-mine"; link._ref = [kind, key];
+    return link;
+  }
+  function rich(to, text, a) {
+    to.textContent = "";
+    const marked = [a.headline].concat(a.paras || []).some(t => { MARK.lastIndex = 0; return MARK.test(t); });
+    if (!marked) text = autoMark(text);
+    let at = 0, m; MARK.lastIndex = 0;
+    while ((m = MARK.exec(text))) {
+      if (m.index > at) to.appendChild(txt(text.slice(at, m.index)));
+      to.appendChild(refLink(m[1], m[2], m[3]));
+      at = MARK.lastIndex;
+    }
+    if (at < text.length) to.appendChild(txt(text.slice(at)));
+  }
+  // A team link highlights that team's line; a player link opens the player chart on his team, highlights him there and his
+  // team above, then scrolls to the chart. Who is where is looked up at the tap, so an old story follows roster moves.
+  function follow(e) {
+    const link = e.target.closest && e.target.closest("a.ref"); if (!link || !link._ref) return;
+    e.preventDefault();
+    const kind = link._ref[0], key = link._ref[1], team = kind === "t" ? key : (M.player[key] || {}).acct;
+    if (!team || !M.team[team]) return;
+    UI.teams.sel = [team]; applyPicks(UI.teams);
+    if (kind === "p") {
+      if (mineTeam() !== team) { UI.mine.team = team; UI.mine.view = UI.mine.yview = null; store.set(KEY.team, team); }
+      UI.mine.sel = [key]; renderMine(true);
+    }
+    const to = $(kind === "t" ? "sec-teams" : "sec-mine"), y0 = scrollY;
+    to.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+    setTimeout(() => { if (scrollY === y0 && Math.abs(to.getBoundingClientRect().top) > 20) to.scrollIntoView({block: "start"}); }, 1000);   // a browser that never animated the scroll just jumps
+  }
+  const SIG = {};                                        // what each rebuilt-on-change block last showed
+  function changed(name, sig) { sig = GEN + "|" + sig; if (SIG[name] === sig) return false; SIG[name] = sig; return true; }
+  function drawNews() {
+    const a = M && M.article, box = $("chop-news");
+    box.hidden = !(a && a.headline);
+    if (box.hidden || !changed("news", JSON.stringify(a) + linkSig())) return;
+    rich($("news-head"), a.headline, a);
+    $("news-meta").textContent = "Week " + a.week + " · " + (a.final ? a.session + ", final" : a.session + ", in progress") + " · written " + clock(a.t);
+    const body = $("news-body"); body.textContent = "";
+    (a.paras || []).forEach(t => { const p = el("p", "b"); rich(p, t, a); body.appendChild(p); });
+  }
+  // Every story of the last 7 days, newest first: headline, week and time, tap to read. One being read stays open through updates.
+  const KIND = {live: "in game", final: "session final", day: "day wrap"};
+  function drawStories() {
+    const top = M && M.article, sec = $("sec-stories");
+    const items = (M ? M.articles : []).filter(a => !top || a.t !== top.t);   // the story at the top isn't repeated here
+    sec.hidden = !items.length;
+    if (!items.length || !changed("stories", items.map(a => a.t).join(",") + "|" + roomy() + linkSig())) return;
+    const list = $("stories-list"); list.textContent = "";
+    items.slice().reverse().forEach(a => {
+      const d = el("details", "chop-story"), sm = el("summary"); d.open = !!UI.openStories[a.t];
+      d.addEventListener("toggle", () => { UI.openStories[a.t] = d.open; });   // on a node made here, rebuilt only when the list changes
+      sm.appendChild(el("b", "", a.headline.replace(MARK, "$3")));
+      sm.appendChild(el("span", "", "Week " + a.week + " · " + clock(a.t) + (KIND[a.kind] ? " · " + KIND[a.kind] : "")));
+      d.appendChild(sm);
+      (a.paras || []).forEach(t => { const p = el("p"); rich(p, t, a); d.appendChild(p); });
+      list.appendChild(d);
+    });
+  }
+
+  // ----- Redact: NFL teams whose games the viewer does not want spoiled -----
+  const CONF = {AFC: [["East", "BUF MIA NE NYJ"], ["North", "BAL CIN CLE PIT"], ["South", "HOU IND JAX TEN"], ["West", "DEN KC LAC LV"]],
+                NFC: [["East", "DAL NYG PHI WAS"], ["North", "CHI DET GB MIN"], ["South", "ATL CAR NO TB"], ["West", "ARI LAR SEA SF"]]};
+  function setRedact(clubs, on) { clubs.forEach(c => { UI.redact[c] = on; }); store.set(KEY.redact, JSON.stringify(redactList())); render(true); }
+  function setReveal(on) { if (UI.reveal === on) return; UI.reveal = on; store.set(KEY.reveal, on ? "1" : "0"); render(true); }
+  function drawRedact() {
+    const mine = redactList(), n = mine.length, opp = {};
+    if (!n && UI.reveal) { UI.reveal = false; store.set(KEY.reveal, "0"); }   // no teams: back to Redacted, so the next team picked starts hidden
+    if (M) for (const id in M.player) {                  // this week's opponents of the picked teams
+      const p = M.player[id], o = p.opp; if (!p.club || !o) continue;
+      if (UI.redact[p.club] && !UI.redact[o]) opp[o] = 1;
+      if (UI.redact[o] && !UI.redact[p.club]) opp[p.club] = 1;
+    }
+    const others = Object.keys(opp).sort();
+    if (!changed("redact", mine.join() + "|" + others.join() + "|" + UI.reveal + ALT_SIG)) return;
+    const sum = $("chop-redact-sum"); sum.textContent = ""; sum.className = n ? (UI.reveal ? "open" : "shut") : "";
+    if (!n) sum.textContent = "Redact";
+    else {                                               // "Redacted [NE] [SF] · Opponents [GB] [LV]" (red); "Unredacted …" (green)
+      const tags = list => list.forEach(c => { const t = el("span", "chop-tag team", c); t.style.setProperty("--tc", clubColor(c, true)); sum.appendChild(t); });
+      sum.appendChild(txt(UI.reveal ? "Unredacted " : "Redacted ")); tags(mine);
+      if (others.length) { sum.appendChild(txt(others.length > 1 ? " · Opponents " : " · Opponent ")); tags(others); }
+    }
+    const panel = $("chop-redact-panel"); panel.textContent = "";
+    const btn = (cls, text, pressed, act) => { const b = el("button", cls, text); b.type = "button"; b.setAttribute("aria-pressed", String(pressed)); b._act = act; return b; };
+    const seg = el("span", "chop-seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Redacted players");
+    [["Redacted", false], ["Unredacted", true]].forEach(o => {   // Unredacted shows everything, until switched back (kept on this device)
+      const b = btn("", o[0], UI.reveal === o[1], () => setReveal(o[1])); b.disabled = !n; seg.appendChild(b);
+    });
+    panel.appendChild(seg);
+    panel.appendChild(el("p", "lead", "Hide stats for these NFL teams' players once their games start (saved on this device):"));
+    Object.keys(CONF).forEach(conf => {
+      // a label toggles its whole group: all of it selected, or (when it already is) none of it
+      const groupButton = (cls, text, clubs, title) => {
+        const on = clubs.every(c => UI.redact[c]), b = btn(cls, text, on, () => setRedact(clubs, !on));
+        b.title = title + (on ? ": tap to clear" : ": tap to select all");
+        return b;
+      };
+      const head = el("div", "conf");
+      head.appendChild(groupButton("grpb conf-b", conf, [].concat.apply([], CONF[conf].map(d => d[1].split(" "))), "The whole " + conf)); panel.appendChild(head);
+      CONF[conf].forEach(d => {
+        const row = el("div", "div");
+        row.appendChild(groupButton("grpb dl", d[0], d[1].split(" "), conf + " " + d[0]));
+        d[1].split(" ").forEach(c => {
+          const chip = btn("chip", c, !!UI.redact[c], () => setRedact([c], !UI.redact[c])); chip.style.setProperty("--tc", "var(--chop-n-" + c + ")");
+          row.appendChild(chip);
+        });
+        panel.appendChild(row);
+      });
+    });
+  }
+
+  // ----- The Chopping Block: the teams -----
+  function teamsData() {
+    const lines = {}, col = {}, name = {}, us = M.us;
+    M.teams.forEach(t => { col[t.team] = t.color; name[t.team] = teamName(t.team); if (t.line) lines[t.team] = linePts(t.line, t.est_final); });
+    return {lines: lines, wins: M.windows, nowX: M.nowX, items: M.teams.map(t => ({id: t.team, est_final: t.est_final})), col: col, us: us, name: name,
+            width: t => t === us ? 3.4 : 1.8, bold: t => t === us, games: t => (M.team[t].gx || []).map(Number),
+            widths: t => t === us ? {thick: 5, thin: 1.6, done: 0.75} : {thick: 3.4, thin: 1.1, done: 0.5},
+            faint: () => false, aria: "Points by team through the week, scored and projected"};
+  }
+  // Cushion: each team's projected final minus the projected chop team's, at every moment up to now; the chop team itself shows how
+  // far it is behind the next team up. A team's projection at x is what its current starters had scored by then plus
+  // remainingPts() for the rest of each game at that point (at Now: the table's Final). Worked out once per data update.
+  function cushionLines() {
+    const end = M.nowX != null ? M.nowX : 0, out = {}, fin = {};
+    const plan = M.teams.map(t => {
+      fin[t.team] = +t.est_final; out[t.team] = [];
+      return {team: t.team, starters: ((M.rosters[t.team] || {}).rows || []).filter(p => p.slot === "START").map(p => {
+        const L = p.line, ax = L.ax || [], px = L.px || [];
+        return {ax: ax, ay: L.ay || [], x0: ax.length ? +ax[0] : px.length ? +px[0] : null, x1: px.length ? +px[px.length - 1] : ax.length ? +ax[ax.length - 1] : null,
+                base: +(p.base != null ? p.base : p.pre) || 0};
+      })};
+    });
+    const projAt = (p, x) => p.starters.reduce((sum, s) => {
+      if (s.x0 == null) return sum;                      // out or no game: nothing
+      let pts = 0; for (let i = 0; i < s.ax.length && +s.ax[i] <= x; i++) pts = +s.ay[i];
+      const f = x <= s.x0 ? 1 : x >= s.x1 ? 0 : (s.x1 - x) / (s.x1 - s.x0);
+      return sum + pts + remainingPts(pts, f, s.base);
+    }, 0);
+    const step = Math.max(2, end / 250);
+    for (let x = 0; ; x = Math.min(end, x + step)) {
+      const last = x >= end, v = {};
+      plan.forEach(p => { v[p.team] = last ? fin[p.team] : projAt(p, x); });
+      const lo = plan.map(p => v[p.team]).sort((a, b) => a - b);
+      plan.forEach(p => { const w = v[p.team]; out[p.team].push({x: x, pts: lo.length < 2 ? 0 : w <= lo[0] ? w - lo[1] : w - lo[0], phase: "actual"}); });
+      if (last) break;
+    }
+    return out;
+  }
+  function cushionData() {
+    const d = teamsData(); if (!M.hasRosters) return d;
+    return Object.assign(d, {lines: M._cushion || (M._cushion = cushionLines()), signed: true, zeroLabel: "Chop line", fmt: v => (v > 0.05 ? "+" : "") + v.toFixed(1),
+      widths: t => t === d.us ? {thick: 3.2, thin: 1.6, done: 0.8} : {thick: 2.2, thin: 1.1, done: 0.6},
+      aria: "Each team's projected points above or below the chop line through the week"});
+  }
+  // The thin bar at the left of a team's row, from our Chop%: red = the team most likely chopped, yellow = 10% or more,
+  // green = under 10%, blue = no chance (0.0% in 20,000 simulated finishes).
+  function chopRisk(t) {
+    const top = M.teams.reduce((a, b) => +b.chop > +a.chop ? b : a, M.teams[0]), c = +t.chop;
+    if (t.team === top.team && c > 0) return ["var(--chop-p-qb)", "Most likely to be chopped"];
+    if (c >= 10) return ["var(--chop-p-te1)", "In danger: 10% or more to be chopped"];
+    if (c >= 0.05) return ["var(--chop-p-wr0)", "Probably safe: under 10% to be chopped"];
+    return ["var(--chop-p-rb0)", "No chance of being chopped"];
+  }
+  function teamRow(t, risk) {
+    const tr = el("tr", t.team === M.us ? "us" : ""), cell = cls => tr.appendChild(el("td", cls));
+    cell().textContent = String(t.rank);
+    const nm = cell("nm"), key = el("span", "chop-dot"); key.style.background = t.color; nm.appendChild(key); nm.style.color = t.color;
+    nm.appendChild(txt(roomy() ? teamName(t.team) : breakLong(teamName(t.team), 11, 8)));
+    cell().textContent = (+t.now).toFixed(1);
+    const fin = cell(); ours(fin, t.est_final, t.est_sleeper);
+    if (t.pre != null) {                                 // phones have no room for the Projected column: the same numbers, dim, under Final
+      const was = el("span", "pregame phone"); was.title = "Projected at the week's first kickoff"; ours(was, t.pre, t.pre_sleeper); fin.appendChild(was);
+    }
+    const pre = cell("preweek"); if (t.pre != null) ours(pre, t.pre, t.pre_sleeper);
+    ours(cell(), t.chop, t.chop_sleeper, !roomy(), true);
+    leftInDone(cell(), t.count || {});
+    tr.appendChild(meterCell({game: {st: t.st || "pre"}, now: t.now, est_final: t.est_final, pre: t.pre, pace: t.st && t.st !== "pre" ? t.pace : null, place: +t.rank, of: M.teams.length}));
+    tr.setAttribute("data-key", t.team); tr.style.setProperty("--row", t.color); tr.style.setProperty("--risk", risk[0]); tr.firstChild.title = risk[1];
+    tr._pick = [t.team];
+    return tr;
+  }
+  function renderTeams(charts) {
+    const st = UI.teams, cushion = st.mode === "cushion";
+    st.sel = st.sel.filter(t => M.team[t]);              // a team chopped since it was picked
+    $("chart-points").setAttribute("aria-pressed", String(!cushion)); $("chart-rank").setAttribute("aria-pressed", String(cushion));
+    if (charts) CHART.teams.update(cushion ? cushionData() : teamsData());
+    syncRows(TB.teams, M.teams.slice().sort((a, b) => +b.rank - +a.rank).map(t => {   // worst first
+      const risk = chopRisk(t);
+      return {key: t.team, sig: JSON.stringify([t.rank, t.now, t.est_final, t.est_sleeper, t.pre, t.pre_sleeper, t.chop, t.chop_sleeper, t.count, t.st, t.pace, t.color, t.name, risk, M.teams.length, t.team === M.us]),
+              build: () => teamRow(t, risk)};
+    }));
+    applyPicks(st);
+  }
+
+  // ----- Players for: one team's roster -----
+  function mineData() {
+    const acct = mineTeam(), R = acct && M.rosters[acct];
+    if (!R || !R.rows.length) return null;
+    const lines = {}, name = {}, slot = {};
+    R.rows.forEach(p => {
+      name[p.id] = p.short; slot[p.id] = p.slot;
+      if (!redactKind(p)) lines[p.id] = linePts(p.line, p.est_final);   // redacted: no line, no name
+    });
+    return {lines: lines, wins: M.windows, nowX: M.nowX, items: R.rows.map(p => ({id: p.id, est_final: p.est_final})), col: R.colors, us: null, name: name,
+            width: t => slot[t] === "START" ? 4.5 : 3, bold: t => slot[t] === "START", faint: () => false, rangeOnly: true,
+            aria: "Points by player for " + teamName(acct, true) + ", scored and projected"};
+  }
+  // Team picker: alive teams only, in the team table's order (worst first) with each team's place in it.
+  function drawPicker() {
+    const sel = $("mine-team"), cur = mineTeam(), long = roomy();
+    sel.hidden = !M.hasRosters;
+    if (!M.hasRosters) return;
+    const rank = acct => M.team[acct] ? +M.team[acct].rank : 0, names = Object.keys(M.rosters).sort((a, b) => rank(b) - rank(a));
+    // not while it is open (focused): a 5-second read must not swap the list under a finger
+    if (document.activeElement !== sel && changed("picker", names.map(n => rank(n) + n + teamName(n, long) + teamColor(n)).join("|"))) {
+      sel.textContent = "";
+      names.forEach(n => {
+        const o = el("option", "", (rank(n) ? rank(n) + ". " : "") + teamName(n, long) + (n === M.us ? " · ours" : "")); o.value = n; o.style.color = teamColor(n); sel.appendChild(o);
+      });
+    }
+    sel.value = cur; sel.style.color = teamColor(cur);
+  }
+  function renderMine(charts) {
+    const st = UI.mine, md = mineData(), R = md && M.rosters[mineTeam()];
+    $("sec-mine").hidden = !md;
+    drawPicker();
+    if (!md) return;
+    st.sel = st.sel.filter(id => R.rows.some(p => p.id === id));   // a player dropped since he was picked
+    if (charts) CHART.mine.update(md);
+    let bench = false;
+    syncRows(TB.mine, R.rows.map(p => {
+      const isBench = p.slot !== "START", cls = isBench ? (bench ? "bench" : "bench first-bench") : "";   // the heavier line starts the bench
+      bench = bench || isBench;
+      return {key: p.id, sig: playerSig(p, R.colors[p.id], cls, false), build: () => playerRow(p, R.colors[p.id], cls, false)};
+    }));
+    applyPicks(st);
+  }
+
+  // ----- Players in a game / Players who have played / Players' projections -----
+  // Each group {key, name, kick, rows}. Games run in kickoff order, teams worst first, as in the team table.
+  function gameGroups() {
+    const by = UI.game.by, want = M.gameWant, groups = {};
+    if (!want) return [];
+    Object.keys(M.rosters).forEach(acct => M.rosters[acct].rows.forEach(p => {
+      if (!p.game || p.game.st !== want || p.out) return;
+      const key = by === "team" ? acct : p.gameName;
+      (groups[key] = groups[key] || {key: key, name: by === "team" ? teamName(acct) : p.gameName, kick: p.game.kick, rows: []}).rows.push(p);
+    }));
+    // A lineup: QB, RBs, WRs, TE, FLEX, then the bench by the same positions; Fantasy ties keep Sleeper's own lineup order.
+    const POS = {QB: 0, RB: 1, WR: 2, TE: 3}, rank = k => M.team[k] ? +M.team[k].rank : 0;
+    const place = p => (p.slot === "START" ? 0 : 10) + (p.slot === "START" && p.flex ? 4 : POS[p.pos] != null ? POS[p.pos] : 5);
+    return Object.keys(groups).map(k => {
+      groups[k].rows.sort(by === "team" ? (a, b) => place(a) - place(b) || a.order - b.order
+        // NFL: away team first, then each NFL team as a lineup, leaders first on ties (redacted: by name, so the order tells nothing)
+        : (a, b) => (a.game.home ? 1 : 0) - (b.game.home ? 1 : 0) || place(a) - place(b) || (redactKind(a) || redactKind(b) ? (a.name < b.name ? -1 : 1) : b.now - a.now));
+      return groups[k];
+    }).sort(by === "team" ? (a, b) => rank(b.key) - rank(a.key) : (a, b) => a.kick - b.kick || (a.name < b.name ? -1 : 1));
+  }
+  // The line chart's data while games are on: only the game windows these players are in, x counted from the first of them.
+  // One game on the chart: its four quarters, by the game clock. More than one: real time, in 30-minute sections.
+  function gameData(groups) {
+    const st = UI.game, items = [], col = {}, name = {}, slot = {}, lines = {}, names = {};
+    groups.forEach(g => g.rows.forEach(p => { items.push(p); col[p.id] = clubColor(p.club, p.slot === "START"); name[p.id] = p.short; slot[p.id] = p.slot; names[p.gameName] = 1; }));
+    const only = Object.keys(names).length === 1 ? Object.keys(names)[0] : null, clk = only && M.clocks[only];
+    let wins, grid, floor, key, nowX;
+    if (clk && clk.length) {
+      const at = x => {                                  // chart time -> game minute, straight between the plays
+        if (x <= clk[0][0]) return clk[0][1];
+        for (let c = 1; c < clk.length; c++) if (x <= clk[c][0]) { const u = clk[c - 1], v = clk[c]; return v[0] > u[0] ? u[1] + (v[1] - u[1]) * (x - u[0]) / (v[0] - u[0]) : v[1]; }
+        return clk[clk.length - 1][1];
+      };
+      const nowM = clk[clk.length - 1][1], endM = Math.max(60, nowM);
+      items.forEach(p => {
+        if (redactKind(p)) return;
+        const px = p.line.px || [], p0 = px[0], pn = px[px.length - 1], ok = px.length > 1 && pn > p0;
+        lines[p.id] = linePts(ok ? p.line : {ax: p.line.ax, ay: p.line.ay}, p.est_final, at, x => nowM + (endM - nowM) * (x - p0) / (pn - p0));
+      });
+      wins = [1, 2, 3, 4].map(q => ({label: "Q" + q, short: "Q" + q, when: "", x0: (q - 1) * 15, x1: q * 15, kicks: []}));
+      if (nowM > 60) wins.push({label: "OT", short: "OT", when: "", x0: 60, x1: Math.max(70, nowM), kicks: []});
+      nowX = nowM; grid = [{x: 15}, {x: 30, strong: true}, {x: 45}].concat(nowM > 60 ? [{x: 60}] : []);
+      floor = nowM > 60 ? Math.max(70, nowM) : 60; key = "game " + only;
+    } else {
+      let lo = Infinity, hi = -Infinity;
+      items.forEach(p => (p.line.ax || []).concat(p.line.px || []).forEach(x => { if (x < lo) lo = x; if (x > hi) hi = x; }));
+      if (!isFinite(lo) && M.nowX != null) lo = hi = M.nowX;
+      // From the first window with one of these players to the last: on a Sunday, the early and late games together until the
+      // last early game ends. A played window opens at its first play, a moment after the kickoff.
+      let first = -1, last = -1;
+      M.windows.forEach((w, i) => { if (items.some(p => p.game.kick >= w.t0 - 900 && p.game.kick < w.t1)) { if (first < 0) first = i; last = i; } });
+      const span = first < 0 ? M.windows.filter(w => +w.x1 > lo && +w.x0 < hi - 1) : M.windows.slice(first, last + 1), base = span.length ? +span[0].x0 : lo;
+      items.forEach(p => { if (!redactKind(p)) lines[p.id] = linePts(p.line, p.est_final, x => x - base); });
+      wins = span.map(w => Object.assign({}, w, {x0: +w.x0 - base, x1: +w.x1 - base, kicks: (w.kicks || []).map(k => ({x: k.x - base, t: k.t}))}));
+      nowX = M.nowX != null ? M.nowX - base : null;
+      const end = Math.max(hi - base, span.length ? +span[span.length - 1].x1 - base : 0);   // 3 1/2 hours, or more when two windows overlap
+      floor = Math.max(210, Math.ceil(end / 30) * 30); grid = [];
+      for (let g = 30; g < floor; g += 30) grid.push(g % 60 ? {x: g} : {x: g, strong: true, label: g / 60 + "h"});
+      key = "real " + base;
+    }
+    if (st.base !== key) { st.base = key; st.view = st.yview = null; }   // a different axis: the old zoom means nothing
+    const crowd = items.length > 12;
+    return {lines: lines, wins: wins, nowX: nowX, items: items.map(p => ({id: p.id, est_final: p.est_final})), col: col, us: null, name: name,
+            rangeOnly: true, noThin: true, grid: grid, xFloor: floor, minH: items.length * 12.5 + 70, tipMax: 14,
+            width: t => slot[t] === "START" ? (crowd ? 2.2 : 4) : (crowd ? 1.2 : 2.5), bold: () => false, faint: () => false,
+            aria: "Points for every player in a game, scored and projected"};
+  }
+  // NFL game header: the two teams in their colors, "GB vs NE"; once under way "GB 24 vs NE 17", live or final. A redacted game
+  // shows a REDACTED tag where the score goes.
+  function gameLabel(name, p) {
+    const out = el("span", "clubs"), clubs = String(name).split(" vs "), g = p && p.game, score = {};
+    const hid = g && g.st !== "pre" && clubs.some(redactOn);
+    if (g && g.st !== "pre" && g.pts != null && !hid) { score[p.club] = g.pts; clubs.forEach(c => { if (c !== p.club) score[c] = g.opp_pts; }); }
+    clubs.forEach((club, i) => {
+      if (i) out.appendChild(txt(" vs "));
+      const c = el("span", "", club); c.style.color = clubColor(club, true); out.appendChild(c);
+      if (score[club] != null) out.appendChild(el("span", "score", " " + score[club]));
+    });
+    if (hid) { out.appendChild(txt(" ")); out.appendChild(redactTag("self")); }
+    return out;
+  }
+  // After the game's name, dim: how many players, the clock, and who has the ball, where and what down.
+  function gameSub(g) {
+    const out = el("span"), gm = g.rows[0].game || {};
+    out.appendChild(txt(" · " + players(g.rows.length) + " · ")); out.appendChild(clockLine(gm));
+    if (redactKind(g.rows[0])) return out;               // a redacted game: no ball, no down
+    if (gm.st === "in" && gm.poss) {
+      out.appendChild(txt(" · "));
+      const who = el("span", "chop-tag team", gm.poss.club); who.title = gm.poss.club + " has the ball"; who.style.setProperty("--tc", clubColor(gm.poss.club, true));
+      out.appendChild(who); out.appendChild(ballLine(gm.poss));
+    } else if (gm.st === "in" && gm.kickoff) out.appendChild(txt(" · Kickoff"));
+    return out;
+  }
+  // A header row in the table: tapping it picks all of its players, or drops them.
+  function groupRow(cls, label, sub, color, rows, dotColor) {
+    const head = el("tr", cls), td = el("td"), nm = el("span"), more = el("span", "sub");
+    td.colSpan = 5; nm.appendChild(typeof label === "string" ? txt(label) : label); if (color) nm.style.color = color;
+    more.appendChild(typeof sub === "string" ? txt(sub) : sub);
+    if (dotColor) { const key = el("span", "chop-dot"); key.style.background = dotColor; key.style.marginRight = "5px"; td.appendChild(key); }
+    td.appendChild(nm); td.appendChild(more); head.appendChild(td);
+    head._pick = rows.map(p => p.id); head._group = true;
+    return head;
+  }
+  function gameSpecs(groups) {
+    const byTeam = UI.game.by === "team", specs = [];
+    groups.forEach(g => {
+      const ids = g.rows.map(p => p.id).join(), first = g.rows[0];
+      specs.push(byTeam
+        ? {key: "g:" + g.key, sig: g.name + teamColor(g.key) + ids, build: () => groupRow("grp", roomy() ? g.name : breakLong(g.name, 13, 10), " · " + players(g.rows.length), teamColor(g.key), g.rows)}
+        : {key: "g:" + g.key, sig: JSON.stringify(first.game) + first.club + ids, build: () => groupRow("grp", gameLabel(g.name, first), gameSub(g), null, g.rows)});
+      g.rows.forEach((p, i) => {
+        if (!byTeam && (!i || g.rows[i - 1].club !== p.club)) {   // NFL: the game, then each of its two NFL teams
+          const club = g.rows.filter(x => x.club === p.club);
+          specs.push({key: "c:" + g.key + ":" + p.club, sig: club.map(x => x.id).join(), build: () => groupRow("grp club", p.club, " · " + players(club.length), null, club, clubColor(p.club, true))});
+        }
+        const color = clubColor(p.club, p.slot === "START"), cls = p.slot === "START" ? "" : "bench";
+        specs.push({key: "p:" + p.id, sig: playerSig(p, color, cls, true), build: () => playerRow(p, color, cls, true)});
+      });
+    });
+    return specs;
+  }
+  function drawGamePicker(all) {
+    const sel = $("game-group"), by = UI.game.by;
+    if (document.activeElement !== sel && changed("gpick", by + "|" + all.map(g => g.key + g.name + g.rows.length + (by === "team" ? teamColor(g.key) : "")).join("|"))) {
+      sel.textContent = "";
+      const add = (value, text, color) => { const o = el("option", "", text); o.value = value; if (color) o.style.color = color; sel.appendChild(o); };
+      add("", by === "team" ? "All teams" : "All games");
+      all.forEach(g => add(g.key, g.name + " · " + g.rows.length, by === "team" ? teamColor(g.key) : null));
+    }
+    sel.value = UI.game.group || "";
+    sel.style.color = by === "team" && UI.game.group ? teamColor(UI.game.group) : "";
+    $("game-by-game").setAttribute("aria-pressed", String(by === "game")); $("game-by-team").setAttribute("aria-pressed", String(by === "team"));
+  }
+  // Between games, the scorecard in place of the lines: one bar per player who played, as long as his points, with a tick at his
+  // Projected and the meters' colors (blue beat it, green met it, yellow missed by a point or less, red missed by more). Grouped
+  // like the table, most points first. Before the week's first kickoff (preview) the bar is his Projected, in his NFL team's color.
+  const PACE = {red: "var(--chop-p-qb)", yellow: "var(--chop-p-te1)", green: "var(--chop-p-wr0)", blue: "var(--chop-p-rb0)"};
+  let scorecard = null;
+  function drawScorecard(all) {
+    const st = UI.game, host = $("game-chart"), preview = M.gameMode === "preview", groups = all.filter(g => !st.group || g.key === st.group);
+    const sig = [preview, st.by, st.group, host.clientWidth, VSIG, preview && st.by === "game" && !st.group ? JSON.stringify(M.games) : "",
+                 JSON.stringify(groups.map(g => [g.key, g.name, teamColor(g.key), g.rows.map(p => [p.id, p.now, p.pre, p.pace, p.slot, p.pos, p.short, p.club, p.label, p.game.st, p.game.pts, p.game.opp_pts])]))].join("|");
+    if (scorecard && !changed("scorecard", sig)) return;
+    changed("scorecard", sig);
+    let top = 1;
+    groups.forEach(g => g.rows.forEach(p => { top = Math.max(top, +p.now || 0, +p.pre || 0); }));
+    top = Math.ceil(top / 5) * 5;
+    const box = el("div", "chop-sc"), key = el("p", "chop-sc-key");
+    key.innerHTML = preview ? "Bar = Projected, in the NFL team's color. Nobody has played yet."
+      : "<b class=\"purple\">Purple tick</b> = Projected: <b class=\"blue\">beat</b> <b class=\"green\">met</b> <b class=\"yellow\">just missed</b> <b class=\"red\">missed</b>";
+    box.appendChild(key);
+    const POSO = {QB: 0, RB: 1, WR: 2, TE: 3};           // redacted players last and by position, so the order gives nothing away
+    groups.forEach(g => {
+      const h = el("div", "grp");
+      if (st.by === "team") { h.textContent = g.name; h.style.color = teamColor(g.key); } else h.appendChild(gameLabel(g.name, g.rows[0]));
+      box.appendChild(h);
+      g.rows.slice().sort((a, b) => {
+        const ra = !!redactKind(a), rb = !!redactKind(b);
+        if (ra || rb) return ra - rb || (POSO[a.pos] - POSO[b.pos]) || (a.name < b.name ? -1 : 1);
+        return preview ? (+b.pre || 0) - (+a.pre || 0) : (+b.now || 0) - (+a.now || 0);
+      }).forEach(p => {
+        const row = el("div", "row" + (p.slot === "START" ? "" : " bench")), nm = el("span", "nm", p.pos + " " + p.short), kind = redactKind(p);
+        row.setAttribute("data-team", p.id); nm.style.color = clubColor(p.club, true); row.appendChild(nm); box.appendChild(row);
+        if (kind) { row.appendChild(redactTag(kind)); return; }   // redacted: his name and one tag
+        const trk = el("span", "trk"), bar = trk.appendChild(el("span", "bar")), proj = p.pre != null ? (+p.pre).toFixed(1) : null, who = p.acct ? " · " + teamName(p.acct, true) : "";
+        trk.appendChild(el("span", "gl"));               // the 1 / 5 / 10 point lines, over the bar
+        let val;
+        if (preview) {                                   // his Projected alone
+          bar.style.background = clubColor(p.club, true); bar.style.width = Math.max(0, +p.pre || 0) / top * 100 + "%";
+          val = el("span", "val", proj != null ? proj : "–"); row.title = p.label + ": projected " + (proj != null ? proj : "–") + who;
+        } else {
+          const pts = (+p.now || 0).toFixed(1);
+          bar.style.width = Math.max(0, +p.now || 0) / top * 100 + "%"; bar.style.background = PACE[p.pace] || "var(--chop-muted)";
+          if (proj != null) trk.appendChild(el("span", "tk")).style.left = "calc(" + (+p.pre / top * 100) + "% - 1px)";
+          val = el("span", "val", pts);
+          if (proj != null) { const pj = el("span", "pj"); pj.innerHTML = '<span class="sl">/</span>' + proj; val.appendChild(pj); }   // 8.4/12.9, where there is room
+          row.title = p.label + ": " + pts + (proj != null ? ", projected " + proj : "") + who;
+        }
+        row.appendChild(trk); row.appendChild(val); row._pick = p.id;
+      });
+    });
+    if (preview && st.by === "game" && !st.group) {      // NFL, all games: then the games with none of these players, in kickoff order
+      const have = {}; all.forEach(g => { have[g.key] = 1; });
+      M.games.forEach(gm => {
+        if (have[gm.name] || gm.st !== "pre") return;
+        const h = el("div", "grp empty"), sub = el("span", "sub", " · no players · " + windowName(gm.kick)); sub.title = clock(gm.kick);
+        h.appendChild(gameLabel(gm.name, null)); h.appendChild(sub); box.appendChild(h);
+      });
+    }
+    box.addEventListener("click", e => { const row = e.target.closest(".row"); if (row && row._pick) pick(st, row._pick); });   // on the new box, which lives until the next rebuild
+    if (scorecard) host.replaceChild(box, scorecard); else host.appendChild(box);
+    scorecard = box;
+    if (box.clientWidth < 330) box.classList.add("narrow");   // no room: points only
+    const vals = box.querySelectorAll(".val"); let vw = 0;
+    vals.forEach(v => { vw = Math.max(vw, v.scrollWidth); });
+    vals.forEach(v => { v.style.width = Math.ceil(vw) + "px"; });   // one width, so every bar ends at the same spot
+    // point lines: every 10 brighter, every 5 dim, every 1 dimmer (left out when a point is under 4 px wide)
+    const tw = (box.querySelector(".trk") || {}).clientWidth || 0, unit = 100 / top;
+    const lines = (step, alpha) => "repeating-linear-gradient(to right,color-mix(in srgb,var(--chop-fg) " + alpha + "%,transparent) 0 1px,transparent 1px " + (unit * step) + "%)";
+    const layers = [lines(10, 24), lines(5, 13)]; if (tw / top >= 4) layers.push(lines(1, 6));
+    box.querySelectorAll(".gl").forEach(g => { g.style.backgroundImage = layers.join(","); });
+  }
+  function renderGame(charts) {
+    const st = UI.game, all = gameGroups(), any = all.length > 0, live = M.gameMode === "live";
+    if (st.group && !all.some(g => g.key === st.group)) { st.group = null; st.view = st.yview = null; st.sel = []; }   // that game ended
+    const here = {}; all.forEach(g => g.rows.forEach(p => { here[p.id] = 1; }));
+    st.sel = st.sel.filter(i => here[i]);
+    $("game-title").textContent = M.gameMode === "summary" ? "Players who have played" : M.gameMode === "preview" ? "Players' projections" : "Players in a game";
+    $("game-none").hidden = any; $("game-body").hidden = !any; GAME_SEG.hidden = !any; $("game-group").hidden = !any;
+    if (!live || !any) { $("game-reset").hidden = true; st.base = null; CHART.game.update(null); }
+    if (live || !any) { if (scorecard) scorecard.remove(); scorecard = null; }
+    if (!any) { syncRows(TB.game, []); return; }
+    drawGamePicker(all);
+    const one = all.find(g => g.key === st.group) || (all.length === 1 ? all[0] : null), groups = one ? [one] : all;
+    // The lines move with the minute data; a 5-second read redraws them only when a game started or ended (who is listed changed).
+    const who = live + "|" + groups.map(g => g.key + ":" + g.rows.map(p => p.id).join()).join("|");
+    if (live && (charts || who !== st.who)) CHART.game.update(gameData(groups));
+    st.who = who;
+    if (!live) drawScorecard(all);
+    syncRows(TB.game, gameSpecs(groups));
+    applyPicks(st);
+  }
+
+  // ---------- 7. render: M and UI -> the page ----------
+  const TB = {teams: document.querySelector("#sec-teams .chop-t tbody"), mine: document.querySelector("#sec-mine .chop-t tbody"), game: document.querySelector("#sec-game .chop-t tbody")};
+  const CHART = {teams: makeChart($("chop-chart"), UI.teams, $("chop-reset")), mine: makeChart($("mine-chart"), UI.mine, $("mine-reset")),
+                 game: makeChart($("game-chart"), UI.game, $("game-reset"))};
+  const GAME_SEG = document.querySelector("#sec-game .chop-seg");
+  // charts = also repaint the line charts (new minute data, a choice, a resize). A 5-second read passes false: the tables follow
+  // it, the lines stay on the minute data. Everything else rebuilds only what changed.
+  function render(charts) {
+    if (M) pickClubColors();
+    drawRedact();                                        // its title names this week's opponents, so it follows the data
+    VSIG = [GEN, roomy(), ALT_SIG, UI.reveal, redactList().join(), UI.game.by, M ? M.week : ""].join("|") + "|";
+    const ok = !!(M && M.ok);
+    $("chop-wait").hidden = ok; $("chop-body").hidden = !ok;
+    drawStatus(); drawNews(); drawStories();
+    if (ok) { renderTeams(charts); renderGame(charts); renderMine(charts); }
+    syncTicker();
+  }
+  function refold() {
+    const was = M;
+    M = fold(FEEDS.doc, FEEDS.live, nowS());
+    if (was && M && was.week !== M.week)                 // a new week: last week's zoom and one-game filter mean nothing
+      [UI.teams, UI.mine, UI.game].forEach(st => { st.view = st.yview = null; st.base = null; if (st === UI.game) st.group = null; });
+  }
+  // The counting game clocks: once a second, only while one is on screen and the page is in view.
+  let ticker = 0;
+  function tickClocks() { document.querySelectorAll(".chop-t .tick").forEach(n => { if (n._k) n.textContent = clockText(n._k); }); }
+  function syncTicker() {
+    const need = !document.hidden && !!document.querySelector(".chop-t .tick");
+    if (need && !ticker) ticker = setInterval(tickClocks, 1000);
+    if (!need && ticker) { clearInterval(ticker); ticker = 0; }
+  }
+
+  // ----- the page's own controls: every listener is added here, once -----
+  rowClicks(TB.teams, UI.teams); rowClicks(TB.mine, UI.mine); rowClicks(TB.game, UI.game);
+  $("chop-news").addEventListener("click", follow); $("stories-list").addEventListener("click", follow);
+  $("chop-redact-panel").addEventListener("click", e => { const b = e.target.closest("button"); if (b && b._act && !b.disabled) b._act(); });
+  // a touch or click anywhere outside a chart closes that chart's readout and clears its picks
+  // (its own table rows still pick, so they keep the picks for their click to toggle)
+  document.addEventListener("pointerdown", e => {
+    [UI.teams, UI.game, UI.mine].forEach(st => {
+      const box = CHART[st.key].svg.parentNode;
+      if (box.contains(e.target)) return;
+      CHART[st.key].dismiss();
+      const row = e.target.closest && e.target.closest("#sec-" + st.key + " .chop-t tbody tr");
+      if (st.sel.length && !row) { st.sel = []; applyPicks(st); }
+    });
+  }, true);
+  function setTeamsMode(mode) {
+    if (UI.teams.mode === mode) return;
+    UI.teams.mode = mode; UI.teams.view = UI.teams.yview = null; store.set(KEY.mode, mode);
+    if (M && M.ok) renderTeams(true);
+  }
+  function setGameBy(by) {
+    if (UI.game.by === by) return;
+    Object.assign(UI.game, {by: by, group: null, view: null, yview: null, base: null}); store.set(KEY.by, by);
+    render(true);
+  }
+  $("chart-points").addEventListener("click", () => setTeamsMode("points"));
+  $("chart-rank").addEventListener("click", () => setTeamsMode("cushion"));
+  $("game-by-game").addEventListener("click", () => setGameBy("game"));
+  $("game-by-team").addEventListener("click", () => setGameBy("team"));
+  $("game-group").addEventListener("change", e => {
+    Object.assign(UI.game, {group: e.target.value || null, view: null, yview: null, sel: [], base: null});
+    if (M && M.ok) renderGame(true);
+  });
+  $("mine-team").addEventListener("change", e => {
+    Object.assign(UI.mine, {team: e.target.value, view: null, yview: null, sel: []}); store.set(KEY.team, UI.mine.team);
+    if (M && M.ok) renderMine(true);
+  });
+  let lastW = innerWidth, resizing = 0;
+  addEventListener("resize", () => {                     // a new width: once per frame, however many events arrive
+    if (innerWidth === lastW || resizing) return;
+    resizing = requestAnimationFrame(() => { resizing = 0; lastW = innerWidth; render(true); });
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => render(true));   // the close-color check depends on the theme
+  render(true);
+
+  // ---------- 8. feeds: the same three the root page reads ----------
+  // live_doc.json (the recorder pushes it every minute during games): every minute while live and just before a kickoff, else every
+  // 2 minutes. ESPN's scoreboard and Sleeper's stats: every 5 seconds while a game is on and the page is in view.
+  const URL_DOC = window.CHOP_DATA_URL || "../live_doc.json";
+  // The same file on GitHub's data branch, read past the Pages deploy, which GitHub sometimes leaves queued for many minutes.
+  // RAW has no limit but can lag up to 5 minutes: the backstop when the deploy stalls. API is current at once, but GitHub allows
+  // about 60 reads an hour per viewer: only for the Update button.
+  const URL_RAW = window.CHOP_RAW_URL !== undefined ? window.CHOP_RAW_URL : "https://raw.githubusercontent.com/Riquochet/chop-race/data/live_doc.json";
+  const URL_API = window.CHOP_API_URL !== undefined ? window.CHOP_API_URL : "https://api.github.com/repos/Riquochet/chop-race/contents/live_doc.json?ref=data";
+  let built = 0, pollTimer = 0, pollQueue = Promise.resolve();
+  async function getDoc(u, headers) {
+    const r = await fetch(u + (u.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), {cache: "no-store", headers: headers || {}});
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }
+  async function latest() {                              // the deployed copy, or the data branch's if the deploy has stalled
+    let d = await getDoc(URL_DOC);
+    if (URL_RAW && nowS() - (+d.builtAt || 0) > 180) {
+      try { const o = await getDoc(URL_RAW); if (+o.builtAt > +d.builtAt) d = o; } catch (e) {}
+    }
+    return d;
+  }
+  function nextDelay() {
+    if (!M || isLive()) return 60;
+    return M.next && M.next - 300 - nowS() < 120 ? 60 : 120;
+  }
+  // One read at a time, in the order asked, and one timer: the wake-up, the timer and the Update button can never stack reads.
+  function poll(direct) { pollQueue = pollQueue.then(() => readDoc(direct === true)); return pollQueue; }
+  async function readDoc(direct) {
+    clearTimeout(pollTimer);
+    try {
+      let d = null;
+      if (direct && URL_API) { try { d = await getDoc(URL_API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
+      if (!d) d = await latest();
+      if (+d.builtAt > built) { built = +d.builtAt; FEEDS.doc = d; refold(); render(true); if (!FEEDS.live) liveTick(); }   // never back to an older copy
+      else { drawStatus(); if (M && M.gameMode === "summary" && M.quiet && nowS() >= +M.quiet) { refold(); render(true); } }   // Tuesday midnight passed on an open page
+      checkVersion();
+    } catch (e) { if (!FEEDS.doc) $("chop-wait").textContent = "Couldn’t load the chart. Reload the page to try again."; }
+    clearTimeout(pollTimer); pollTimer = setTimeout(poll, nextDelay() * 1000);
+  }
+  // A newer v1 page was published (version.txt beside it): reload once GitHub serves it. Looked at no more than every 5 minutes.
+  let versionAt = 0;
+  async function checkVersion() {
+    if (!window.CHOP_PAGE || nowS() - versionAt < 300) return;
+    versionAt = nowS();
+    try {
+      const r = await fetch("version.txt?t=" + Date.now(), {cache: "no-store"}); if (!r.ok) return;
+      const v = (await r.text()).trim();
+      if (!/^[0-9a-f]{6,40}$/.test(v) || v === window.CHOP_PAGE) return;
+      const page = await fetch(location.pathname + "?t=" + Date.now(), {cache: "no-store"});
+      if (page.ok && (await page.text()).indexOf(v) >= 0) location.reload();
+    } catch (e) {}
+  }
+  const CLOCK_SEEN = {};
+  let liveTimer = 0, liveBusy = false;
+  async function liveTick() {
+    if (liveBusy) return;                                // a read is already out; it sets the next timer
+    clearTimeout(liveTimer); liveBusy = true;
+    try {
+      const doc = FEEDS.doc;
+      if (doc && (doc.on || doc.live || (M && M.inGame)) && !document.hidden) {
+        const json = u => fetch(u, {cache: "no-store"}).then(r => r.ok ? r.json() : null).catch(() => null);
+        const got = await Promise.all([
+          json(window.CHOP_ESPN_URL || "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&dates=2026&week=" + doc.week),
+          doc.scoring ? json(window.CHOP_STATS_URL || "https://api.sleeper.com/stats/nfl/2026/" + doc.week + "?season_type=regular&position%5B%5D=QB&position%5B%5D=RB&position%5B%5D=WR&position%5B%5D=TE") : null]);
+        if (got[0]) {
+          let stats = null;
+          if (got[1]) { stats = {}; got[1].forEach(row => { if (row.stats) stats[row.player_id] = row.stats; }); }
+          FEEDS.live = {t: nowS(), week: doc.week, clubs: readScoreboard(got[0], CLOCK_SEEN), stats: stats};
+          refold();
+          if (M.overlay) render(false);
+        }
+      }
+    } catch (e) {}
+    liveBusy = false;
+    liveTimer = setTimeout(liveTick, 5000);              // Sleeper's stats refresh at most every 4 s, ESPN's scoreboard every 8 s: faster reads get the same copy
+  }
+  document.addEventListener("visibilitychange", () => { syncTicker(); if (!document.hidden) { tickClocks(); poll(); liveTick(); } });   // a phone waking up
+  // The Update button: asks the recorder (through a public relay, the page has no server) for a full pull, then reads the data
+  // branch directly until the new data arrives, normally in about 10 seconds.
+  const btn = $("chop-update");
+  btn.addEventListener("click", async () => {
+    const was = built; let asked = false;
+    btn.disabled = true; btn.textContent = "Updating…";
+    try { asked = (await fetch(window.CHOP_PULL_URL || "https://ntfy.sh/chop-race-update-b01a63b57ecf", {method: "POST", body: "update"})).ok; } catch (e) {}
+    for (let i = 0; i < (asked ? 12 : 1); i++) {         // up to a minute; if the request failed, just look once
+      if (asked) await new Promise(r => setTimeout(r, 5000));
+      await poll(true);
+      if (built !== was) break;
+    }
+    btn.textContent = built !== was ? "Updated" : asked ? "No newer data" : "Couldn’t ask for an update";
+    setTimeout(() => { btn.textContent = "Update"; btn.disabled = false; }, 4000);
+  });
+  // For the tests (Draft Day/chop_race_v1_test.html): the state object, a full redraw, and the rules.
+  window.CHOP_V1 = {
+    get model() { return M; }, feeds: FEEDS, ui: UI, fold: fold,
+    redraw(force) { if (force) GEN++; render(true); },
+    setLive(live) { FEEDS.live = live; refold(); render(false); },
+    setDoc(doc) { FEEDS.doc = doc; refold(); render(true); },
+    rules: {clockLabel, fracLeft, remainingPts, paceOf, firstQuarterGreen, statText, scorePts, chopOdds, clockRuns, readScoreboard, roundHalfEven},
+    scale: {ticks, nice, linear}
+  };
+  poll();
+})();
+</script>
+
+</body></html>
