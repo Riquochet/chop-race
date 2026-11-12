@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '14b2f1c747';</script>
+<script>window.CHOP_V2 = '44756a98a0';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -181,7 +181,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}
 .tmb>.kv,.tmb>.note,.tmb>.plh,.tmb>.sub.in,.tmb>.inch{margin-left:36px}.tmb>.pr{grid-template-columns:28px minmax(0,1fr)}
 .gmh>.car{margin-left:1px}
-.gm.zone{margin-top:20px}h3+.gm.zone{margin-top:6px}   /* a new game window: more air than between its own games */
+.zt{font-size:.75rem;font-weight:600;color:var(--chop-muted);margin:18px 0 5px 2px}h3+.zt{margin-top:2px}   /* a game window's small title, with more air above it than between its own games */
 @media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
 .pr3 .pt{white-space:nowrap}
@@ -339,7 +339,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function clock(t) { return new Date(t * 1000).toLocaleDateString([], {weekday: "short"}) + " " + shortTime(t); }
   function windowTime(w) { if (!w.t0) return w.when || ""; var a = shortTime(w.t0), b = shortTime(w.t1); return (a.slice(-2) === b.slice(-2) ? a.slice(0, -2) : a) + "-" + b; }
   function windowName(kick, brief) {                  // "Sun early"; brief: "Early", so a phone row stays on one line
-    var w = ((DOC && DOC.windows) || []).find(function (w) { return w.kind === "window" && kick >= w.t0 && kick < w.t1; });
+    var w = ((DOC && DOC.windows) || []).find(function (w) { return w.kind === "window" && kick >= w.t0 - 900 && kick < w.t1; });   // a played window opens at its first play, a moment after the kickoff
     return w ? (brief && w.short ? w.short : w.label) : clock(kick);
   }
   function kickZones(w) {                              // kickoffs within 45 minutes of each other form a zone
@@ -1005,13 +1005,12 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     return list;
   }
-  function gameCard(g, w, zone) {
+  function gameCard(g, w) {
     var open = S.game[g.name] != null ? S.game[g.name] : !!g.auto, row = g.g, gm = row ? row.game : {st: g.st, kick: g.kick};
     var p = g.name.split(" vs "), hid = gm.st !== "pre" && p.some(function (c) { return redactOn(c); }), score = {};
     if (row && gm.st !== "pre" && gm.pts != null && !hid) { score[row.club] = gm.pts; p.forEach(function (c) { if (c !== row.club) score[c] = gm.opp_pts; }); }
     var clubs = p.map(function (c) { return '<span style="color:' + clubColor(c) + '">' + esc(c) + "</span>" + (score[c] != null ? '<span class="score">' + esc(score[c]) + "</span>" : ""); }).join('<span class="vs">vs</span>') + (hid ? " " + redactTag("self") : "");
     var sub = [];
-    if (gm.st === "pre" && gm.kick) sub.push(esc(clock(gm.kick)));
     if (gm.st === "in" && !hid) {
       if (gm.poss) sub.push(tag(gm.poss.club, "team", gm.poss.club + " has the ball", "--tc:" + clubColor(gm.poss.club)) + " " + ballHTML(gm.poss));
       else if (gm.kickoff) sub.push("Kickoff");
@@ -1021,8 +1020,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var lead = g.rows.filter(function (r) { return !isRedacted(r); }).sort(function (a, b) { return gm.st === "pre" ? (+b.pre || 0) - (+a.pre || 0) : b.now - a.now; }).slice(0, roomy() ? 4 : 3);
       lead.forEach(function (r) { sub.push('<span class="ld"><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + n1(gm.st === "pre" ? r.pre : r.now) + "</span>"); });
     }
-    var h = '<div class="gm ' + gm.st + (open ? " open" : "") + (zone ? " zone" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
-      '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="car"></i></button>';
+    var h = '<div class="gm ' + gm.st + (open ? " open" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
+      '<span class="clubs">' + clubs + '</span><span class="gst">' + (gm.st === "pre" ? (gm.kick ? esc(clock(gm.kick)) : "") : clockHTML(gm)) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="car"></i></button>';
     if (open) {
       h += '<div class="gmb">';
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
@@ -1050,7 +1049,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (live.length === 1) live[0].auto = true;         // one game on: it is the whole show, so it starts open
     [["On now", live.sort(byKick)], ["Up next", pre.sort(byKick)], ["Final", post.sort(function (a, b) { return -byKick(a, b); })]].forEach(function (grp) {
       if (!grp[1].length) return;
-      h += "<h3>" + grp[0] + "</h3>" + grp[1].map(function (g, i) { return gameCard(g, w, !i || windowName(g.kick) !== windowName(grp[1][i - 1].kick)); }).join("");
+      h += "<h3>" + grp[0] + "</h3>" + grp[1].map(function (g, i) {                        // a small title over each game window's cards
+        var zone = !i || windowName(g.kick) !== windowName(grp[1][i - 1].kick);
+        return (zone ? '<div class="zt">' + esc(windowName(g.kick)) + "</div>" : "") + gameCard(g, w); }).join("");
     });
     box.innerHTML = h;
   }
