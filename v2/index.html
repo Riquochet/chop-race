@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '88925c1dd0';</script>
+<script>window.CHOP_V2 = '7b8ed99431';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -139,13 +139,12 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .trk{position:relative;display:block;height:8px;border-radius:4px;background:color-mix(in srgb,var(--chop-grid) 70%,transparent)}
 .trk.none{background:none}
 .trk i{position:absolute;top:0;bottom:0;display:block}
-.trk .ghost{left:0;border-radius:4px;background:color-mix(in srgb,var(--c,var(--row)) 30%,transparent)}
+.trk .ghost{left:0;border-radius:4px;background:color-mix(in srgb,var(--c,var(--row)) 42%,transparent)}
 .trk .fill{left:0;border-radius:4px;background:var(--c,var(--chop-muted))}
 .trk .fill.red,.trk .ghost.red{--c:var(--red)}.trk .fill.yellow,.trk .ghost.yellow{--c:var(--yellow)}.trk .fill.green,.trk .ghost.green{--c:var(--green)}.trk .fill.blue,.trk .ghost.blue{--c:var(--blue)}
 .trk .gl{inset:0;border-radius:4px;pointer-events:none}
-.trk .tk{top:-3px;bottom:-3px;width:2px;margin-left:-1px;border-radius:1px;background:var(--purple);box-shadow:0 0 0 1px var(--chop-bg)}
+.trk .tk{top:50%;bottom:auto;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:var(--purple);box-shadow:0 0 0 1.5px var(--chop-bg)}
 .trk .cl{top:-5px;bottom:-5px;width:1.5px;margin-left:-.75px;background:var(--red);opacity:.8}
-.trk .end{top:50%;bottom:auto;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--row);box-shadow:0 0 0 1.5px var(--chop-bg)}
 /* a player */
 .plh{display:flex;justify-content:space-between;font-size:.68rem;color:var(--chop-muted);margin-top:8px;padding-bottom:2px}
 .pr{padding:7px 0 6px;border-top:1px solid var(--chop-grid);cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -171,17 +170,18 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr3{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
 .pr3 .l{flex:1 1 auto;min-width:0}
 .pr3 .r{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.hb{display:inline-block;width:40px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--chop-grid) 80%,transparent);overflow:hidden}
-.hb i{display:block;height:100%;border-radius:3px}
-/* a small chevron: this row opens */
-.chev{display:block;flex:none;width:7px;height:7px;border-right:1.5px solid var(--chop-muted);border-bottom:1.5px solid var(--chop-muted);transform:rotate(45deg);opacity:.55;transition:transform .15s}
-.pr1 .chev{align-self:center;margin:-3px 2px 0 0}
-.pr.open .pr1 .chev,.tm.open>.tmh>.chev,.gm.open>.gmh>.chev{transform:rotate(-135deg);margin-top:3px}
-.tmh,.gmh{position:relative}
-.tmh>.chev{position:absolute;right:10px;bottom:13px}
-.gmh>.chev{position:absolute;right:14px;bottom:15px}
-.tmh .meta,.tmh .onf,.gsub{padding-right:20px}
-@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+.hm{position:relative;display:inline-block;width:44px;height:10px;flex:none}
+.hm .line{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
+.hm .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--chop-fg);box-shadow:0 0 0 1.5px var(--chop-bg)}
+/* a caret at the left of every row that opens; it turns down when open. Everything under a row lines up with its bar. */
+.car{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent color-mix(in srgb,var(--chop-fg) 70%,transparent);transition:transform .15s;justify-self:start;margin-left:1px}
+.pr{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px}
+.pr>.car{margin-top:6px}
+.pr.open>.car,.tm.open>.tmh>.car,.gm.open>.gmh>.car{transform:rotate(90deg)}
+.tmh>.car{grid-column:1;grid-row:2;align-self:center}
+.gmh>.car{grid-column:1;grid-row:1;align-self:center}
+.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note{margin-left:30px}
+@media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
 .pr3 .pt{white-space:nowrap}
 .pr4{font-size:.72rem;color:var(--chop-muted);margin-top:5px;display:grid;grid-template-columns:auto 1fr;gap:1px 10px}
@@ -190,14 +190,14 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 /* games */
 .gm{border:1px solid var(--chop-grid);border-radius:12px;margin:6px 0;background:var(--chop-panel)}
 .gm.in{border-color:color-mix(in srgb,var(--chop-grid) 55%,var(--chop-fg))}
-.gmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;align-items:baseline;width:100%;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:3px 8px;align-items:baseline;width:100%;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .clubs{font-weight:700;font-size:1.05rem;white-space:nowrap}
 .clubs .vs{font-weight:400;color:var(--chop-muted);font-size:.8rem;margin:0 .3em}
 .clubs .score{color:var(--chop-fg);font-weight:700;margin-left:.3em}
 .gm.post .clubs .score{color:var(--chop-muted);font-weight:600}
 .gst{font-size:.8rem;text-align:right;white-space:nowrap;color:var(--chop-muted)}
 .gm.in .gst{color:var(--chop-fg)}
-.gsub{grid-column:1/-1;font-size:.72rem;color:var(--chop-muted);display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline}
+.gsub{grid-column:2/-1;font-size:.72rem;color:var(--chop-muted);display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline}
 .gst .tag{margin-right:.35em}
 .gsub .ld{white-space:nowrap}.gsub .ld b{font-weight:600}
 .gmb{padding:0 12px 10px}
@@ -239,6 +239,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .foot{margin-top:18px;font-size:.72rem;color:var(--chop-muted)}
 .foot a{color:inherit}
 @media (min-width:560px){
+  .hm{width:64px}
   .tmh .slp,.nums .slp{display:inline}
   .tmh,.lh{grid-template-columns:22px minmax(0,1fr) auto 6.6rem}
   .b-s{display:none}.b-m{display:inline}
@@ -270,9 +271,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <details class="help"><summary>About the race, and how to read this page</summary>
     <p>Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <b id="alive">—</b>. This page is the week's race, from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe.</p>
     <p><b>The box at the top</b> answers the one question: who is on the block right now, by how much, and what it needs. The colored strip under it is the whole league's chance of being chopped, one piece per team, widest first. Pick <b>your team</b> there once and the page remembers it on this device.</p>
-    <p><b>The ladder</b> lists the teams worst first. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is that chance as a color: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the dot is Final, the <b>purple tick</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to meet or beat it, yellow headed to miss by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
+    <p><b>The ladder</b> lists the teams worst first. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is that chance as a color: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple dot</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to meet or beat it, yellow headed to miss by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
-    <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is his Projected in his NFL team's color; then points so far in his pace color with the purple tick at Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
+    <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is his Projected in his NFL team's color; then points so far in his pace color; the purple dot is always his Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
     <p><b>Points</b> and <b>Cushion</b> switch the ladder for the week as a chart: solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
@@ -565,14 +566,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var st = tState(t), now = Math.max(0, +t.now || 0), fin = Math.max(now, +t.est_final || 0), pace = st !== "pre" && t.pace ? t.pace : "";
     return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " final" + (t.pre != null ? ", " + n1(t.pre) + " projected" : "") + '">' +
       '<i class="ghost" style="width:' + pc(fin / top) + '"></i>' + (st !== "pre" ? '<i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' : "") + gridLines(top, [50, 10]) +
-      (t.pre != null ? '<i class="tk" style="left:' + pc(t.pre / top) + '"></i>' : "") + '<i class="cl" style="left:' + pc(chopX / top) + '"></i><i class="end" style="left:' + pc(fin / top) + '"></i></span>';
+      '<i class="cl" style="left:' + pc(chopX / top) + '"></i>' + (t.pre != null ? '<i class="tk" style="left:' + pc(t.pre / top) + '"></i>' : "") + "</span>";
   }
   function playerBar(r, top) {
     var g = r.game, st = g && g.st;
     if (!g || outThisWeek(r)) return '<span class="trk none"></span>';
     var now = Math.max(0, +r.now || 0), pre = r.pre != null ? Math.max(0, +r.pre) : null, fin = Math.max(now, +r.est_final || 0), gl = gridLines(top, [10, 5]);
     var tk = pre != null ? '<i class="tk" style="left:' + pc(pre / top) + '"></i>' : "";
-    if (st === "pre") return '<span class="trk" title="Projected ' + n1(pre != null ? pre : fin) + '"><i class="fill" style="--c:' + clubColor(r.club) + ";width:" + pc((pre != null ? pre : fin) / top) + '"></i>' + gl + "</span>";
+    if (st === "pre") return '<span class="trk" title="Projected ' + n1(pre != null ? pre : fin) + '"><i class="fill" style="--c:' + clubColor(r.club) + ";width:" + pc((pre != null ? pre : fin) / top) + '"></i>' + gl + tk + "</span>";
     if (st === "in") return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " predicted" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="ghost ' + (r.pace || "") + '" style="width:' + pc(fin / top) + '"></i><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
     return '<span class="trk" title="' + n1(now) + " final" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
   }
@@ -642,7 +643,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
       (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || r.stats ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
     var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
-    if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div>";
+    if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div></div>";
     var nums = "";
     if (!outThisWeek(r)) {
       var slp = function (v) { return '<small class="slp">• ' + n1(v) + "</small>"; };
@@ -653,7 +654,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var sub = statLine(r), l3 = "", gb = gameBit(r, ctx.charAt(0)), l4 = "", bits = [];
     if (sub) bits.push('<span class="' + (r.stats ? "sx" : "") + '">' + sub.split(" · ").map(function (p) { return '<span class="pt">' + esc(p) + "</span>"; }).join(BUL) + "</span>");
     if (!r.stats && r.bye && gst === "pre") bits.push(tag(r.bye, "blue", "Bye in week " + r.bye));
-    var hardBar = gst === "pre" && r.hard && !outThisWeek(r) ? '<span class="hb" title="' + ordinal(r.hard) + " of 32 against " + esc(r.pos) + 's: a longer, greener bar is an easier matchup"><i style="width:' + pc(r.hard / 32) + ";background:hsl(" + Math.round((r.hard - 1) / 31 * 120) + ',var(--chop-rank-s),var(--chop-rank-l))"></i></span>' : "";
+    var hardBar = gst === "pre" && r.hard && !outThisWeek(r) ? '<span class="hm" title="' + ordinal(r.hard) + " of 32 against " + esc(r.pos) + 's: 1st hardest (red), 32nd easiest (green)"><i class="line"></i><i class="mark" style="left:calc(3.5px + (100% - 7px) * ' + ((r.hard - 1) / 31).toFixed(3) + ')"></i></span>' : "";
     if (bits.length || gb) l3 = '<div class="pr3"><span class="l">' + bits.join(BUL) + "</span>" + (gb ? '<span class="r"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + "</div>";
     if (open) {
       var kv = [];
@@ -669,9 +670,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (opt.team) kv.push(["Team", esc(teamName(opt.team, true)) + (bench ? " (bench: points do not count)" : "")]);
       l4 = '<div class="pr4">' + kv.map(function (p) { return "<span>" + p[0] + "</span><span>" + p[1] + "</span>"; }).join("") + "</div>";
     }
-    return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '">' +
-      '<div class="pr1"><span class="who">' + who + '</span><span class="nums">' + nums + '</span><i class="chev"></i></div>' +
-      (r.game && !outThisWeek(r) ? '<div class="pr2">' + playerBar(r, top) + "</div>" : "") + l3 + l4 + "</div>";
+    return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '"><i class="car"></i><div class="prc">' +
+      '<div class="pr1"><span class="who">' + who + '</span><span class="nums">' + nums + "</span></div>" +
+      (r.game && !outThisWeek(r) ? '<div class="pr2">' + playerBar(r, top) + "</div>" : "") + l3 + l4 + "</div></div>";
   }
 
   // ---------- charts: lines on game time, a list under the chart that is legend, readout and picker in one ----------
@@ -944,11 +945,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
         '<span class="pl">' + esc(t.rank) + '</span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
         '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
-        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + '<i class="chev"></i></button>';
+        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + '<i class="car"></i></button>';
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
     });
-    h += '<p class="note">Worst first. Bars: solid = points so far, pale = on to Final, <b class="purple">purple tick</b> = Projected, <b class="red">red line</b> = the chop line. Tap a team for its players.</p>';
+    h += '<p class="note">Worst first. Bars: solid = points so far, pale = on to Final (where it ends), <b class="purple">purple dot</b> = Projected, <b class="red">red line</b> = the chop line. Tap a team for its players.</p>';
     box.innerHTML = h;
   }
   function teamBody(t, R, w, risk) {
@@ -963,7 +964,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<div class="plh"><span>Starters</span><span>Now · Final</span></div>';
       R.rows.forEach(function (r) {
         var isBench = r.slot !== "START";
-        if (isBench && !bench) { h += '<div class="sub">Bench</div>'; bench = true; }
+        if (isBench && !bench) { h += '<div class="sub in">Bench</div>'; bench = true; }
         h += playerRow(r, "t:" + t.team, top);
       });
       h += teamChart(t.team, w);
@@ -1006,15 +1007,15 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       lead.forEach(function (r) { sub.push('<span class="ld"><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + n1(gm.st === "pre" ? r.pre : r.now) + "</span>"); });
     }
     var h = '<div class="gm ' + gm.st + (open ? " open" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
-      '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="chev"></i></button>';
+      '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="car"></i></button>';
     if (open) {
       h += '<div class="gmb">';
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
       else {
         var top = barTop(g.rows), sel = S.sel["game-" + g.name] || [];
-        h += '<div class="plh"><span>' + (gm.st === "pre" ? "Bars: Projected, in NFL team colors" : "Bars: points, purple tick = Projected") + "</span><span>Now · Final</span></div>";
+        h += '<div class="plh"><span>' + (gm.st === "pre" ? "Bars: Projected (purple dot), in NFL team colors" : "Bars: points, purple dot = Projected") + "</span><span>Now · Final</span></div>";
         g.rows.forEach(function (r, i) {
-          if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + "</div>";
+          if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + "</div>";
           h += playerRow(r, "g:" + g.name, top, {team: r.acct, benchTag: true, c: clubColor(r.club), cls: sel.indexOf(r.id) >= 0 ? "sel" : sel.length ? "dim" : ""});
         });
         h += gameChart(g, w - 26);
