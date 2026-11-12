@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '7b8ed99431';</script>
+<script>window.CHOP_V2 = '5edcd3407a';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -173,11 +173,10 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .hm{position:relative;display:inline-block;width:44px;height:10px;flex:none}
 .hm .line{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
 .hm .mark{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--chop-fg);box-shadow:0 0 0 1.5px var(--chop-bg)}
-/* a caret at the left of every row that opens; it turns down when open. Everything under a row lines up with its bar. */
-.car{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent color-mix(in srgb,var(--chop-fg) 70%,transparent);transition:transform .15s;justify-self:start;margin-left:1px}
+/* a dim caret at the left of every team and game; it turns down when open. Players have none, but sit in the same column, so everything under a row lines up with its bar. */
+.car{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent color-mix(in srgb,var(--chop-fg) 38%,transparent);transition:transform .15s;justify-self:start;margin-left:1px}
 .pr{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px}
-.pr>.car{margin-top:6px}
-.pr.open>.car,.tm.open>.tmh>.car,.gm.open>.gmh>.car{transform:rotate(90deg)}
+.tm.open>.tmh>.car,.gm.open>.gmh>.car{transform:rotate(90deg)}
 .tmh>.car{grid-column:1;grid-row:2;align-self:center}
 .gmh>.car{grid-column:1;grid-row:1;align-self:center}
 .tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note{margin-left:30px}
@@ -670,7 +669,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (opt.team) kv.push(["Team", esc(teamName(opt.team, true)) + (bench ? " (bench: points do not count)" : "")]);
       l4 = '<div class="pr4">' + kv.map(function (p) { return "<span>" + p[0] + "</span><span>" + p[1] + "</span>"; }).join("") + "</div>";
     }
-    return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '"><i class="car"></i><div class="prc">' +
+    return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '"><span></span><div class="prc">' +
       '<div class="pr1"><span class="who">' + who + '</span><span class="nums">' + nums + "</span></div>" +
       (r.game && !outThisWeek(r) ? '<div class="pr2">' + playerBar(r, top) + "</div>" : "") + l3 + l4 + "</div></div>";
   }
@@ -769,6 +768,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var h = "";
     if (c.zoomable && wins.length > 1) {
       h += '<div class="zm" role="group" aria-label="Zoom to a game window"><button type="button" data-act="zoom" data-ch="' + esc(id) + '" data-k="" aria-pressed="' + !z + '">Whole week</button>' + wins.map(function (w, i) {
+        if (c.zoomOk && !c.zoomOk(w)) return "";
         return '<button type="button" data-act="zoom" data-ch="' + esc(id) + '" data-k="' + i + '" aria-pressed="' + !!(z && z[0] === +w.x0 && z[1] === +w.x1) + '" title="' + esc(w.label + " " + windowTime(w)) + '">' + esc(w.short || w.label) + "</button>"; }).join("") + "</div>";
     }
     h += '<div class="cvw"><svg class="cv" data-ch="' + esc(id) + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(c.aria || "") + '"><defs><clipPath id="clip-' + esc(id.replace(/[^\w-]/g, "_")) + '"><rect x="' + m.l + '" y="' + (m.t - 2) + '" width="' + (R - m.l) + '" height="' + (B - m.t + 4) + '"/></clipPath></defs>' +
@@ -870,13 +870,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   // One team's players through the week: thick during each one's game (solid scored, dashed projected), hair-thin around it.
   function teamChart(acct, w) {
     var P = (DOC.rosters || {})[acct]; if (!P || !P.rows || !P.rows.length) return "";
-    var col = rosterColors(P.rows), series = [], xmax = 1;
+    var col = rosterColors(P.rows), series = [], xmax = 1, spans = [];
     P.rows.forEach(function (r) {
       if (isRedacted(r)) return;                       // redacted: no line, no name
       var L = (P.lines || {})[r.id]; if (!L) return;
       var act = zip(L.ax, L.ay), pro = zip(L.px, toward(L.py, r.est_final)), full = act.concat(pro).sort(function (p, q) { return p.x - q.x; });
       if (!full.length) return;
       xmax = Math.max(xmax, full[full.length - 1].x);
+      spans.push([full[0].x, full[full.length - 1].x]);
       series.push({r: r, act: act, pro: pro, full: full});
     });
     xmax = weekMax(xmax);
@@ -887,6 +888,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     if (!series.length) return "";
     return '<div class="sub">Points through the week</div>' + lineChart("team-" + acct, {w: w, h: 250, series: series, wins: DOC.windows, nowX: nowX(), xmax: xmax, zoomable: true, idle: "Final for each player",
+      zoomOk: function (w) { return spans.some(function (q) { return q[0] < +w.x1 && q[1] > +w.x0; }); },   // only windows one of these players plays in
       aria: "Points by player for " + teamName(acct, true) + ", scored and projected"});
   }
   // One game's players by the game clock: its four quarters, halftime brighter (doc.clocks maps chart time to the game minute).
