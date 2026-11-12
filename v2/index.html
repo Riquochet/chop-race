@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '5c79a83cbc';</script>
+<script>window.CHOP_V2 = '88925c1dd0';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -156,7 +156,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr1 .who b{font-weight:600}
 .pr1 .pos,.pr1 .no{color:var(--chop-muted);font-size:.72rem}
 .pr1 .cb{font-weight:700;font-size:.72rem}
-.pr1 .tag{margin-left:2px}
+.pr1 .tag{margin-left:2px;vertical-align:middle;position:relative;top:-1px}
 .nums{flex:none;display:flex;gap:8px;align-items:baseline;white-space:nowrap;font-size:.875rem}
 .nums span,.nums b{display:inline-block;min-width:2.5rem;text-align:right}
 .nums .pj{color:var(--chop-muted)}.nums .pj.struck{text-decoration:line-through}
@@ -168,6 +168,20 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .b-m{display:none}
 .pr3{font-size:.72rem;margin-top:5px;line-height:1.45;color:var(--chop-muted)}
 .pr3,.tmh .meta{overflow-wrap:anywhere}
+.pr3{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
+.pr3 .l{flex:1 1 auto;min-width:0}
+.pr3 .r{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.hb{display:inline-block;width:40px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--chop-grid) 80%,transparent);overflow:hidden}
+.hb i{display:block;height:100%;border-radius:3px}
+/* a small chevron: this row opens */
+.chev{display:block;flex:none;width:7px;height:7px;border-right:1.5px solid var(--chop-muted);border-bottom:1.5px solid var(--chop-muted);transform:rotate(45deg);opacity:.55;transition:transform .15s}
+.pr1 .chev{align-self:center;margin:-3px 2px 0 0}
+.pr.open .pr1 .chev,.tm.open>.tmh>.chev,.gm.open>.gmh>.chev{transform:rotate(-135deg);margin-top:3px}
+.tmh,.gmh{position:relative}
+.tmh>.chev{position:absolute;right:10px;bottom:13px}
+.gmh>.chev{position:absolute;right:14px;bottom:15px}
+.tmh .meta,.tmh .onf,.gsub{padding-right:20px}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
 .pr3 .sx{color:var(--chop-fg)}
 .pr3 .pt{white-space:nowrap}
 .pr4{font-size:.72rem;color:var(--chop-muted);margin-top:5px;display:grid;grid-template-columns:auto 1fr;gap:1px 10px}
@@ -319,9 +333,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function shortTime(t) { var d = new Date(t * 1000), hr = d.getHours(); return (hr % 12 || 12) + ":" + String(d.getMinutes()).padStart(2, "0") + (hr < 12 ? "am" : "pm"); }
   function clock(t) { return new Date(t * 1000).toLocaleDateString([], {weekday: "short"}) + " " + shortTime(t); }
   function windowTime(w) { if (!w.t0) return w.when || ""; var a = shortTime(w.t0), b = shortTime(w.t1); return (a.slice(-2) === b.slice(-2) ? a.slice(0, -2) : a) + "-" + b; }
-  function windowName(kick) {
+  function windowName(kick, brief) {                  // "Sun early"; brief: "Early", so a phone row stays on one line
     var w = ((DOC && DOC.windows) || []).find(function (w) { return w.kind === "window" && kick >= w.t0 && kick < w.t1; });
-    return w ? w.label : clock(kick);
+    return w ? (brief && w.short ? w.short : w.label) : clock(kick);
   }
   function kickZones(w) {                              // kickoffs within 45 minutes of each other form a zone
     var out = [], cur = {x0: +w.x0, x1: +w.x0, t0: +w.t0, t1: +w.t0, opening: true};
@@ -569,9 +583,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 
   // ---------- a game's clock and ball ----------
   function clockText(k) { var left = Math.max(0, k.run ? k.secs - (Date.now() / 1000 - k.seen) : k.secs), m = Math.floor(left / 60), sec = Math.floor(left % 60); return m + ":" + (sec < 10 ? "0" : "") + sec; }
-  function clockHTML(g) {                              // the quarter as a blue tag, then the time left; FINAL once over; its slot before
+  function clockHTML(g, brief) {                              // the quarter as a blue tag, then the time left; FINAL once over; its slot before
     var c = String(g.clock || ""), m = /^(Q\d|OT) (.+)$/.exec(c), s2 = /^Start of (Q\d)$/.exec(c);
-    if (g.st === "pre") return g.kick ? '<span title="' + esc(clock(g.kick)) + '">' + esc(windowName(g.kick)) + "</span>" : "";
+    if (g.st === "pre") return g.kick ? '<span title="' + esc(windowName(g.kick) + " · " + clock(g.kick)) + '">' + esc(windowName(g.kick, brief)) + "</span>" : "";
     if (g.st !== "in") return tag("FINAL", "gray");
     if (m && g.clk) return tag(m[1], "blue") + '<span class="tick' + (g.clk.run ? "" : " stopped") + '" data-secs="' + g.clk.secs + '" data-seen="' + g.clk.seen + '" data-run="' + (g.clk.run ? 1 : 0) + '" title="' + (g.clk.run ? "Clock running" : "Clock stopped") + '">' + clockText(g.clk) + "</span>";
     if (m) return tag(m[1], "blue") + esc(m[2]);
@@ -602,7 +616,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var g = r.game;
     if (!g) return "";
     if (g.st !== "pre" && outThisWeek(r)) return "";   // ruled out and never played: his status tag says why
-    if (g.st === "pre") return (ctx === "g" ? "" : clockHTML(g) + BUL) + hardHTML(r);
+    if (g.st === "pre") return (ctx === "g" ? "" : clockHTML(g, !roomy()) + BUL) + hardHTML(r);
     if (ctx === "g") return "";                        // the card's own header has the clock, the ball and the score
     var h = clockHTML(g);
     if (g.st === "in" && g.poss && g.poss.club === r.club) h += BUL + ballHTML(g.poss);
@@ -624,7 +638,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function playerRow(r, ctx, top, opt) {
     opt = opt || {};
     var key = ctx + "|" + r.id, hide = isRedacted(r), open = !hide && !!S.player[key], bench = r.slot !== "START", gst = r.game && r.game.st;
-    var who = '<span class="pos">' + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
+    var barC = !r.game || outThisWeek(r) || hide ? "" : gst === "pre" ? clubColor(r.club) : {red: "var(--red)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)"}[r.pace] || "";
+    var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
       (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || r.stats ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
     var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
     if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div>";
@@ -636,10 +651,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       else nums = "<span>" + (gst === "pre" ? "–" : n1(r.now)) + '</span><span class="pj">' + n1(r.pre != null ? r.pre : r.est_final) + "</span>" + slp(r.pre != null ? r.pre_sleeper : r.est_sleeper);
     }
     var sub = statLine(r), l3 = "", gb = gameBit(r, ctx.charAt(0)), l4 = "", bits = [];
-    if (gb) bits.push('<span class="gmx">' + gb + "</span>");
     if (sub) bits.push('<span class="' + (r.stats ? "sx" : "") + '">' + sub.split(" · ").map(function (p) { return '<span class="pt">' + esc(p) + "</span>"; }).join(BUL) + "</span>");
     if (!r.stats && r.bye && gst === "pre") bits.push(tag(r.bye, "blue", "Bye in week " + r.bye));
-    if (bits.length) l3 = '<div class="pr3">' + bits.join(BUL) + "</div>";
+    var hardBar = gst === "pre" && r.hard && !outThisWeek(r) ? '<span class="hb" title="' + ordinal(r.hard) + " of 32 against " + esc(r.pos) + 's: a longer, greener bar is an easier matchup"><i style="width:' + pc(r.hard / 32) + ";background:hsl(" + Math.round((r.hard - 1) / 31 * 120) + ',var(--chop-rank-s),var(--chop-rank-l))"></i></span>' : "";
+    if (bits.length || gb) l3 = '<div class="pr3"><span class="l">' + bits.join(BUL) + "</span>" + (gb ? '<span class="r"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + "</div>";
     if (open) {
       var kv = [];
       if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper (locked at the week’s first kickoff)"]);
@@ -655,7 +670,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       l4 = '<div class="pr4">' + kv.map(function (p) { return "<span>" + p[0] + "</span><span>" + p[1] + "</span>"; }).join("") + "</div>";
     }
     return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '">' +
-      '<div class="pr1"><span class="who">' + who + '</span><span class="nums">' + nums + "</span></div>" +
+      '<div class="pr1"><span class="who">' + who + '</span><span class="nums">' + nums + '</span><i class="chev"></i></div>' +
       (r.game && !outThisWeek(r) ? '<div class="pr2">' + playerBar(r, top) + "</div>" : "") + l3 + l4 + "</div>";
   }
 
@@ -929,7 +944,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
         '<span class="pl">' + esc(t.rank) + '</span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
         '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
-        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + "</button>";
+        teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + '<i class="chev"></i></button>';
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
     });
@@ -991,7 +1006,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       lead.forEach(function (r) { sub.push('<span class="ld"><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + n1(gm.st === "pre" ? r.pre : r.now) + "</span>"); });
     }
     var h = '<div class="gm ' + gm.st + (open ? " open" : "") + '" id="g-' + esc(g.name) + '"><button type="button" class="gmh" data-act="game" data-k="' + esc(g.name) + '" aria-expanded="' + open + '">' +
-      '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + "</span></button>";
+      '<span class="clubs">' + clubs + '</span><span class="gst">' + clockHTML(gm) + '</span><span class="gsub">' + sub.map(function (x) { return "<span>" + x + "</span>"; }).join("") + '</span><i class="chev"></i></button>';
     if (open) {
       h += '<div class="gmb">';
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
