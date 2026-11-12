@@ -1,4 +1,5 @@
 # Deploys the Chop Race page: index.html from main plus live_doc.json from the data branch.
+# The v1/ and v2/ folders on main (trial pages reading the same ../live_doc.json) are served too, when they exist.
 # Runs on every push to either branch (the recorder pushes data about once a minute while games are live).
 name: Deploy page
 on:
@@ -23,7 +24,7 @@ jobs:
         with: {ref: main, path: site}
       - uses: actions/checkout@v4
         with: {ref: data, path: data}
-      - run: mkdir _site && cp site/index.html site/.nojekyll _site/ && cp data/live_doc.json _site/
+      - run: mkdir _site && cp site/index.html site/.nojekyll _site/ && cp data/live_doc.json _site/ && for v in v1 v2; do if [ -d site/$v ]; then cp -R site/$v _site/$v; fi; done
       - uses: actions/upload-pages-artifact@v3
         with: {path: _site}
       - id: deploy
