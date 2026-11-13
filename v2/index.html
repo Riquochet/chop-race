@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '847ce83574';</script>
+<script>window.CHOP_V2 = '950fc81ac2';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -144,7 +144,8 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .trk .fill{left:0;border-radius:4px;background:var(--c,var(--chop-muted))}
 .trk .fill.red,.trk .ghost.red{--c:var(--red)}.trk .fill.yellow,.trk .ghost.yellow{--c:var(--yellow)}.trk .fill.green,.trk .ghost.green{--c:var(--green)}.trk .fill.blue,.trk .ghost.blue{--c:var(--blue)}
 .trk .gl{inset:0;border-radius:4px;pointer-events:none}
-.trk .tk{top:-4px;bottom:-4px;width:2.5px;margin-left:-1.25px;border-radius:1px;background:var(--purple)}
+.trk.pre{height:4px;border-radius:2px}.trk.pre .fill{border-radius:2px}
+.trk .tk{top:-4px;bottom:-4px;width:1.5px;margin-left:-.75px;background:var(--purple)}
 .trk .cl{top:-5px;bottom:-5px;width:1.5px;margin-left:-.75px;background:var(--red);z-index:1}
 /* a player */
 .plh{display:flex;justify-content:space-between;font-size:.68rem;color:var(--chop-muted);margin-top:8px;padding-bottom:2px}
@@ -279,9 +280,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <details class="help"><summary>About the race, and how to read this page</summary>
     <p>Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <b id="alive">—</b>. This page is the week's race, from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe.</p>
     <p><b>The box at the top</b> answers the one question: who is on the block right now, by how much, and what it needs. The colored strip under it is the whole league's chance of being chopped, one piece per team, widest first. Pick <b>your team</b> there once and the page remembers it on this device.</p>
-    <p><b>The ladder</b> lists the teams worst first. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is that chance as a color: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to meet or beat it, yellow headed to miss by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
+    <p><b>The ladder</b> lists the teams worst first. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is that chance as a color: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to beat it, yellow on track to miss it by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
-    <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is his Projected in his NFL team's color; then points so far in his pace color; the purple line is always his Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
+    <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
     <p><b>Points</b> and <b>Cushion</b> switch the ladder for the week as a chart: solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
@@ -581,7 +582,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (!g || outThisWeek(r)) return '<span class="trk none"></span>';
     var now = Math.max(0, +r.now || 0), pre = r.pre != null ? Math.max(0, +r.pre) : null, fin = Math.max(now, +r.est_final || 0), gl = gridLines(top, [10, 5]);
     var tk = pre != null ? '<i class="tk" style="left:' + pc(pre / top) + '"></i>' : "";
-    if (st === "pre") return '<span class="trk" title="Projected ' + n1(pre != null ? pre : fin) + '"><i class="fill" style="--c:' + clubColor(r.club) + ";width:" + pc((pre != null ? pre : fin) / top) + '"></i>' + gl + tk + "</span>";
+    if (st === "pre") return '<span class="trk pre" title="Projected ' + n1(pre != null ? pre : fin) + '"><i class="fill" style="--c:' + clubColor(r.club) + ";width:" + pc((pre != null ? pre : fin) / top) + '"></i>' + gl + "</span>";
     if (st === "in") return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " predicted" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="ghost ' + (r.pace || "") + '" style="width:' + pc(fin / top) + '"></i><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
     return '<span class="trk" title="' + n1(now) + " final" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
   }
@@ -627,10 +628,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (g.st !== "pre" && outThisWeek(r)) return "";   // ruled out and never played: his status tag says why
     if (g.st === "pre") return (ctx === "g" ? "" : clockHTML(g, !roomy()) + BUL) + hardHTML(r);
     if (ctx === "g") return "";                        // the card's own header has the clock, the ball and the score
-    var h = clockHTML(g);
+    var h = g.st === "post" ? "" : clockHTML(g);
     if (g.st === "in" && g.poss && g.poss.club === r.club) h += BUL + ballHTML(g.poss);
     else if (g.st === "in" && g.kickoff) h += BUL + "Kickoff";
-    else if (g.st === "post" && g.pts != null) h += " " + finalScore(r);
+    else if (g.st === "post" && g.pts != null) h += finalScore(r);
     return h;
   }
 
@@ -657,7 +658,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var slp = function (v) { return '<small class="slp">• ' + n1(v) + "</small>"; };
       if (gst === "post") nums = "<b>" + n1(r.now) + "</b>" + (r.pre != null ? '<span class="pj struck" title="Projected at the week’s first kickoff">' + n1(r.pre) + "</span>" + slp(r.pre_sleeper) : "<span></span>");
       else if (gst === "in") nums = "<b>" + n1(r.now) + "</b><b>" + n1(r.est_final) + "</b>" + slp(r.est_sleeper);
-      else nums = "<span>" + (gst === "pre" ? "–" : n1(r.now)) + '</span><span class="pj">' + n1(r.pre != null ? r.pre : r.est_final) + "</span>" + slp(r.pre != null ? r.pre_sleeper : r.est_sleeper);
+      else nums = "<span>" + (gst === "pre" ? "" : n1(r.now)) + '</span><span class="pj">' + n1(r.pre != null ? r.pre : r.est_final) + "</span>" + slp(r.pre != null ? r.pre_sleeper : r.est_sleeper);
     }
     var sub = statLine(r), l3 = "", gb = gameBit(r, ctx.charAt(0)), l4 = "", bits = [];
     if (sub) bits.push('<span class="' + (r.stats ? "sx" : "") + '">' + sub.split(" · ").map(function (p) { return '<span class="pt">' + esc(p) + "</span>"; }).join(BUL) + "</span>");
@@ -899,7 +900,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     series = series.map(function (s) {
       var start = s.r.slot === "START", wd = start ? 3.6 : 2.4, f = s.full;
       return {k: s.r.id, name: (s.r.pos ? s.r.pos + " " : "") + s.r.short, color: col[s.r.id], bold: start, full: f, end: +s.r.est_final,
-        cells: [s.r.game && s.r.game.st !== "pre" ? n1(s.r.now) : "–", null, s.r.pre != null ? n1(s.r.pre) : ""],
+        cells: [s.r.game && s.r.game.st !== "pre" ? n1(s.r.now) : "", null, s.r.pre != null ? n1(s.r.pre) : ""],
         paths: [{pts: [{x: 0, pts: f[0].pts}].concat(f, [{x: xmax, pts: f[f.length - 1].pts}]), w: 1, op: 0.85}, {pts: s.act, w: wd}, {pts: s.pro, w: wd, dash: "8 5"}]};
     });
     if (!series.length) return "";
@@ -972,7 +973,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     box.innerHTML = h;
   }
   function teamBody(t, R, w, risk) {
-    var PACE = {blue: "already past Projected", green: "on track to meet or beat Projected", yellow: "headed to miss Projected by a point or less", red: "headed to miss Projected by more than a point"}, st = tState(t);
+    var PACE = {blue: "already past Projected", green: "on track to beat Projected", yellow: "on track to miss Projected", red: "on track to miss Projected"}, st = tState(t);
     var h = '<div class="tmb"><div class="kv"><span></span><span class="h n">Ours</span><span class="h s">Sleeper</span><span></span>' +
       "<span>Final</span><span class=\"n\">" + n1(t.est_final) + '</span><span class="s">' + n1(t.est_sleeper) + "</span><span></span>" +
       (t.pre != null ? '<span>Projected</span><span class="n">' + n1(t.pre) + '</span><span class="s">' + n1(t.pre_sleeper) + "</span><span></span>" : "") +
@@ -1031,7 +1032,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
       else {
         var top = barTop(g.rows), sel = S.sel["game-" + g.name] || [];
-        h += '<div class="plh"><span>' + (gm.st === "pre" ? "Bars: Projected (purple line), in NFL team colors" : "Bars: points, purple line = Projected") + "</span><span>Now · Final</span></div>";
+        h += '<div class="plh"><span>' + (gm.st === "pre" ? "Bars: Projected, in NFL team colors" : "Bars: points, purple line = Projected") + "</span><span>Now · Final</span></div>";
         g.rows.forEach(function (r, i) {
           if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + "</div>";
           h += playerRow(r, "g:" + g.name, top, {team: r.acct, benchTag: true, c: clubColor(r.club), cls: sel.indexOf(r.id) >= 0 ? "sel" : sel.length ? "dim" : ""});
@@ -1051,16 +1052,19 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (!all.length) { box.innerHTML = h + '<p class="note">No players have played yet.</p>'; return; }
     function byKick(a, b) { return a.kick - b.kick || (a.name < b.name ? -1 : 1); }
     if (live.length === 1) live[0].auto = true;         // one game on: it is the whole show, so it starts open
-    // Each game window gets a very dim title; a tag beside it says what it is: LIVE on a window with a game on, UP NEXT on the
-    // next window to kick off, FINAL on the latest finished one. On now first, then to play, then finished (newest first).
-    [["live", live.sort(byKick)], ["next", pre.sort(byKick)], ["final", post.sort(function (a, b) { return -byKick(a, b); })]].forEach(function (grp) {
-      grp[1].forEach(function (g, i) {
-        if (!i || windowName(g.kick) !== windowName(grp[1][i - 1].kick)) {
-          var mark = grp[0] === "live" ? '<span class="live">LIVE</span>' : i ? "" : grp[0] === "next" ? '<span class="pill">UP NEXT</span>' : tag("FINAL", "gray");
-          h += '<div class="zt' + (i ? "" : " first") + '"><span>' + esc(windowName(g.kick)) + "</span>" + mark + "</div>";
-        }
-        h += gameCard(g, w);
-      });
+    // The windows stay in week order. Each gets a very dim title and a tag: LIVE with a game on, FINAL when all its games
+    // are over, UP NEXT on the first window still to kick off.
+    var nextDone = false;
+    all.sort(byKick).forEach(function (g, i) {
+      var wn = windowName(g.kick);
+      if (!i || wn !== windowName(all[i - 1].kick)) {
+        var grp = all.filter(function (x) { return windowName(x.kick) === wn; }), mark = "";
+        if (grp.some(function (x) { return x.st === "in"; })) mark = '<span class="live">LIVE</span>';
+        else if (grp.every(function (x) { return x.st === "post"; })) mark = tag("FINAL", "gray");
+        else if (!nextDone) { mark = '<span class="pill">UP NEXT</span>'; nextDone = true; }
+        h += '<div class="zt' + (i ? "" : " first") + '"><span>' + esc(wn) + "</span>" + mark + "</div>";
+      }
+      h += gameCard(g, w);
     });
     box.innerHTML = h;
   }
