@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '64fe25c999';</script>
+<script>window.CHOP_V2 = '718bbb759d';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -156,7 +156,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 /* a player */
 .plh{display:flex;justify-content:space-between;font-size:.68rem;color:var(--chop-muted);margin-top:8px;padding-bottom:2px}
 .pr{padding:7px 0 6px;border-top:1px solid var(--chop-grid);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pr.bench{opacity:.62}.pr.dim{opacity:.3}
+.pr.bench,.pr.unplayed{opacity:.62}.pr.bench.unplayed{opacity:.45}   /* yet to play: dim, like the bench */.pr.dim{opacity:.3}
 .pr.sel{border-radius:8px;border-top-color:transparent;background:color-mix(in srgb,var(--c) 13%,transparent);box-shadow:inset 0 0 0 var(--hair) var(--c);padding-inline:6px;margin-inline:-6px}
 .pr1{display:flex;align-items:baseline;gap:8px}
 .pr1 .who{flex:1;min-width:0;font-size:.875rem}
@@ -680,7 +680,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var barC = !r.game || outThisWeek(r) || hide ? "" : gst === "pre" ? clubColor(r.club) : {red: "var(--red)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)"}[paceShown(r)] || "";
     var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
       (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || !statusShown(r) ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
-    var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
+    var cls = "pr" + (bench ? " bench" : "") + (gst === "pre" ? " unplayed" : "") + (opt.cls ? " " + opt.cls : "");
     if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + '</span></div><div class="pr2">' + redactTag(redactKind(r)) + "</div></div></div>";
     var nums = "";
     if (!outThisWeek(r)) {
