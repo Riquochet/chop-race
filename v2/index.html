@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '69d323a603';</script>
+<script>window.CHOP_V2 = '2b7e425f0f';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -186,7 +186,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px}
 .tm.open>.tmh .car,.gm.open>.gmh>.car{transform:rotate(90deg)}
 .gmh>.car{grid-column:1;grid-row:1;align-self:center}
-.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note{margin-left:20px}.inch{margin-left:30px}.gmb .pr{grid-template-columns:12px minmax(0,1fr)}.gmb .inch{margin-left:20px}
+.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}   /* the card title sits 10 px left of everything under it */
 .tmb>.kv,.tmb>.note,.tmb>.plh,.tmb>.sub.in,.tmb>.inch{margin-left:36px}.tmb>.pr{grid-template-columns:28px minmax(0,1fr)}
 .gmh>.car{margin-left:1px}
 .zt{display:flex;align-items:center;gap:8px;font-size:.75rem;font-weight:600;margin:18px 0 5px 2px}   /* a game window's small title, with more air above it than between its own games */
@@ -209,7 +209,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .gm.post .clubs .score{color:var(--chop-muted);font-weight:600}
 .gst{font-size:.8rem;text-align:right;white-space:nowrap;color:var(--chop-muted)}
 .gm.in .gst{color:var(--chop-fg)}
-.gsub{grid-column:2/-1;font-size:.72rem;color:var(--chop-muted);display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center}
+.gsub{grid-column:2/-1;padding-left:10px;font-size:.72rem;color:var(--chop-muted);display:flex;flex-wrap:wrap;gap:2px 14px;align-items:center}
 .gsub>span{display:inline-flex;align-items:center;gap:4px}.gsub .tag{top:0;margin:0;vertical-align:middle}
 .gst .tag{margin-right:.35em}
 .gsub .ld{white-space:nowrap}.gsub .ld b{font-weight:600}
