@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '1bb8185632';</script>
+<script>window.CHOP_V2 = '91dd4d23ed';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -681,7 +681,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
       (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || !statusShown(r) ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
     var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
-    if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div></div>";
+    if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + '</span></div><div class="pr2">' + redactTag(redactKind(r)) + "</div></div></div>";
     var nums = "";
     if (!outThisWeek(r)) {
       var slp = function (v) { return '<small class="slp">• ' + n1(v) + "</small>"; };
