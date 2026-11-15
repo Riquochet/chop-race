@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '7d161ab7c3';</script>
+<script>window.CHOP_V2 = 'a87bcd1f98';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -180,7 +180,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:8px}
 .tm.open>.tmh .car,.gm.open>.gmh>.car{transform:rotate(90deg)}
 .gmh>.car{grid-column:1;grid-row:1;align-self:center}
-.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note,.inch{margin-left:30px}
+.tmb>.kv,.tmb>.note,.tmb>.plh,.sub.in,.gmb>.plh,.gmb>.note{margin-left:20px}.inch{margin-left:30px}.gmb .pr{grid-template-columns:12px minmax(0,1fr)}.gmb .inch{margin-left:20px}
 .tmb>.kv,.tmb>.note,.tmb>.plh,.tmb>.sub.in,.tmb>.inch{margin-left:36px}.tmb>.pr{grid-template-columns:28px minmax(0,1fr)}
 .gmh>.car{margin-left:1px}
 .zt{display:flex;align-items:center;gap:8px;font-size:.75rem;font-weight:600;margin:18px 0 5px 2px}   /* a game window's small title, with more air above it than between its own games */
@@ -194,9 +194,9 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr4 b{color:var(--chop-fg);font-weight:600}
 .sub{font-size:.72rem;font-weight:600;color:var(--chop-muted);margin:10px 0 2px}
 /* games */
-.gm{border:1px solid var(--chop-grid);border-radius:12px;margin:6px 0;background:var(--chop-panel)}
-.gm.in{border-color:color-mix(in srgb,var(--chop-grid) 55%,var(--chop-fg))}
-.gmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:3px 8px;align-items:baseline;width:100%;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gm{border:1px solid transparent;border-radius:12px;margin:6px 0;background:var(--chop-panel)}
+.gm.open{border-color:var(--chop-grid)}.gm.in.open{border-color:color-mix(in srgb,var(--chop-grid) 55%,var(--chop-fg))}
+.gmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:3px 8px;align-items:baseline;width:100%;padding:10px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .clubs{font-weight:700;font-size:1.05rem;white-space:nowrap}
 .clubs .vs{font-weight:400;color:var(--chop-muted);font-size:.8rem;margin:0 .3em}
 .clubs .score{color:var(--chop-fg);font-weight:700;margin-left:.3em}
