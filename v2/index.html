@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '08c6d14ec8';</script>
+<script>window.CHOP_V2 = '3d84414cb0';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -395,7 +395,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   function statusTag(r) {
     var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : "");
-    var bye = !r.game && r.club ? tag("BYE", "red") : "";   // on a bye: say so even when he is also hurt
+    var bye = !r.game && r.club ? tag("BYE", "blue") : "";   // on a bye: say so even when he is also hurt
     return (name ? tag(name, name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red", r.body) : "") + (name && bye ? " " : "") + bye;
   }
   function rosterColors(rows) {                        // by position: RB blues, WR greens, TE oranges, QB red; bench a dim shade
