@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '718bbb759d';</script>
+<script>window.CHOP_V2 = '08c6d14ec8';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -394,8 +394,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     return !!r.inj && r.id in INJ0 && INJ0[r.id] !== r.inj;
   }
   function statusTag(r) {
-    var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : (!r.game && r.club ? "BYE" : ""));
-    return name ? tag(name, name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red", r.body) : "";
+    var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : "");
+    var bye = !r.game && r.club ? tag("BYE", "red") : "";   // on a bye: say so even when he is also hurt
+    return (name ? tag(name, name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red", r.body) : "") + (name && bye ? " " : "") + bye;
   }
   function rosterColors(rows) {                        // by position: RB blues, WR greens, TE oranges, QB red; bench a dim shade
     var fam = {QB: "qb", RB: "rb", WR: "wr", TE: "te"}, seen = {}, out = {};
