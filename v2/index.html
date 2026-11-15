@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '51c0b8c846';</script>
+<script>window.CHOP_V2 = '7d161ab7c3';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -117,7 +117,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tm.open{background:color-mix(in srgb,var(--row) 9%,transparent);box-shadow:inset 0 0 0 var(--hair) color-mix(in srgb,var(--row) 75%,transparent)}
 .tm.open::before{left:0;top:8px;bottom:8px}
 .tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto 3.3rem;column-gap:8px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tmh .pl{color:var(--chop-fg);font-size:.875rem;font-weight:600;display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.tmh .pl{color:var(--chop-fg);font-size:.875rem;font-weight:600;display:flex;align-items:baseline;justify-content:flex-end;gap:3px}.tmh .pl>.car{align-self:center}
 .tmh .tn{margin-left:-4px;font-weight:600;color:color-mix(in srgb,var(--row) 88%,var(--chop-fg));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tm.mine .tn{font-weight:800}
 .tmh .tn small{font-weight:400;color:var(--chop-muted);font-size:.75rem}
@@ -985,7 +985,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       }
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
-        '<span class="pl"><i class="car"></i>' + esc(t.rank) + '</span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
+        '<span class="pl"><i class="car"></i><span>' + esc(t.rank) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
         '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
         teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + "</button>";
       if (open) h += teamBody(t, R, w - 21, risk);
