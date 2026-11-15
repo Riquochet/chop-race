@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'c97b0ab76e';</script>
+<script>window.CHOP_V2 = '64fe25c999';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -243,7 +243,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .lgh .v{color:var(--chop-fg);font-weight:600}
 .lg button{all:unset;box-sizing:border-box;display:grid;column-gap:4px;align-items:baseline;width:100%;font-size:.78rem;padding:5px 4px;cursor:pointer;border-radius:6px;border-top:1px solid var(--chop-grid);color:var(--chop-muted)}
 .lg button .nm{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;color:color-mix(in srgb,var(--c) 88%,var(--chop-fg))}
-.lg button b{font-weight:700;color:var(--chop-fg)}
+.lg button b{font-weight:700;color:var(--chop-fg)}.lg button b.pre{font-weight:400;color:var(--chop-muted)}
 .lg button.bold .nm{font-weight:700}
 .lg button.dim{opacity:.35}
 .lg button.on{box-shadow:inset 0 0 0 var(--hair) var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border-top-color:transparent}
@@ -818,7 +818,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var heads = c.heads || [c.vhead || ""], vi = c.vi || 0, cols = "grid-template-columns:minmax(0,1fr) repeat(" + heads.length + "," + (heads.length > 4 ? "3.4rem" : "3rem") + ")";
     h += '<div class="rdh">' + esc(c.idle || "") + '</div><div class="lg"><div class="lgh" style="' + cols + '"><span></span>' + heads.map(function (t, i) { return "<span" + (i === vi ? ' class="v"' : "") + ">" + esc(t) + "</span>"; }).join("") + "</div>" + legend.map(function (s) {
       return '<button type="button" class="' + (s.bold ? "bold " : "") + (sel.indexOf(s.k) >= 0 ? "on" : sel.length ? "dim" : "") + '" data-act="sel" data-ch="' + esc(id) + '" data-k="' + esc(s.k) + '" style="--c:' + s.color + ";" + cols + '" aria-pressed="' + (sel.indexOf(s.k) >= 0) + '"><span class="nm"><i class="dot" style="--c:' + s.color + '"></i>' + esc(s.name) + "</span>" +
-        heads.map(function (t, i) { return i === vi ? '<b class="v">' + fmt(end(s)) + "</b>" : "<span>" + esc((s.cells || [])[i] != null ? s.cells[i] : "") + "</span>"; }).join("") + "</button>"; }).join("") + "</div>";
+        heads.map(function (t, i) { return i === vi ? '<b class="v' + (s.notYet ? " pre" : "") + '">' + fmt(end(s)) + "</b>" : "<span>" + esc((s.cells || [])[i] != null ? s.cells[i] : "") + "</span>"; }).join("") + "</button>"; }).join("") + "</div>";
     return h;
   }
   // Sliding a finger (or the mouse) across a chart reads every line at that moment into the list under it.
@@ -931,6 +931,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     series = series.map(function (s) {
       var start = s.r.slot === "START", wd = start ? 3.6 : 2.4, f = s.full;
       return {k: s.r.id, name: (s.r.pos ? s.r.pos + " " : "") + s.r.short, color: col[s.r.id], bold: start, full: f, end: +s.r.est_final,
+        notYet: !s.r.game || s.r.game.st === "pre",        // Final is still only his projection: shown dim
         cells: [s.r.game && s.r.game.st !== "pre" ? n1(s.r.now) : "", null, s.r.pre != null ? n1(s.r.pre) : ""],
         paths: [{pts: [{x: 0, pts: f[0].pts}].concat(f, [{x: xmax, pts: f[f.length - 1].pts}]), w: 1, op: 0.85}, {pts: s.act, w: wd}, {pts: s.pro, w: wd, dash: "8 5"}]};
     });
