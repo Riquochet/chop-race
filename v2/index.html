@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'aac0337b0c';</script>
+<script>window.CHOP_V2 = '9cae119c74';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -991,13 +991,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (st === "pre") meta.push("Projected <b>" + (t.pre != null ? n1(t.pre) : n1(t.est_final)) + "</b>");
       else meta.push("<b>" + n1(t.now) + "</b> now" + (t.pre != null ? BUL + "proj " + n1(t.pre) : ""));
       meta.push("<b>" + signed(cu[t.team]) + "</b> " + (cu[t.team] < 0 ? "behind" : "cushion"));
-      meta.push(!c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c["in"] ? c["in"] + " in" : "", c.done ? c.done + " done" : ""].filter(Boolean).join(", "));
-      var onf = "";
-      if (R) {                                         // its starters on the field now, with their points
-        var on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r) && !goneOut(r); });
-        if (on.length) onf = '<span class="onf"><span class="lab">On the field</span>' + on.map(function (r) {
-          return '<span><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + (isRedacted(r) ? '<span class="mut">hidden</span>' : n1(r.now)) + "</span>"; }).join("") + "</span>";
-      }
+      // Its own line: starters left, in and done, then the ones on the field now with their points.
+      var cnt = !c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c["in"] ? c["in"] + " in" : "", c.done ? c.done + " done" : ""].filter(Boolean).join(", "), on = [];
+      if (R) on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r) && !goneOut(r); });
+      var onf = '<span class="onf"><span class="lab">' + cnt + "</span>" + on.map(function (r) {
+        return '<span><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + (isRedacted(r) ? '<span class="mut">hidden</span>' : n1(r.now)) + "</span>"; }).join("") + "</span>";
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
         '<span class="pl"><i class="car"></i><span>' + esc(t.rank) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
