@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'c9fac10178';</script>
+<script>window.CHOP_V2 = 'abf3976a9b';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -367,6 +367,24 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   // Ruled out while his game is on (the data already counts him as done, with nothing more to come): shown as finished.
   function goneOut(r) { return !!r.game && r.game.st === "in" && (r.inj === "Out" || r.inj === "IR"); }
   function paceShown(r) { return goneOut(r) ? paceOf(+r.now || 0, +r.now || 0, +r.pre || 0, 0) : r.pace || ""; }
+  // QUES and DOUB clear at kickoff and come back only if the status changes during the game. The feed carries only the
+  // status now, so this device remembers the one each player took into his game (the last it saw before kickoff, or the
+  // first it saw after), per week.
+  var INJ0 = {}, INJ0_WEEK = null;
+  function noteStatus() {
+    if (!DOC) return;
+    var key = "chop-v2-status-" + DOC.week;
+    if (INJ0_WEEK !== DOC.week) { INJ0 = {}; INJ0_WEEK = DOC.week; try { INJ0 = JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { INJ0 = {}; } }
+    var was = JSON.stringify(INJ0);
+    eachRow(function (r) { if (!r.game) return; if (r.game.st === "pre" || !(r.id in INJ0)) INJ0[r.id] = r.inj || ""; });
+    if (JSON.stringify(INJ0) !== was) try { localStorage.setItem(key, JSON.stringify(INJ0)); } catch (e) {}
+  }
+  function statusShown(r) {                            // does his status tag show on his row?
+    var st = r.game && r.game.st;
+    if (!st || st === "pre" || !r.stats) return true;  // before his game, or he never played
+    if (r.inj === "Out" || r.inj === "IR") return true;
+    return !!r.inj && r.id in INJ0 && INJ0[r.id] !== r.inj;
+  }
   function statusTag(r) {
     var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : (!r.game && r.club ? "BYE" : ""));
     return name ? tag(name, name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red", r.body) : "";
@@ -653,7 +671,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var key = ctx + "|" + r.id, hide = isRedacted(r), open = !hide && !!S.player[key], bench = r.slot !== "START", gst = r.game && (goneOut(r) ? "post" : r.game.st);
     var barC = !r.game || outThisWeek(r) || hide ? "" : gst === "pre" ? clubColor(r.club) : {red: "var(--red)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)"}[paceShown(r)] || "";
     var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
-      (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || (r.stats && gst === "post" && !goneOut(r) && r.inj !== "Out" && r.inj !== "IR") ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
+      (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || !statusShown(r) ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
     var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
     if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div></div>";
     var nums = "";
@@ -1332,7 +1350,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var d = null;
       if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
       if (!d) d = await latest();
-      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
+      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; noteStatus(); applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
       else { renderStatus(); if (pastWeek()) renderGames(); }
       newPage();
     } catch (e) { if (!DOC) $("wait").textContent = "Couldn’t load the page’s data. Reload to try again."; }
