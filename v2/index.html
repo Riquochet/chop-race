@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '7dd77c697c';</script>
+<script>window.CHOP_V2 = 'aac0337b0c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -1010,12 +1010,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     box.innerHTML = h;
   }
   function teamBody(t, R, w, risk) {
-    var PACE = {blue: "already past Projected", green: "on track to beat Projected", yellow: "on track to miss Projected", red: "on track to miss Projected"}, st = tState(t);
+    var st = tState(t);
     var h = '<div class="tmb"><div class="kv"><span></span><span class="h n">Ours</span><span class="h s">Sleeper</span><span></span>' +
       "<span>Final</span><span class=\"n\">" + n1(t.est_final) + '</span><span class="s">' + n1(t.est_sleeper) + "</span><span></span>" +
       (t.pre != null ? '<span>Projected</span><span class="n">' + n1(t.pre) + '</span><span class="s">' + n1(t.pre_sleeper) + "</span><span></span>" : "") +
-      '<span>Chop</span><span class="n">' + chopPct(t.chop) + '</span><span class="s">' + chopPct(t.chop_sleeper) + "</span><span></span></div>" +
-      '<p class="note">' + esc(risk[1]) + "." + (st !== "pre" && t.pace && PACE[t.pace] ? ' Pace: <b class="' + t.pace + '">' + PACE[t.pace] + "</b>." : "") + (teamName(t.team, false) !== t.team ? " Account: " + esc(t.team) + "." : "") + "</p>";
+      '<span>Chop</span><span class="n">' + chopPct(t.chop) + '</span><span class="s">' + chopPct(t.chop_sleeper) + "</span><span></span></div>";
     if (R && R.rows && R.rows.length) {
       var top = barTop(R.rows), bench = false;
       h += '<div class="plh"><span>Starters</span><span>Now · Final</span></div>';
