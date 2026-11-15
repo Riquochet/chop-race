@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '8c8cf7eb8e';</script>
+<script>window.CHOP_V2 = '7ef3580e35';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -93,7 +93,7 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .odds{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:12px 0 6px;background:var(--chop-grid);gap:1px}
 .odds i{display:block;height:100%;min-width:1px;background:var(--c)}
 .oddk{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.75rem;color:var(--chop-muted)}
-.oddk b{color:var(--chop-fg);font-weight:600}
+.oddk b{color:var(--chop-fg);font-weight:600}.oddk .bul{margin:0 -6px}
 .oddk .dot{width:8px;height:8px;margin-right:4px}
 .me{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--chop-grid);font-size:.875rem}
 .me select{font:inherit;font-weight:700;color:var(--tc);background:var(--chop-bg);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 4px;max-width:11.5rem}
@@ -519,7 +519,6 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<p class="hs">' + n1(chop.now) + " points" + (next ? ", " + n1(next.now - chop.now) + " behind " + nm(next) : "") + ".</p>";
     } else {
       h += '<div class="kick">' + (allPre ? "Projected chop" : "On the block") + '</div><p class="hl">' + nm(chop) + "</p>";
-      h += '<p class="hs">' + (allPre ? "Projected " : "Heading for ") + "<b>" + n1(chop.est_final) + "</b>" + (next ? ", " + n1(gap) + " behind " + nm(next) : "") + ". Chop " + chopPct(chop.chop) + ".</p>";
       if (!allPre && next) {                           // what it comes down to
         var need = "";
         if (left(chop)) need = esc(teamName(chop.team, false)) + " has " + n1(chop.now) + " and needs " + n1(Math.max(0, next.est_final - chop.now)) + " more from " + plural(left(chop), "starter") + " to catch " + esc(teamName(next.team, false)) + "’s " + n1(next.est_final) + ".";
@@ -535,8 +534,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         h += '<div class="odds" role="img" aria-label="Each team’s chance of being chopped">' + odds.map(function (t) {
           return '<i style="flex:' + (+t.chop).toFixed(2) + " 1 0;--c:" + teamColor(t.team) + '" title="' + esc(teamName(t.team, true) + " " + chopPct(t.chop)) + '"></i>'; }).join("") + "</div>";
         var shown = odds.slice(0, 3), rest = odds.slice(3), restSum = rest.reduce(function (s, t) { return s + +t.chop; }, 0);
-        h += '<div class="oddk">' + shown.map(function (t) { return '<span><i class="dot" style="--c:' + teamColor(t.team) + '"></i>' + esc(teamName(t.team, false)) + " <b>" + chopPct(t.chop) + "</b></span>"; }).join("") +
-             (rest.length ? "<span>" + plural(rest.length, "other") + " <b>" + chopPct(restSum) + "</b></span>" : "") + "</div>";
+        h += '<div class="oddk">' + shown.map(function (t) { return '<span><i class="dot" style="--c:' + teamColor(t.team) + '"></i>' + esc(teamName(t.team, false)) + " <b>" + chopPct(t.chop) + "</b></span>"; }).join('<span class="bul">•</span>') +
+             (rest.length ? '<span class="bul">•</span><span>'  + plural(rest.length, "other") + " <b>" + chopPct(restSum) + "</b></span>" : "") + "</div>";
       }
     }
     var me = teamRow(myTeam());
