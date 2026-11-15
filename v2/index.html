@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'a87bcd1f98';</script>
+<script>window.CHOP_V2 = '69d323a603';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -117,7 +117,13 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tm.open{background:color-mix(in srgb,var(--row) 9%,transparent);box-shadow:inset 0 0 0 var(--hair) color-mix(in srgb,var(--row) 75%,transparent)}
 .tm.open::before{left:0;top:8px;bottom:8px}
 .tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto 3.3rem;column-gap:8px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tmh .pl{color:var(--chop-fg);font-size:.875rem;font-weight:600;display:flex;align-items:baseline;justify-content:flex-end;gap:3px}.tmh .pl>.car{align-self:center}
+/* The top line's four cells sit at the top of the row with one line height, and the rank is a smaller span on a line whose
+   strut has the name's font size, so the rank, name, Final and Chop share one baseline in every browser (grid baseline
+   alignment of a clipped cell differs between WebKit and Chrome). */
+.tmh .pl,.tmh .tn,.tmh .fin,.tmh .cp{align-self:start;font-size:1rem;line-height:1.35}
+.tmh .pl{color:var(--chop-fg);font-weight:600;display:block;text-align:right;white-space:nowrap}
+.tmh .pl>span{font-size:.875rem}
+.tmh .pl>.car{display:inline-block;vertical-align:middle;margin:0 3px 0 0;position:relative;top:-1px}
 .tmh .tn{margin-left:-4px;font-weight:600;color:color-mix(in srgb,var(--row) 88%,var(--chop-fg));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tm.mine .tn{font-weight:800}
 .tmh .tn small{font-weight:400;color:var(--chop-muted);font-size:.75rem}
