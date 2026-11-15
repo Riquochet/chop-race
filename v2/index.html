@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'b534ef4e9d';</script>
+<script>window.CHOP_V2 = '4ebce19cf7';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -633,6 +633,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (c === "Halftime") return tag("HALF", "blue");
     return esc(c);
   }
+  function kickHTML(k) {                               // "MIA kicking to BUF", or just "Kickoff" when the feed does not say who
+    if (!k || !k.by || !k.to) return "Kickoff";
+    return '<b style="color:' + clubColor(k.by) + '">' + esc(k.by) + '</b> kicking to <b style="color:' + clubColor(k.to) + '">' + esc(k.to) + "</b>";
+  }
   function ballHTML(b) {                               // ◄40 • 3&2: the arrow before the yard line on the other team's side, after it on his own
     var nth = ["", "1st", "2nd", "3rd", "4th"][b.down], goal = b.togo === "G", where = b.where === "mid" ? "opp" : b.where;
     function yd(t) { return b.rz ? tag(t, "red") : esc(t); }
@@ -660,7 +664,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (ctx === "g" || goneOut(r)) return "";         // the card's own header has the clock, the ball and the score
     var h = g.st === "post" ? "" : clockHTML(g);
     if (g.st === "in" && g.poss && g.poss.club === r.club) h += BUL + ballHTML(g.poss);
-    else if (g.st === "in" && g.kickoff) h += BUL + "Kickoff";
+    else if (g.st === "in" && g.kickoff) h += BUL + kickHTML(g.kickoff);
     else if (g.st === "post" && g.pts != null) h += finalScore(r);
     return h;
   }
@@ -1051,7 +1055,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var sub = [];
     if (gm.st === "in" && !hid) {
       if (gm.poss) sub.push(tag(gm.poss.club, "team", gm.poss.club + " has the ball", "--tc:" + clubColor(gm.poss.club)) + " " + ballHTML(gm.poss));
-      else if (gm.kickoff) sub.push("Kickoff");
+      else if (gm.kickoff) sub.push(kickHTML(gm.kickoff));
     }
     sub.push(g.rows.length ? plural(g.rows.length, "player") : "no players");
     if (!open && g.rows.length && !hid) {              // closed: every player, best first, on as many lines as it takes
@@ -1221,7 +1225,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       c.competitors.forEach(function (t) {
         var o = c.competitors.find(function (x) { return x !== t; }) || {};
         var me = {st: "in", f: fracLeft(c.status), clock: clock, clk: clk, pts: +t.score || 0, opp_pts: +o.score || 0}, ab = t.team.abbreviation;
-        if (kick) me.kickoff = true; else if (poss) me.poss = poss;
+        // On a kickoff ESPN gives the ball to the kicking team (at its own 35): name both, "MIA kicking to BUF".
+        var ko = kick && pt0 ? {by: ESPN_TEAM[pt0.team.abbreviation] || pt0.team.abbreviation} : null;
+        if (ko) { var rc = c.competitors.find(function (x) { return x !== pt0; }); ko.to = rc ? ESPN_TEAM[rc.team.abbreviation] || rc.team.abbreviation : ""; }
+        if (kick) me.kickoff = ko || true; else if (poss) me.poss = poss;
         out[ESPN_TEAM[ab] || ab] = me;
       });
     });
@@ -1263,7 +1270,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         g.clock = me.clock; if (me.clk) g.clk = me.clk; else delete g.clk;
         g.pts = me.pts; g.opp_pts = me.opp_pts;
         if (me.poss) g.poss = me.poss; else delete g.poss;
-        if (me.kickoff) g.kickoff = true; else delete g.kickoff;
+        if (me.kickoff) g.kickoff = me.kickoff; else delete g.kickoff;
       }
       any = true;
       if (g.st === "pre") return;
