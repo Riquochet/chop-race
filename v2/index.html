@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '4ebce19cf7';</script>
+<script>window.CHOP_V2 = '7dd77c697c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -633,9 +633,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (c === "Halftime") return tag("HALF", "blue");
     return esc(c);
   }
-  function kickHTML(k) {                               // "MIA kicking to BUF", or just "Kickoff" when the feed does not say who
+  function kickHTML(k) {                               // "MIA kickoff to BUF", or just "Kickoff" when the feed does not say who
     if (!k || !k.by || !k.to) return "Kickoff";
-    return '<b style="color:' + clubColor(k.by) + '">' + esc(k.by) + '</b> kicking to <b style="color:' + clubColor(k.to) + '">' + esc(k.to) + "</b>";
+    return '<b style="color:' + clubColor(k.by) + '">' + esc(k.by) + '</b> kickoff to <b style="color:' + clubColor(k.to) + '">' + esc(k.to) + "</b>";
   }
   function ballHTML(b) {                               // ◄40 • 3&2: the arrow before the yard line on the other team's side, after it on his own
     var nth = ["", "1st", "2nd", "3rd", "4th"][b.down], goal = b.togo === "G", where = b.where === "mid" ? "opp" : b.where;
@@ -1225,7 +1225,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       c.competitors.forEach(function (t) {
         var o = c.competitors.find(function (x) { return x !== t; }) || {};
         var me = {st: "in", f: fracLeft(c.status), clock: clock, clk: clk, pts: +t.score || 0, opp_pts: +o.score || 0}, ab = t.team.abbreviation;
-        // On a kickoff ESPN gives the ball to the kicking team (at its own 35): name both, "MIA kicking to BUF".
+        // On a kickoff ESPN gives the ball to the kicking team (at its own 35): name both, "MIA kickoff to BUF".
         var ko = kick && pt0 ? {by: ESPN_TEAM[pt0.team.abbreviation] || pt0.team.abbreviation} : null;
         if (ko) { var rc = c.competitors.find(function (x) { return x !== pt0; }); ko.to = rc ? ESPN_TEAM[rc.team.abbreviation] || rc.team.abbreviation : ""; }
         if (kick) me.kickoff = ko || true; else if (poss) me.poss = poss;
