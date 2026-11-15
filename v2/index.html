@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '950fc81ac2';</script>
+<script>window.CHOP_V2 = 'c9fac10178';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -364,6 +364,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function oppClub(r) { var o = r && r.game && r.game.opp; return OPP_FIX[o] || o; }
   function gameName(r) { var o = oppClub(r); return r.game.home ? o + " vs " + r.club : r.club + " vs " + o; }   // away team first
   function outThisWeek(r) { return !r.stats && !+r.now && ((!r.game && !!r.club) || ["Out", "IR", "PUP", "Sus", "NA"].indexOf(r.inj) >= 0); }
+  // Ruled out while his game is on (the data already counts him as done, with nothing more to come): shown as finished.
+  function goneOut(r) { return !!r.game && r.game.st === "in" && (r.inj === "Out" || r.inj === "IR"); }
+  function paceShown(r) { return goneOut(r) ? paceOf(+r.now || 0, +r.now || 0, +r.pre || 0, 0) : r.pace || ""; }
   function statusTag(r) {
     var name = {Questionable: "QUES", Doubtful: "DOUB", Out: "OUT", IR: "IR", PUP: "PUP", Sus: "SUS", NA: "NA"}[r.inj] || (r.inj ? String(r.inj).toUpperCase() : (!r.game && r.club ? "BYE" : ""));
     return name ? tag(name, name === "QUES" ? "yellow" : name === "DOUB" ? "orange" : "red", r.body) : "";
@@ -578,13 +581,13 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       '<i class="cl" style="left:' + pc(chopX / top) + '"></i>' + (t.pre != null ? '<i class="tk" style="left:' + pc(t.pre / top) + '"></i>' : "") + "</span>";
   }
   function playerBar(r, top) {
-    var g = r.game, st = g && g.st;
+    var g = r.game, st = g && (goneOut(r) ? "post" : g.st), pace = paceShown(r);
     if (!g || outThisWeek(r)) return '<span class="trk none"></span>';
     var now = Math.max(0, +r.now || 0), pre = r.pre != null ? Math.max(0, +r.pre) : null, fin = Math.max(now, +r.est_final || 0), gl = gridLines(top, [10, 5]);
     var tk = pre != null ? '<i class="tk" style="left:' + pc(pre / top) + '"></i>' : "";
     if (st === "pre") return '<span class="trk pre" title="Projected ' + n1(pre != null ? pre : fin) + '"><i class="fill" style="--c:' + clubColor(r.club) + ";width:" + pc((pre != null ? pre : fin) / top) + '"></i>' + gl + "</span>";
-    if (st === "in") return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " predicted" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="ghost ' + (r.pace || "") + '" style="width:' + pc(fin / top) + '"></i><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
-    return '<span class="trk" title="' + n1(now) + " final" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="fill ' + (r.pace || "") + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
+    if (st === "in") return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " predicted" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="ghost ' + pace + '" style="width:' + pc(fin / top) + '"></i><i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
+    return '<span class="trk" title="' + n1(now) + " final" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
   }
   function barTop(rows) {
     var top = 1; rows.forEach(function (r) { if (!isRedacted(r)) top = Math.max(top, +r.now || 0, +r.pre || 0, +r.est_final || 0); });
@@ -627,7 +630,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (!g) return "";
     if (g.st !== "pre" && outThisWeek(r)) return "";   // ruled out and never played: his status tag says why
     if (g.st === "pre") return (ctx === "g" ? "" : clockHTML(g, !roomy()) + BUL) + hardHTML(r);
-    if (ctx === "g") return "";                        // the card's own header has the clock, the ball and the score
+    if (ctx === "g" || goneOut(r)) return "";         // the card's own header has the clock, the ball and the score
     var h = g.st === "post" ? "" : clockHTML(g);
     if (g.st === "in" && g.poss && g.poss.club === r.club) h += BUL + ballHTML(g.poss);
     else if (g.st === "in" && g.kickoff) h += BUL + "Kickoff";
@@ -647,10 +650,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   function playerRow(r, ctx, top, opt) {
     opt = opt || {};
-    var key = ctx + "|" + r.id, hide = isRedacted(r), open = !hide && !!S.player[key], bench = r.slot !== "START", gst = r.game && r.game.st;
-    var barC = !r.game || outThisWeek(r) || hide ? "" : gst === "pre" ? clubColor(r.club) : {red: "var(--red)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)"}[r.pace] || "";
+    var key = ctx + "|" + r.id, hide = isRedacted(r), open = !hide && !!S.player[key], bench = r.slot !== "START", gst = r.game && (goneOut(r) ? "post" : r.game.st);
+    var barC = !r.game || outThisWeek(r) || hide ? "" : gst === "pre" ? clubColor(r.club) : {red: "var(--red)", yellow: "var(--yellow)", green: "var(--green)", blue: "var(--blue)"}[paceShown(r)] || "";
     var who = '<span class="pos"' + (barC ? ' style="color:' + barC + '"' : "") + ">" + (r.flex ? "FLEX " : "") + esc(r.pos || "") + "</span> <b>" + esc(r.name) + '</b> <span class="cb" style="color:' + clubColor(r.club) + '">' + esc(r.club || "FA") + '</span> <span class="no">#' + esc(r.num) + "</span>" +
-      (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || r.stats ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
+      (opt.benchTag && bench ? " " + tag("BENCH", "bench") : "") + (hide || (r.stats && gst === "post" && !goneOut(r) && r.inj !== "Out" && r.inj !== "IR") ? "" : " " + statusTag(r)) + (opt.team ? " " + teamTag(opt.team) : "");
     var cls = "pr" + (bench ? " bench" : "") + (opt.cls ? " " + opt.cls : "");
     if (hide) return '<div class="' + cls + '" id="p-' + esc(key) + '"><span></span><div class="prc"><div class="pr1"><span class="who">' + who + "</span>" + redactTag(redactKind(r)) + "</div></div></div>";
     var nums = "";
@@ -957,7 +960,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       meta.push(!c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c["in"] ? c["in"] + " in" : "", c.done ? c.done + " done" : ""].filter(Boolean).join(", "));
       var onf = "";
       if (R) {                                         // its starters on the field now, with their points
-        var on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r); });
+        var on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r) && !goneOut(r); });
         if (on.length) onf = '<span class="onf"><span class="lab">On the field</span>' + on.map(function (r) {
           return '<span><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + (isRedacted(r) ? '<span class="mut">hidden</span>' : n1(r.now)) + "</span>"; }).join("") + "</span>";
       }
