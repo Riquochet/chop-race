@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'c29b4cc717';</script>
+<script>window.CHOP_V2 = 'c97b0ab76e';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -792,12 +792,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var row = cx - half < lastEnd ? 1 : 0; if (!row) lastEnd = cx + half;
       g += '<text class="ax" x="' + f(cx) + '" y="' + (B + 14 + row * 12) + '" text-anchor="middle">' + esc(txt) + "</text>";
     });
-    if (c.nowX != null && X(c.nowX) >= m.l && X(c.nowX) <= R) g += vl(X(c.nowX), "nowln") + '<text class="ax" x="' + f(Math.min(R - 24, X(c.nowX) + 4)) + '" y="' + (m.t + 10) + '" style="fill:var(--chop-fg)">Now</text>';
+    var mid = "nm-" + id.replace(/[^\w-]/g, "_"), cut = "";   // the Now line runs under the data lines: a mask cuts it where a line crosses
+    if (c.nowX != null && X(c.nowX) >= m.l && X(c.nowX) <= R) g += vl(X(c.nowX), "nowln").replace("/>", ' mask="url(#' + mid + ')"/>') + '<text class="ax" x="' + f(Math.min(R - 24, X(c.nowX) + 4)) + '" y="' + (m.t + 10) + '" style="fill:var(--chop-fg)">Now</text>';
     var order = c.series.slice().sort(function (p, q) { return (p.bold ? 1 : 0) - (q.bold ? 1 : 0) || (sel.indexOf(p.k) >= 0 ? 1 : 0) - (sel.indexOf(q.k) >= 0 ? 1 : 0); }), lines = "";
     order.forEach(function (s) {
       var dim = sel.length && sel.indexOf(s.k) < 0 ? " dim" : "";
       s.paths.forEach(function (p) {
         var pts = clip(p.pts, a, b); if (pts.length < 2) return;
+        if (!dim) cut += '<path d="M' + pts.map(function (q) { return f(X(q.x)) + " " + f(Y(q.pts)); }).join("L") + '" style="stroke:#000;stroke-width:' + (p.w + 3) + '"/>';
         lines += '<path class="ln' + dim + '" d="M' + pts.map(function (q) { return f(X(q.x)) + " " + f(Y(q.pts)); }).join("L") + '" style="stroke:' + s.color + ";stroke-width:" + p.w + (p.dash ? ";stroke-dasharray:" + p.dash : "") + (p.op ? ";opacity:" + p.op : "") + '"/>';
       });
     });
@@ -810,7 +812,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         if (c.zoomOk && !c.zoomOk(w)) return "";
         return '<button type="button" data-act="zoom" data-ch="' + esc(id) + '" data-k="' + i + '" aria-pressed="' + !!(z && z[0] === +w.x0 && z[1] === +w.x1) + '" title="' + esc(w.label + " " + windowTime(w)) + '">' + esc(w.short || w.label) + "</button>"; }).join("") + "</div>";
     }
-    h += '<div class="cvw"><svg class="cv" data-ch="' + esc(id) + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(c.aria || "") + '"><defs><clipPath id="clip-' + esc(id.replace(/[^\w-]/g, "_")) + '"><rect x="' + m.l + '" y="' + (m.t - 2) + '" width="' + (R - m.l) + '" height="' + (B - m.t + 4) + '"/></clipPath></defs>' +
+    h += '<div class="cvw"><svg class="cv" data-ch="' + esc(id) + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(c.aria || "") + '"><defs><mask id="' + mid + '" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '"><rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' + cut + '</mask><clipPath id="clip-' + esc(id.replace(/[^\w-]/g, "_")) + '"><rect x="' + m.l + '" y="' + (m.t - 2) + '" width="' + (R - m.l) + '" height="' + (B - m.t + 4) + '"/></clipPath></defs>' +
       g + '<g clip-path="url(#clip-' + esc(id.replace(/[^\w-]/g, "_")) + ')">' + lines + '</g><line class="rule" y1="' + m.t + '" y2="' + B + '" x1="0" x2="0" style="display:none"/></svg></div>';
     // The list under the chart: one line per series. heads = its columns; column vi is the chart's own value, which follows the finger.
     var heads = c.heads || [c.vhead || ""], vi = c.vi || 0, cols = "grid-template-columns:minmax(0,1fr) repeat(" + heads.length + "," + (heads.length > 4 ? "3.4rem" : "3rem") + ")";
