@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '9cae119c74';</script>
+<script>window.CHOP_V2 = '3c6263174c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -135,7 +135,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tmh .meta{font-size:.72rem;color:var(--chop-muted);line-height:1.4}
 .tmh .meta b{color:var(--chop-fg);font-weight:600}
 .onf{display:flex;flex-wrap:wrap;gap:3px 10px;font-size:.72rem}
-.onf span{white-space:nowrap}.onf b{font-weight:600}.onf .lab{color:var(--chop-muted)}
+.onf span{white-space:nowrap}.onf b{font-weight:600}.onf .lab{color:var(--chop-muted)}.onf .bul{margin:0 -4px}
 .tmb{padding:0 10px 10px 7px}
 .kv{display:grid;grid-template-columns:auto auto auto 1fr;gap:1px 14px;font-size:.78rem;margin:2px 0 6px;align-items:baseline}
 .kv .h{font-size:.66rem;color:var(--chop-muted)}
@@ -994,7 +994,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       // Its own line: starters left, in and done, then the ones on the field now with their points.
       var cnt = !c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c["in"] ? c["in"] + " in" : "", c.done ? c.done + " done" : ""].filter(Boolean).join(", "), on = [];
       if (R) on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r) && !goneOut(r); });
-      var onf = '<span class="onf"><span class="lab">' + cnt + "</span>" + on.map(function (r) {
+      var onf = '<span class="onf"><span class="lab">' + cnt + "</span>" + (on.length ? '<span class="bul">•</span>' : "") + on.map(function (r) {
         return '<span><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + (isRedacted(r) ? '<span class="mut">hidden</span>' : n1(r.now)) + "</span>"; }).join("") + "</span>";
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
