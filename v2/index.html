@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'd1e6de1a44';</script>
+<script>window.CHOP_V2 = 'dcca5b42f4';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -451,6 +451,17 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   var REDACT_KEY = "chop-race-redact", REVEAL_KEY = "chop-race-redact-reveal", REDACT = {}, REVEAL = false;
   try { (JSON.parse(LS.get(REDACT_KEY) || "[]") || []).forEach(function (c) { REDACT[c] = true; }); } catch (e) {}
   REVEAL = LS.get(REVEAL_KEY) === "1";
+  // Unredacted lasts until the week's Wednesday morning update: the first update built on or after Wednesday 12:00 AM
+  // (this device's clock) puts it back to Redacted. REVEAL_AT (shared with the original page) = unix seconds it was unredacted.
+  var REVEAL_AT = "chop-race-redact-reveal-at";
+  function setReveal(on) { REVEAL = on; LS.set(REVEAL_KEY, on ? "1" : "0"); if (on) LS.set(REVEAL_AT, String(Math.floor(Date.now() / 1000))); }
+  function wedBefore(t) { var d = new Date(t * 1000); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 4) % 7)); return d.getTime() / 1000; }
+  function revealExpire(d) {
+    if (!REVEAL || !d || !+d.builtAt) return;
+    var at = +LS.get(REVEAL_AT) || 0;
+    if (!at) { LS.set(REVEAL_AT, String(Math.floor(Date.now() / 1000))); return; }   // unredacted before this rule: its week starts now
+    if (at < wedBefore(+d.builtAt)) setReveal(false);
+  }
   function redactList() { return Object.keys(REDACT).filter(function (c) { return REDACT[c]; }).sort(); }
   function redactOn(club) { return !REVEAL && !!REDACT[club]; }
   // "self" = his own team is redacted, "opp" = the team he plays is: a redacted team's whole game is hidden once it starts.
@@ -464,7 +475,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
               NFC: [["East", "DAL NYG PHI WAS"], ["North", "CHI DET GB MIN"], ["South", "ATL CAR NO TB"], ["West", "ARI LAR SEA SF"]]};
   function renderRedact() {
     var mine = redactList(), n = mine.length, btn = $("redact-btn"), box = $("redact");
-    if (!n && REVEAL) { REVEAL = false; LS.set(REVEAL_KEY, "0"); }   // no teams: back to Redacted, so the next team picked starts hidden
+    if (!n && REVEAL) setReveal(false);   // no teams: back to Redacted, so the next team picked starts hidden
     var opp = {};
     eachRow(function (r) {
       var o = oppClub(r); if (!r.club || !o) return;
@@ -1171,7 +1182,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (act === "redact-open") { S.redactOpen = !S.redactOpen; renderRedact(); return; }
     if (act === "redact-chip") { REDACT[k] = !REDACT[k]; saveRedact(); return; }
     if (act === "redact-group") { var list = k.split(" "), on = list.every(function (c) { return REDACT[c]; }); list.forEach(function (c) { REDACT[c] = !on; }); saveRedact(); return; }
-    if (act === "reveal") { var want = k === "1"; if (REVEAL !== want) { REVEAL = want; LS.set(REVEAL_KEY, REVEAL ? "1" : "0"); render(); } return; }
+    if (act === "reveal") { var want = k === "1"; if (REVEAL !== want) { setReveal(want); render(); } return; }
   });
   document.addEventListener("change", function (e) {
     if (e.target.id !== "follow") return;
@@ -1380,7 +1391,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var d = null;
       if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
       if (!d) d = await latest();
-      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; noteStatus(); applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
+      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; revealExpire(d); noteStatus(); applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
       else { renderStatus(); if (pastWeek()) renderGames(); }
       newPage();
     } catch (e) { if (!DOC) $("wait").textContent = "Couldn’t load the page’s data. Reload to try again."; }
