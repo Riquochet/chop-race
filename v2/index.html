@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'dcca5b42f4';</script>
+<script>window.CHOP_V2 = '7f19d39790';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -780,6 +780,40 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   // c: {w, h, series: [{k, name, color, bold, full: [{x, pts}], paths: [{pts, w, dash, op}], end}], wins, nowX, xmax, signed,
   //     zeroLabel, fmt, grid, zoomable}. Returns the chart, its zoom buttons and its list.
+  // A chart zoomed to one game window, as on the original page: one game in it = its four quarters (halftime brighter),
+  // placed in real time by the game clock (doc.clocks; quarters still to come spread evenly to the window's end);
+  // more than one game = 30-minute sections from the window's first play, brighter and labeled at each hour.
+  function zoomGrid(w) {
+    var x0 = +w.x0, x1 = +w.x1, t0 = +w.t0, t1 = +w.t1;
+    var seen = {}, games = [];                                 // the week's games (doc.games), plus any only the rosters name
+    ((DOC && DOC.games) || []).forEach(function (gm) { seen[gm.name] = 1; games.push(gm); });
+    eachRow(function (r) { if (r.game && r.game.kick && oppClub(r)) { var nm = gameName(r); if (!seen[nm]) { seen[nm] = 1; games.push({name: nm, kick: r.game.kick}); } } });
+    games = games.filter(function (gm) { return +gm.kick >= t0 - 900 && +gm.kick < t1; });
+    var grid = [], labels = [];
+    if (games.length === 1) {
+      var clk = (DOC.clocks || {})[games[0].name] || [], qx = [x0], last = clk.length ? clk[clk.length - 1] : null;
+      [15, 30, 45, 60].forEach(function (q) {
+        var x = null;
+        for (var i = 1; i < clk.length; i++) if (clk[i][1] >= q && clk[i - 1][1] < q) {
+          var u = clk[i - 1], v = clk[i]; x = u[0] + (v[0] - u[0]) * (q - u[1]) / ((v[1] - u[1]) || 1); break;
+        }
+        if (x == null) {                                       // not reached yet: share the rest of the window evenly
+          var fromX = last ? Math.max(last[0], x0) : x0, fromM = last ? Math.min(last[1], 60) : 0;
+          x = q >= 60 ? x1 : fromX + (x1 - fromX) * (q - fromM) / ((60 - fromM) || 1);
+        }
+        qx.push(Math.max(qx[qx.length - 1], Math.min(x1, x)));
+      });
+      for (var q = 1; q <= 4; q++) {
+        if (q < 4) grid.push({x: qx[q], strong: q === 2});
+        labels.push({x0: qx[q - 1], x1: qx[q], txt: "Q" + q});
+      }
+      if (last && last[1] > 60) labels.push({x0: qx[4], x1: Math.max(qx[4], last[0]), txt: "OT"});
+    } else {
+      for (var s = 30; x0 + s < x1; s += 30) grid.push({x: x0 + s, strong: !(s % 60)});
+      for (var h0 = 60; x0 + h0 < x1; h0 += 60) labels.push({at: x0 + h0, txt: h0 / 60 + "h"});
+    }
+    return {grid: grid, labels: labels};
+  }
   function lineChart(id, c) {
     var W = Math.max(280, Math.round(c.w)), H = c.h || 300, m = {l: 30, r: 8, t: 10, b: 30};
     var wins = (c.wins || []).filter(function (w) { return w.kind === "window"; }), z = S.zoom[id];
@@ -805,7 +839,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       g += '<line class="grid" x1="' + m.l + '" x2="' + R + '" y1="' + f(Y(v)) + '" y2="' + f(Y(v)) + '"/><text class="ax" x="' + (m.l - 5) + '" y="' + f(Y(v) + 3.5) + '" text-anchor="end">' + (c.signed && v > 0 ? "+" : "") + v + "</text>";
     });
     if (c.signed && Y(0) >= m.t && Y(0) <= B) g += '<line class="chopline" x1="' + m.l + '" x2="' + R + '" y1="' + f(Y(0)) + '" y2="' + f(Y(0)) + '"/><text class="ax" x="' + (R - 4) + '" y="' + f(Y(0) - 4) + '" text-anchor="end">' + esc(c.zeroLabel || "") + "</text>";
-    (c.grid || []).forEach(function (q) { var gx = X(q.x); if (gx >= m.l && gx <= R) g += vl(gx, "sec" + (q.strong ? " hr" : "")); });
+    var zw = z && wins.find(function (w) { return z[0] === +w.x0 && z[1] === +w.x1; }), zg = zw && !c.grid ? zoomGrid(zw) : null;
+    (c.grid || (zg && zg.grid) || []).forEach(function (q) { var gx = X(q.x); if (gx >= m.l && gx <= R) g += vl(gx, "sec" + (q.strong ? " hr" : "")); });
+    if (zg) zg.labels.forEach(function (q) { if (q.at != null) { var ax2 = X(q.at); if (ax2 >= m.l + 8 && ax2 <= R - 8) g += '<text class="ax" x="' + f(ax2) + '" y="' + (B + 14) + '" text-anchor="middle">' + esc(q.txt) + "</text>"; return; } var a2 = Math.max(m.l, X(q.x0)), b2 = Math.min(R, X(q.x1)); if (b2 - a2 >= 16) g += '<text class="ax" x="' + f((a2 + b2) / 2) + '" y="' + (B + 14) + '" text-anchor="middle">' + esc(q.txt) + "</text>"; });
     var lastEnd = -1e9;
     wins.forEach(function (w, i) {
       var wa = X(+w.x0), wb = X(+w.x1);
@@ -817,7 +853,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         else g += vl(za, "kick", B - 4, B + 5);
       });
       var ca = Math.max(m.l, wa), cb = Math.min(R, wb);
-      if (cb - ca < 22) return;
+      if (cb - ca < 22 || (zg && w === zw)) return;      // zoomed to one window: its quarters or hours label the axis instead
       var when = z && cb - ca > (R - m.l) * 0.6 ? " · " + windowTime(w) : "", txt = (cb - ca >= (w.label + when).length * 5.8 + 6 ? w.label + when : cb - ca >= w.label.length * 5.8 + 6 ? w.label : w.short), cx = (ca + cb) / 2, half = txt.length * 2.8 + 2;
       var row = cx - half < lastEnd ? 1 : 0; if (!row) lastEnd = cx + half;
       g += '<text class="ax" x="' + f(cx) + '" y="' + (B + 14 + row * 12) + '" text-anchor="middle">' + esc(txt) + "</text>";
