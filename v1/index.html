@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = '16f901918c';</script>
+<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = 'ab8ffc0853';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -1779,7 +1779,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   }
   // Unredacted lasts the week (Jack, 16 Nov 2026): the first update built on or after Wednesday 3:00 AM Pacific puts the
   // switch back to Redacted, once per week per device. KEY.reset holds the Wednesday already handled (seconds); a device
-  // with none just notes this week's. A day's slack, so a clock change inside the week is not read as a new Wednesday.
+  // with none just notes this week's. Between games the data is rebuilt only when something changes, so the clock counts too. A day's slack, so a clock change inside the week is not read as a new Wednesday.
   const PT = new Intl.DateTimeFormat("en-US", {timeZone: "America/Los_Angeles", weekday: "short", hour: "numeric", minute: "numeric", second: "numeric", hourCycle: "h23"});
   function lastWednesday(t) {
     const g = {}; PT.formatToParts(new Date(t * 1000)).forEach(x => { g[x.type] = x.value; });
@@ -1789,7 +1789,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   }
   function weeklyRedact(doc) {
     if (!doc || !doc.builtAt) return;
-    const wed = lastWednesday(doc.builtAt), had = +store.get(KEY.reset) || 0;
+    const wed = lastWednesday(Math.max(doc.builtAt, nowS())), had = +store.get(KEY.reset) || 0;
     if (had && wed <= had + 86400) return;
     store.set(KEY.reset, String(wed));
     if (had && UI.reveal) { UI.reveal = false; store.set(KEY.reveal, "0"); }
