@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '7f19d39790';</script>
+<script>window.CHOP_V2 = 'da8ce05552';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -53,6 +53,8 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 @media (prefers-reduced-motion:reduce){.live::before{animation:none}}
 .btn{font-size:.75rem;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:4px 10px;cursor:pointer}
 .btn:disabled{color:var(--chop-muted);cursor:default}
+.btn.redact{display:inline-flex;flex-wrap:wrap;align-items:center;gap:3px .3em;line-height:1.2}   /* words and team tags share one center line */
+.btn.redact .tag{vertical-align:0}
 .btn.redact.shut{color:var(--red);border-color:color-mix(in srgb,var(--red) 50%,transparent)}
 .btn.redact.open{color:var(--green);border-color:color-mix(in srgb,var(--green) 50%,transparent)}
 .seg{display:inline-flex}
