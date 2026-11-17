@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'da8ce05552';</script>
+<script>window.CHOP_V2 = '2b3d9a8836';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -511,6 +511,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function saveRedact() { LS.set(REDACT_KEY, JSON.stringify(redactList())); render(); }
 
   // ---------- status ----------
+  function countdown(s) {                              // 2d 5h 07m; under a day 5h 07m; under an hour 7m
+    var m = Math.max(0, Math.ceil(s / 60)), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mm = m % 60;
+    return d ? d + "d " + h + "h " + (mm < 10 ? "0" : "") + mm + "m" : h ? h + "h " + (mm < 10 ? "0" : "") + mm + "m" : mm + "m";
+  }
   function renderStatus() {
     var live = isLive(), now = Date.now() / 1000, parts = [], state = "";
     $("live").hidden = !live;
@@ -518,7 +522,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (DOC) {
       var soon = !live && DOC.next && DOC.next - now < 300;      // checking every minute until ESPN says the game started
       state = live && DOC.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on";
-      if (!live && !soon && DOC.next) parts.push("Next kickoff " + clock(DOC.next));
+      if (!live && !soon && DOC.next) parts.push("Next kickoff in " + countdown(DOC.next - now) + " · " + clock(DOC.next));
       if (DOC.builtAt) parts.push((parts.length ? "l" : "L") + "ast update " + clock(DOC.builtAt));
     }
     $("when").textContent = state || "—";
@@ -1231,7 +1235,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   document.addEventListener("contextmenu", function (e) { if (e.target.closest && e.target.closest("svg.cv")) e.preventDefault(); });
   var lastW = innerWidth;
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; if (DOC) render(); } });
-  setInterval(function () {                            // every second: the counting game clocks on screen
+  var cdMin = 0;
+  setInterval(function () {                            // every second: the counting game clocks on screen; each new minute, the kickoff countdown
+    var mn = Math.floor(Date.now() / 60000); if (DOC && mn !== cdMin) { cdMin = mn; renderStatus(); }
     document.querySelectorAll(".tick[data-secs]").forEach(function (n) {
       n.textContent = clockText({secs: +n.getAttribute("data-secs"), seen: +n.getAttribute("data-seen"), run: n.getAttribute("data-run") === "1"});
     });
