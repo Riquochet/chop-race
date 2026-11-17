@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '2b3d9a8836';</script>
+<script>window.CHOP_V2 = 'b6abebbc96';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -46,6 +46,7 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
 .top h1{margin-right:auto}
 .st1{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.8125rem;color:var(--chop-muted);margin-top:6px}
+.st1 .cd{margin-left:auto;color:var(--chop-fg);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}   /* countdown to the next kickoff, at the end of the line */
 .st2{font-size:.75rem;color:var(--chop-muted);margin-top:3px}
 .live{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#d62728;border-radius:4px;padding:2px 7px}
 .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.6s ease-in-out infinite}
@@ -285,7 +286,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <div class="top"><h1>The Chopping Block</h1>
     <button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button>
     <button type="button" class="btn" id="update" data-act="update">Update</button></div>
-  <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span></div>
+  <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span><span class="cd" id="cd" hidden></span></div>
   <div class="st2" id="when2"></div>
   <div class="panel" id="redact" hidden></div>
   <p class="wait" id="wait">Waiting for the first scores. The page fills in as soon as the next update lands.</p>
@@ -522,9 +523,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (DOC) {
       var soon = !live && DOC.next && DOC.next - now < 300;      // checking every minute until ESPN says the game started
       state = live && DOC.live ? "Game on" : live || soon ? "Kickoff any minute" : "No game on";
-      if (!live && !soon && DOC.next) parts.push("Next kickoff in " + countdown(DOC.next - now) + " · " + clock(DOC.next));
+      if (!live && !soon && DOC.next) parts.push("Next kickoff " + clock(DOC.next));
       if (DOC.builtAt) parts.push((parts.length ? "l" : "L") + "ast update " + clock(DOC.builtAt));
     }
+    var cd = $("cd"), showCd = !!(DOC && !live && !soon && DOC.next && DOC.next > now);
+    cd.hidden = !showCd; cd.textContent = showCd ? "Kickoff in " + countdown(DOC.next - now) : "";
     $("when").textContent = state || "—";
     $("when2").textContent = parts.join(" · ");
     if (DOC && DOC.teams) $("alive").textContent = DOC.teams.length + " of 20";
