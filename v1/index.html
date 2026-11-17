@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = 'ab8ffc0853';</script>
+<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = '3cda3b87a9';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -264,7 +264,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 </style>
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
-  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div></div>
+  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><span id="chop-count" hidden></span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div></div>
   <details class="chop-help chop-redact-d" id="chop-redact-d"><summary id="chop-redact-sum">Redact</summary><div class="chop-redact" id="chop-redact-panel"></div></details>
   <article class="chop-news" id="chop-news" hidden aria-live="polite">
     <h2 class="chop-news-h" id="news-head"></h2>
@@ -1274,6 +1274,13 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       if (M.builtAt) parts.push("last update " + clock(M.builtAt));
     }
     $("chop-when").textContent = state || "—";
+    // countdown to the next kickoff (Jack, 16 Nov 2026): days, hours, minutes, rounded up; gone once "Kickoff any minute" takes over
+    const left = M && !live && M.next ? M.next - now : 0, cd = $("chop-count");
+    cd.hidden = !(left >= 300);
+    if (left >= 300) {
+      const mins = Math.ceil(left / 60), d = Math.floor(mins / 1440), h = Math.floor(mins % 1440 / 60);
+      cd.textContent = "kickoff in " + (d ? d + "d " : "") + (d || h ? h + "h " : "") + mins % 60 + "m";
+    }
     $("chop-when2").textContent = parts.join(" · ");
     if (M && M.ok) $("chop-alive").textContent = String(M.teams.length);
   }
@@ -1775,7 +1782,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     $("chop-wait").hidden = ok; $("chop-body").hidden = !ok;
     drawStatus(); drawNews(); drawStories();
     if (ok) { renderTeams(charts); renderGame(charts); renderMine(charts); }
-    syncTicker();
+    syncTicker(); syncCounter();
   }
   // Unredacted lasts the week (Jack, 16 Nov 2026): the first update built on or after Wednesday 3:00 AM Pacific puts the
   // switch back to Redacted, once per week per device. KEY.reset holds the Wednesday already handled (seconds); a device
@@ -1801,6 +1808,13 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     if (SEEN.dirty) { SEEN.dirty = false; store.set(KEY.status, JSON.stringify({week: SEEN.week, at: SEEN.at})); }
     if (was && M && was.week !== M.week)                 // a new week: last week's zoom and one-game filter mean nothing
       [UI.teams, UI.mine, UI.game].forEach(st => { st.view = st.yview = null; st.base = null; if (st === UI.game) st.group = null; });
+  }
+  // The kickoff countdown moves by the minute: one look every 10 seconds while it is showing and the page is in view.
+  let counter = 0;
+  function syncCounter() {
+    const need = !document.hidden && !$("chop-count").hidden;
+    if (need && !counter) counter = setInterval(() => { drawStatus(); syncCounter(); }, 10000);
+    if (!need && counter) { clearInterval(counter); counter = 0; }
   }
   // The counting game clocks: once a second, only while one is on screen and the page is in view.
   let ticker = 0;
@@ -1940,7 +1954,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     liveBusy = false;
     liveTimer = setTimeout(liveTick, 5000);              // Sleeper's stats refresh at most every 4 s, ESPN's scoreboard every 8 s: faster reads get the same copy
   }
-  document.addEventListener("visibilitychange", () => { syncTicker(); if (!document.hidden) { tickClocks(); poll(); liveTick(); } });   // a phone waking up
+  document.addEventListener("visibilitychange", () => { syncTicker(); if (!document.hidden) { tickClocks(); drawStatus(); poll(); liveTick(); } syncCounter(); });   // a phone waking up
   // The Update button: asks the recorder (through a public relay, the page has no server) for a full pull, then reads the data
   // branch directly until the new data arrives, normally in about 10 seconds.
   const btn = $("chop-update");
