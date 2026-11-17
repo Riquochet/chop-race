@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '23f6582a68';</script>
+<script>window.CHOP_V2 = '0076e8bd9d';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -214,6 +214,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr4{font-size:.72rem;color:var(--chop-muted);margin-top:5px;display:grid;grid-template-columns:auto 1fr;gap:1px 10px}
 .pr4 b{color:var(--chop-fg);font-weight:600}
 .sub{font-size:.72rem;font-weight:600;color:var(--chop-muted);margin:10px 0 2px}
+.sub .nf{float:right;font-size:.68rem;font-weight:400}   /* the first team line in a game carries the column heads */
 /* games */
 .gm{border:1px solid transparent;border-radius:12px;margin:6px 0;background:var(--chop-panel)}
 .gm.open{border-color:var(--chop-grid)}.gm.in.open{border-color:color-mix(in srgb,var(--chop-grid) 55%,var(--chop-fg))}
@@ -1145,9 +1146,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
       else {
         var top = barTop(g.rows), sel = S.sel["game-" + g.name] || [];
-        h += '<div class="plh"><span>' + (gm.st === "pre" ? "Bars: Projected, in NFL team colors" : "Bars: points, purple line = Projected") + "</span><span>Now · Final</span></div>";
         g.rows.forEach(function (r, i) {
-          if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + "</div>";
+          if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + (i ? "" : '<span class="nf">Now · Final</span>') + "</div>";
           h += playerRow(r, "g:" + g.name, top, {team: r.acct, benchTag: true, c: clubColor(r.club), cls: sel.indexOf(r.id) >= 0 ? "sel" : sel.length ? "dim" : ""});
         });
         var gc = gameChart(g, w - 56); if (gc) h += '<div class="inch">' + gc + "</div>";
