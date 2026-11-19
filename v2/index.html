@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'f57cfc05ce';</script>
+<script>window.CHOP_V2 = '3a8bd2ce70';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -43,9 +43,9 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 #race{padding:12px 8px 6px;border:1px solid var(--chop-grid);border-radius:14px;background:var(--chop-panel)}
 .sech{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 /* status */
-.top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.top{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 8px}
 .top h1{margin-right:auto}
-.st1{display:flex;flex-wrap:nowrap;align-items:center;gap:8px;font-size:.8125rem;color:var(--chop-muted);margin-top:6px}
+.st1{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8125rem;color:var(--chop-muted);margin-top:6px}
 #when.set{color:var(--chop-fg);font-weight:700}   /* the countdown: bold once every QUES/DOUB in the next game is settled */
 #when{font-variant-numeric:tabular-nums}
 .st2{font-size:.75rem;color:var(--chop-muted);margin-top:3px}
@@ -109,11 +109,13 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .oddk{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.75rem;color:var(--chop-muted)}
 .oddk b{color:var(--chop-fg);font-weight:600}.oddk .bul{margin:0 -6px}
 .oddk .dot{width:8px;height:8px;margin-right:4px}
-.mine{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:.8125rem;color:var(--chop-muted)}   /* right end of the status line, under Redact and Update */
+.mine{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:.8125rem;color:var(--chop-muted)}   /* right end of the title line, above Redact and Update */
 .mine[hidden]{display:none}
 .mine{flex:0 1 auto;min-width:5rem}
 .mine select{min-width:0;width:100%;flex:0 1 auto;text-overflow:ellipsis}
 .st1>.tag,.st1>.live{flex:none}
+.st1 .acts{display:flex;align-items:center;gap:4px;margin-left:auto}   /* Redact and Update, right end of the status line, under Your team */
+.top h1{white-space:nowrap}
 .mine label{display:none}                          /* a phone has no room: the empty choice reads "Your team…" instead */
 #when{white-space:nowrap}
 @media (min-width:560px){.mine label{display:inline;white-space:nowrap}}
@@ -296,9 +298,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 </style>
 <div class="app" id="app">
   <div class="top"><h1>The Chopping Block</h1>
-    <button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button>
-    <button type="button" class="btn" id="update" data-act="update">Update</button></div>
-  <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span><span class="mine" id="mine" hidden><label for="follow">Your team</label><select id="follow" aria-label="Your team" title="Your team"></select></span></div>
+    <span class="mine" id="mine" hidden><label for="follow">Your team</label><select id="follow" aria-label="Your team" title="Your team"></select></span></div>
+  <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span><span class="acts"><button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button><button type="button" class="btn" id="update" data-act="update">Update</button></span></div>
   <div class="st2" id="when2"></div>
   <div class="panel" id="redact" hidden></div>
   <p class="wait" id="wait">Waiting for the first scores. The page fills in as soon as the next update lands.</p>
@@ -554,7 +555,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     box.innerHTML = h;
   }
-  function renderMine() {                               // the picker at the right of the status line; left alone while its list is open
+  function renderMine() {                               // the picker at the right of the title line; left alone while its list is open
     var box = $("mine"), sel = $("follow"), T = teams();
     box.hidden = !T.length; if (!T.length || document.activeElement === sel) return;
     var opts = T.slice().sort(function (a, b) { return b.rank - a.rank; }).map(function (t) { return t.team; });
