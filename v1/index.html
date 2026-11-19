@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: every alive team's points through the week, live.">
-<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = '3cda3b87a9';</script>
+<script>window.CHOP_DATA_URL = "../live_doc.json"; window.CHOP_PAGE = '5a1947c535';</script>
 </head><body>
 <title>Sleeper - The Chopping Block</title>
 <style>
@@ -135,7 +135,10 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 .chop-pl.pre{white-space:nowrap}
 .chop-pl.pre .pt{margin-right:0}
 .chop-pl.pre .chop-tag{margin-right:0}
-.chop-pl.st .chop-tag{margin-right:0}   /* v1: a status tag beside his stats, during and after his game */
+.chop-pl.st .chop-tag{margin-right:0}
+.chop-you{display:flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:.8125rem;color:var(--chop-muted)}   /* Your team: whose Redact setting this device shares */
+.chop-you select{font:inherit;font-weight:600;color:var(--chop-fg);background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:4px 8px;min-width:0;max-width:100%;flex:0 1 auto}
+.chop-redact .sync{margin:0 0 8px;color:var(--chop-muted)}   /* v1: a status tag beside his stats, during and after his game */
 .chop-t .chop-pl .dot{margin:0 .4em}
 .chop-pt tr.bench td{color:var(--chop-muted)}
 .chop-pt tr.first-bench td{border-top:2px solid var(--chop-grid);border-top-color:color-mix(in srgb,var(--chop-grid) 78%,var(--chop-fg))}
@@ -264,7 +267,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
 </style>
 <div class="chop">
   <h1 class="chop-h">Sleeper - The Chopping Block</h1>
-  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><span id="chop-count" hidden></span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div></div>
+  <div class="chop-status"><div class="l1"><span class="chop-tag blue chop-week" id="chop-week" hidden></span><span class="chop-live" id="chop-live" hidden>LIVE</span><span id="chop-when">—</span><span id="chop-count" hidden></span><button type="button" class="chop-update" id="chop-update">Update</button></div><div class="l2" id="chop-when2"></div><div class="chop-you" id="chop-you" data-v1 hidden><label for="your-team">Your team</label><select id="your-team"></select></div></div>
   <details class="chop-help chop-redact-d" id="chop-redact-d"><summary id="chop-redact-sum">Redact</summary><div class="chop-redact" id="chop-redact-panel"></div></details>
   <article class="chop-news" id="chop-news" hidden aria-live="polite">
     <h2 class="chop-news-h" id="news-head"></h2>
@@ -273,7 +276,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   </article>
   <details class="chop-help"><summary>About the race, and how to read the charts</summary>
   <p class="chop-race">Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <span id="chop-alive">—</span>. This is the week's horse race, every surviving team's points from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe; Chop% is each team's chance of being that team.</p>
-    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to each team's margin through the week: how far its projected final sits above the projected chop team, and for the chop team itself how far it sits behind the next team up, so the bottom two always show the same gap, one above the line and one below. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Redact (the roll-down under Update) hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games (OPP REDACTED), along with the score and the down, so a game you are saving is not spoiled; the choice is kept on this device (tap AFC, NFC, or a division's name to select or clear all of it). Its Redacted / Unredacted switch shows them all until you switch back or until the first update on Wednesday morning, when it goes back to Redacted for the new week; redacted players always count in their team's totals. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
+    <p>Updates itself while games are on, and checks for roster moves every 2 minutes between games. The Update button asks for a fresh pull right away; the new data normally arrives in about 10 seconds. The LIVE light comes on when the feed wakes up, about 5 minutes before kickoff, and stays on until the last game on ends. Solid lines are points scored; dashed lines are our projection to the end of Monday night, paced like real game time. A team's line is thick while one of its starters is playing, thin between its games, and hair-thin once it is done for the week. Friday, Saturday and the gaps between game windows are cut out. Cushion switches the chart to each team's margin through the week: how far its projected final sits above the projected chop team, and for the chop team itself how far it sits behind the next team up, so the bottom two always show the same gap, one above the line and one below. At any moment a team's projection is its starters' points by then plus the predicted rest of their games, so at Now it matches Final in the table. The thin bar at the left of each table row is from our Chop%: red the team most likely chopped, yellow 10% or more, green under 10%, blue no chance. Dashed lines separate the game windows; a shaded zone marks staggered kickoffs inside a window, like the 1:25 games after the 1:05. Redact (the roll-down under Update) hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games (OPP REDACTED), along with the score and the down, so a game you are saving is not spoiled; the choice is kept on this device (tap AFC, NFC, or a division's name to select or clear all of it). Its Redacted / Unredacted switch shows them all until you switch back or until the first update on Wednesday morning, when it goes back to Redacted for the new week. Choose Your team at the top and your Redact setting is shared: every device set to the same team picks it up, about a minute after a change; redacted players always count in their team's totals. Final, Projected and Chop read ours • Sleeper's. Every chart, bar, color and place on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match. Left • In • Done counts a team's starters: still to play, in a game now, and finished or not playing. Projected is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. Final is the points so far plus the latest prediction for the rest of the game, so news before a player's kickoff moves Final and Chop but not Projected. Once a player has kicked off, his Final turns bold over his dim Projected. When his game is over, Now holds his actual final and Projected is struck through.</p>
     <p>Tap teams or players (their names, or rows in the tables) to pick out their lines; tap as many as you like, tap one again to drop it, or tap anywhere else to clear. Phone: slide one finger to read every score; pinch to zoom in on any spot, and drag with two fingers to move around. Mouse: hover to read, drag to scroll, pinch the trackpad to zoom. Double-tap to zoom out.</p>
         <p>Players: every player on the team you pick. The very thick part of each line is his game (solid = scored play by play, dashed = projected to the final whistle); the very thin part is time he is off the field. Each position has its own color family, with bench players dimmed below the heavy line. Before a game, the opponent's color and rank show how hard that defense has been on his position this season, in our scoring: 1st (red) allows the fewest points, 32nd (green) the most. The line under a name before a game reads like QUES • RB10 • 26% (74%): any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him, and in parentheses the share rostering him. A blue tag at the end is the week of a bye still to come. The small line at the end of the row shows that same rank before kickoff, red 1st at the left to green 32nd at the right, with a dot at this opponent. His status is rechecked every few seconds while his game is on. A QUES or DOUB tag clears at his kickoff and comes back, beside his stats, only if his status changes during the game; an OUT tag stays. A player ruled out during a game is treated as finished from that moment: his points so far become his final, and a gray DONE tag replaces his clock. During his game the small line fills up instead: the dot is his points so far against his predicted final. Its color compares his predicted final with his Projected number: green headed to meet or beat it, yellow headed to miss it by 1 point or less, red headed to miss it by more, and blue once his points have passed it, with the dot at the end and a small tick at his projection. In the Game column during his game, the quarter is a blue tag before the time left, which counts down while the game clock is running and dims while it is stopped (worked out from the last play; it lines back up with ESPN every few seconds), and when his team has the ball the next line says where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, ◄50 at midfield, a red tag inside the 20, G for goal to go, and Kickoff while the ball is being kicked off. A finished game is a gray FINAL tag; a game's header shows its score while it is on and once it is final (in Fantasy, the Game column shows the winner and score beside FINAL, the loser under it). Through the first quarter it stays green unless he has already passed it. When his game is over, the whole line is his Projected number and the dot is where he ended, in the color he finished. If he passed it, the dot sits at the end and a small tick marks the projection.</p>
     <p>Players in a game: everyone on an alive roster, bench included, whose game is on right now. NFL groups them by game, split into its two NFL teams; Fantasy groups them by fantasy team; or show just one. Lines are in each player's NFL team color, dimmer for bench players. The chart counts from the first kickoff in 30-minute sections, brighter at each hour. When everyone on it is in one game, it shows that game's four quarters by the game clock instead, brighter at halftime. Tap a player to pick out his line, or a game or team's name in the table to pick out all of its players. Between games the chart becomes a scorecard: a bar for each player who played, as long as his points, with a tick at his Projected, blue if he beat it, green if he met it, yellow if he missed by a point or less, red if by more. Before the week's first kickoff it shows everyone due to play, each bar his Projected in his NFL team's color; under NFL, the games with none of them follow at the end.</p>
@@ -545,13 +548,13 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   }
 
   // ---------- 3. the viewer's choices (this device) ----------
-  const KEY = {team: "chop-race-player-team", by: "chop-race-ingame-by", mode: "chop-race-team-chart", redact: "chop-race-redact", reveal: "chop-race-redact-reveal", reset: "chop-race-redact-reset", status: "chop-race-v1-status"};
+  const KEY = {team: "chop-race-player-team", by: "chop-race-ingame-by", mode: "chop-race-team-chart", redact: "chop-race-redact", reveal: "chop-race-redact-reveal", reset: "chop-race-redact-reset", stamp: "chop-race-redact-t", you: "chop-v2-follow", status: "chop-race-v1-status"};
   const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
   const UI = {
     teams: {key: "teams", sel: [], view: null, yview: null, mode: /^(rank|cushion)$/.test(store.get(KEY.mode) || "") ? "cushion" : "points"},
     mine: {key: "mine", sel: [], view: null, yview: null, team: store.get(KEY.team)},
     game: {key: "game", sel: [], view: null, yview: null, by: store.get(KEY.by) === "team" ? "team" : "game", group: null, base: null},
-    redact: {}, reveal: store.get(KEY.reveal) === "1", openStories: {}
+    redact: {}, reveal: store.get(KEY.reveal) === "1", you: store.get(KEY.you) || "", openStories: {}
   };
   try { (JSON.parse(store.get(KEY.redact) || "[]") || []).forEach(c => { UI.redact[c] = true; }); } catch (e) {}
   const redactList = () => Object.keys(UI.redact).filter(c => UI.redact[c]).sort();
@@ -1007,6 +1010,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   // The roster the player chart shows: the picked team if it is still alive, else ours.
   function mineTeam() {
     if (UI.mine.team && M.rosters[UI.mine.team]) return UI.mine.team;
+    if (UI.you && M.rosters[UI.you]) return UI.you;
     return M.us && M.rosters[M.us] ? M.us : Object.keys(M.rosters)[0] || null;
   }
   // The chart's name for the game window a kickoff falls in: "Thu night", "Sun early".
@@ -1368,18 +1372,66 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   // ----- Redact: NFL teams whose games the viewer does not want spoiled -----
   const CONF = {AFC: [["East", "BUF MIA NE NYJ"], ["North", "BAL CIN CLE PIT"], ["South", "HOU IND JAX TEN"], ["West", "DEN KC LAC LV"]],
                 NFC: [["East", "DAL NYG PHI WAS"], ["North", "CHI DET GB MIN"], ["South", "ATL CAR NO TB"], ["West", "ARI LAR SEA SF"]]};
-  function setRedact(clubs, on) { clubs.forEach(c => { UI.redact[c] = on; }); store.set(KEY.redact, JSON.stringify(redactList())); render(true); }
-  function setReveal(on) { if (UI.reveal === on) return; UI.reveal = on; store.set(KEY.reveal, on ? "1" : "0"); render(true); }
+  function setRedact(clubs, on) { clubs.forEach(c => { UI.redact[c] = on; }); redactChanged(); }
+  function setReveal(on) { if (UI.reveal === on) return; UI.reveal = on; redactChanged(); }
+  // ----- the Redact setting on every device of one team (Jack, 19 Nov 2026) -----
+  // With a Your team chosen, a change here is posted to the recorder (the Update button's relay) as {redact: {team, clubs,
+  // reveal}}; the builder publishes each team's latest in the data as doc.redact[team] = {clubs, reveal, t}, about a minute
+  // later, and every page set to that team adopts an entry newer than its own stamp (KEY.stamp: when the setting last
+  // changed on this device, seconds). With no Your team it all stays on this device, as before.
+  const SYNC = {changed: 0, resent: false};              // this page load: its last change by hand; whether a lost send was repeated
+  const yourTeam = doc => UI.you && doc && doc.teams && doc.teams.some(t => t.team === UI.you) ? UI.you : "";
+  const redactSig = (clubs, reveal) => clubs.slice().sort().join() + "|" + !!reveal;
+  function saveRedact(stamp) {
+    if (!redactList().length) UI.reveal = false;         // no teams: back to Redacted, so the next team picked starts hidden
+    store.set(KEY.redact, JSON.stringify(redactList())); store.set(KEY.reveal, UI.reveal ? "1" : "0"); store.set(KEY.stamp, String(Math.round(stamp)));
+  }
+  function sendRedact() {
+    const team = yourTeam(FEEDS.doc); if (!team) return;
+    try { fetch(window.CHOP_PULL_URL || "https://ntfy.sh/chop-race-update-b01a63b57ecf", {method: "POST", body: JSON.stringify({redact: {team, clubs: redactList(), reveal: !!UI.reveal}})}).catch(() => {}); } catch (e) {}
+  }
+  function redactChanged() { SYNC.changed = nowS(); saveRedact(SYNC.changed); sendRedact(); render(true); }
+  // On every data update (and when Your team changes, with force): take the team's published setting if it is newer than
+  // this device's; repeat a send that seems lost, once per page load. Returns true if the setting here changed.
+  function syncRedact(doc, force) {
+    const team = yourTeam(doc); if (!team) return false;
+    const e = doc.redact && doc.redact[team], now = nowS(), stamp = +store.get(KEY.stamp) || 0, mine = redactSig(redactList(), UI.reveal);
+    const theirs = e && Array.isArray(e.clubs) ? redactSig(e.clubs, e.reveal) : null;
+    if (theirs !== null && (force || +e.t > stamp)) {
+      if (theirs === mine) { store.set(KEY.stamp, String(Math.round(+e.t))); return false; }
+      if (!force && now - SYNC.changed < 180) return false;   // a change made here is still on its way up: do not flip back to the older one
+      UI.redact = {}; e.clubs.forEach(c => { UI.redact[c] = true; }); UI.reveal = !!e.reveal; saveRedact(+e.t);
+      return true;
+    }
+    if (!SYNC.resent && mine !== (theirs === null ? redactSig([], false) : theirs) && now - stamp > 180) { SYNC.resent = true; sendRedact(); }
+    return false;
+  }
+  function setYou(team) {
+    UI.you = team; store.set(KEY.you, team); SYNC.resent = false;
+    if (team) Object.assign(UI.mine, {team, view: null, yview: null, sel: []}), store.set(KEY.team, team);
+    syncRedact(FEEDS.doc, true); render(true);
+  }
+  function drawYou() {
+    const box = $("chop-you"), sel = $("your-team"); box.hidden = !(M && M.ok);
+    if (!M || !M.ok) return;
+    const names = M.teams.map(t => t.team).sort((a, b) => teamName(a, true).toLowerCase() < teamName(b, true).toLowerCase() ? -1 : 1), cur = yourTeam(FEEDS.doc);
+    if (document.activeElement !== sel && changed("you", names.map(n => n + teamName(n, true) + teamColor(n)).join("|"))) {
+      sel.textContent = ""; const none = el("option", "", "Not chosen"); none.value = ""; sel.appendChild(none);
+      names.forEach(n => { const o = el("option", "", teamName(n, true)); o.value = n; o.style.color = teamColor(n); sel.appendChild(o); });
+    }
+    sel.value = cur; sel.style.color = cur ? teamColor(cur) : "";
+  }
   function drawRedact() {
     const mine = redactList(), n = mine.length, opp = {};
     if (!n && UI.reveal) { UI.reveal = false; store.set(KEY.reveal, "0"); }   // no teams: back to Redacted, so the next team picked starts hidden
+    const you = yourTeam(FEEDS.doc);
     if (M) for (const id in M.player) {                  // this week's opponents of the picked teams
       const p = M.player[id], o = p.opp; if (!p.club || !o) continue;
       if (UI.redact[p.club] && !UI.redact[o]) opp[o] = 1;
       if (UI.redact[o] && !UI.redact[p.club]) opp[p.club] = 1;
     }
     const others = Object.keys(opp).sort();
-    if (!changed("redact", mine.join() + "|" + others.join() + "|" + UI.reveal + ALT_SIG)) return;
+    if (!changed("redact", mine.join() + "|" + others.join() + "|" + UI.reveal + ALT_SIG + "|" + you + (you ? teamName(you, true) : ""))) return;
     const sum = $("chop-redact-sum"); sum.textContent = ""; sum.className = n ? (UI.reveal ? "open" : "shut") : "";
     if (!n) sum.textContent = "Redact";
     else {                                               // "Redacted [NE] [SF] · Opponents [GB] [LV]" (red); "Unredacted …" (green)
@@ -1388,6 +1440,8 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
       if (others.length) { sum.appendChild(txt(others.length > 1 ? " · Opponents " : " · Opponent ")); tags(others); }
     }
     const panel = $("chop-redact-panel"); panel.textContent = "";
+    const sync = el("p", "sync", you ? "Shared with every device whose Your team is " + teamName(you, true) + "." : "Kept on this device only. Choose Your team at the top to share it with your other devices.");
+    sync.setAttribute("data-v1", ""); panel.appendChild(sync);
     const btn = (cls, text, pressed, act) => { const b = el("button", cls, text); b.type = "button"; b.setAttribute("aria-pressed", String(pressed)); b._act = act; return b; };
     const seg = el("span", "chop-seg"); seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Redacted players");
     [["Redacted", false], ["Unredacted", true]].forEach(o => {   // Unredacted shows everything, until switched back (kept on this device)
@@ -1776,7 +1830,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
   // it, the lines stay on the minute data. Everything else rebuilds only what changed.
   function render(charts) {
     if (M) pickClubColors();
-    drawRedact();                                        // its title names this week's opponents, so it follows the data
+    drawYou(); drawRedact();                                        // its title names this week's opponents, so it follows the data
     VSIG = [GEN, roomy(), ALT_SIG, UI.reveal, redactList().join(), UI.game.by, M ? M.week : ""].join("|") + "|";
     const ok = !!(M && M.ok);
     $("chop-wait").hidden = ok; $("chop-body").hidden = !ok;
@@ -1799,11 +1853,11 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     const wed = lastWednesday(Math.max(doc.builtAt, nowS())), had = +store.get(KEY.reset) || 0;
     if (had && wed <= had + 86400) return;
     store.set(KEY.reset, String(wed));
-    if (had && UI.reveal) { UI.reveal = false; store.set(KEY.reveal, "0"); }
+    if (had && UI.reveal) { UI.reveal = false; saveRedact(Math.max(wed, +store.get(KEY.stamp) || 0)); }   // the builder stamps the same Wednesday
   }
   function refold() {
     const was = M;
-    weeklyRedact(FEEDS.doc);
+    weeklyRedact(FEEDS.doc); syncRedact(FEEDS.doc);
     M = fold(FEEDS.doc, FEEDS.live, nowS(), SEEN);
     if (SEEN.dirty) { SEEN.dirty = false; store.set(KEY.status, JSON.stringify({week: SEEN.week, at: SEEN.at})); }
     if (was && M && was.week !== M.week)                 // a new week: last week's zoom and one-game filter mean nothing
@@ -1858,6 +1912,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     Object.assign(UI.game, {group: e.target.value || null, view: null, yview: null, sel: [], base: null});
     if (M && M.ok) renderGame(true);
   });
+  $("your-team").addEventListener("change", e => { e.target.blur(); setYou(e.target.value); });
   $("mine-team").addEventListener("change", e => {
     Object.assign(UI.mine, {team: e.target.value, view: null, yview: null, sel: []}); store.set(KEY.team, UI.mine.team);
     if (M && M.ok) renderMine(true);
@@ -1971,7 +2026,7 @@ body{margin:0;background:var(--chop-bg);color:var(--chop-fg);font-family:-apple-
     setTimeout(() => { btn.textContent = "Update"; btn.disabled = false; }, 4000);
   });
   // For the tests (Draft Day/chop_race_v1_test.html): the state object, a full redraw, and the rules.
-  window.CHOP_V1 = {lastWednesday, 
+  window.CHOP_V1 = {lastWednesday, sync: SYNC, 
     get model() { return M; }, feeds: FEEDS, ui: UI, fold: fold, get seen() { return SEEN; },
     redraw(force) { if (force) GEN++; render(true); },
     setLive(live) { FEEDS.live = live; refold(); render(false); },
