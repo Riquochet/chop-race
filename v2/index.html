@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '3a8bd2ce70';</script>
+<script>window.CHOP_V2 = '9ae71fdb82';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -109,16 +109,16 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .oddk{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.75rem;color:var(--chop-muted)}
 .oddk b{color:var(--chop-fg);font-weight:600}.oddk .bul{margin:0 -6px}
 .oddk .dot{width:8px;height:8px;margin-right:4px}
-.mine{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:.8125rem;color:var(--chop-muted)}   /* right end of the title line, above Redact and Update */
-.mine[hidden]{display:none}
-.mine{flex:0 1 auto;min-width:5rem}
-.mine select{min-width:0;width:100%;flex:0 1 auto;text-overflow:ellipsis}
+.top .mine{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:.8125rem;color:var(--chop-muted)}   /* right end of the title line, above Redact and Update */
+.top .mine[hidden]{display:none}
+.top .mine{flex:0 1 auto;min-width:5rem}
+.top .mine select{min-width:0;width:100%;flex:0 1 auto;text-overflow:ellipsis}
 .st1>.tag,.st1>.live{flex:none}
 .st1 .acts{display:flex;align-items:center;gap:4px;margin-left:auto}   /* Redact and Update, right end of the status line, under Your team */
 .top h1{white-space:nowrap}
-.mine label{display:none}                          /* a phone has no room: the empty choice reads "Your team…" instead */
+.top .mine label{display:none}                          /* a phone has no room: the empty choice reads "Your team…" instead */
 #when{white-space:nowrap}
-@media (min-width:560px){.mine label{display:inline;white-space:nowrap}}
+@media (min-width:560px){.top .mine label{display:inline;white-space:nowrap}}
 .mine select{font:inherit;font-size:.8125rem;font-weight:700;color:var(--tc,var(--chop-fg));background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 4px;max-width:10.5rem}
 .mine select.unset{font-weight:400;color:var(--chop-muted)}
 .me{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--chop-grid);font-size:.875rem}
@@ -699,7 +699,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var st = tState(t), now = Math.max(0, +t.now || 0), fin = Math.max(now, +t.est_final || 0), pace = st !== "pre" && t.pace ? t.pace : "";
     return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " final" + (t.pre != null ? ", " + n1(t.pre) + " projected" : "") + '">' +
       '<i class="ghost" style="width:' + pc(fin / top) + '"></i>' + (st !== "pre" ? '<i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' : "") + gridLines(top, [50, 10]) +
-      '<i class="cl" style="left:' + pc(chopX / top) + '"></i>' + (t.pre != null ? '<i class="tk" style="left:' + pc(t.pre / top) + '"></i>' : "") + "</span>";
+      '<i class="cl" style="left:' + pc(chopX / top) + '"></i>' + (t.pre != null && st !== "pre" ? '<i class="tk" style="left:' + pc(t.pre / top) + '"></i>' : "") + "</span>";   // nobody has played: Final is the projection, so no line for it
   }
   function playerBar(r, top) {
     var g = r.game, st = g && (goneOut(r) ? "post" : g.st), pace = paceShown(r);
