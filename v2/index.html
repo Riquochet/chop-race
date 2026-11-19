@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '9ae71fdb82';</script>
+<script>window.CHOP_V2 = '4396b1d91c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -168,7 +168,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .kv .n{text-align:right;font-weight:600}.kv .s{text-align:right;color:var(--chop-muted)}
 .note{font-size:.75rem;color:var(--chop-muted);margin:4px 0}
 .note b.red{color:var(--red)}.note b.yellow{color:var(--yellow)}.note b.green{color:var(--green)}.note b.blue{color:var(--blue)}.note b.purple{color:var(--purple)}
-/* bars: one shared scale per list. fill = points so far (pace color), ghost = on to Final, purple tick = Projected */
+/* bars: team bars share one scale, player bars another (the same in every list). fill = points so far (pace color), ghost = on to Final, purple tick = Projected */
 .trk{position:relative;display:block;height:8px;border-radius:4px;background:color-mix(in srgb,var(--chop-grid) 70%,transparent)}
 .trk.none{background:none}
 .trk i{position:absolute;top:0;bottom:0;display:block}
@@ -306,7 +306,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <div id="body" hidden>
     <div class="heads"><div id="story"></div><section class="hero" id="hero" aria-live="polite"></section></div>
     <div class="cols">
-      <section class="sec" id="race"></section>
+      <div><section class="sec" id="race"></section>
+        <section class="sec" id="trend"></section></div>
       <section class="sec" id="games"></section>
     </div>
     <section class="sec" id="stories" hidden></section>
@@ -318,7 +319,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
     <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
-    <p><b>Points</b> and <b>Cushion</b> switch the ladder for the week as a chart: solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
+    <p><b>Through the week</b>, under the ladder, charts the week by <b>Points</b> or by <b>Cushion</b>: solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
     <p>The page updates itself: every 5 seconds while games are on (clock, ball and points), every minute for the charts, every 2 minutes between games for roster moves. The LIVE light comes on about 5 minutes before kickoff and stays on until the last game on ends. Update asks for a fresh pull right away; it normally arrives in about 10 seconds.</p>
   </details>
@@ -331,7 +332,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   var LS = {get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
             set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
   // What the viewer has opened or picked. Every redraw is built from DOC + S, so the 5-second updates keep it all in place.
-  var S = {view: /^(points|cushion)$/.test(LS.get("chop-v2-view") || "") ? LS.get("chop-v2-view") : "standings",
+  var S = {view: LS.get("chop-v2-view") === "cushion" ? "cushion" : "points",   // which chart the week section shows
            follow: LS.get("chop-v2-follow"), team: {}, game: {}, player: {}, sel: {}, zoom: {}, story: null, stories: {}, redactOpen: false, scrubT: 0};
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]; }); }
@@ -710,8 +711,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (st === "in") return '<span class="trk" title="' + n1(now) + " so far, " + n1(fin) + " predicted" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="ghost ' + pace + '" style="width:' + pc(fin / top) + '"></i><i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
     return '<span class="trk" title="' + n1(now) + " final" + (pre != null ? ", " + n1(pre) + " projected" : "") + '"><i class="fill ' + pace + '" style="width:' + pc(now / top) + '"></i>' + gl + tk + "</span>";
   }
-  function barTop(rows) {
-    var top = 1; rows.forEach(function (r) { if (!isRedacted(r)) top = Math.max(top, +r.now || 0, +r.pre || 0, +r.est_final || 0); });
+  // One scale for every player bar on the page, so a bar's length means the same in every list:
+  // the largest points, Final or Projected of any player, rounded up to the next 5 (26.1 -> 30, 43.8 -> 45).
+  function barTop() {
+    var top = 1; eachRow(function (r) { if (!isRedacted(r)) top = Math.max(top, +r.now || 0, +r.pre || 0, +r.est_final || 0); });
     return Math.max(10, Math.ceil(top / 5) * 5);
   }
 
@@ -1104,13 +1107,18 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       aria: "Points for each player in " + g.name + " by quarter"});
   }
 
-  // ---------- the race: the ladder, or the week as a chart ----------
+  // ---------- the week as a chart, in its own section under the ladder ----------
+  function renderTrend() {
+    var box = $("trend"), w = (box.clientWidth || 356) - 16;
+    box.innerHTML = '<div class="sech"><h2>Through the week</h2><span class="seg" role="group" aria-label="Chart the week by">' + [["points", "Points"], ["cushion", "Cushion"]].map(function (v) {
+      return '<button type="button" data-act="view" data-k="' + v[0] + '" aria-pressed="' + (S.view === v[0]) + '">' + v[1] + "</button>"; }).join("") + "</span></div>" + raceChart(S.view === "cushion", w);
+  }
+  // ---------- the race: the ladder ----------
   function renderRace() {
     var box = $("race"), T = teams().slice().sort(function (a, b) { return +b.rank - +a.rank; });   // worst first
     var w = (box.clientWidth || 356) - 16, me = myTeam();
-    var h = '<div class="sech"><h2>The race</h2><span class="seg" role="group" aria-label="Show the race as">' + [["standings", "Ladder"], ["points", "Points"], ["cushion", "Cushion"]].map(function (v) {
-      return '<button type="button" data-act="view" data-k="' + v[0] + '" aria-pressed="' + (S.view === v[0]) + '">' + v[1] + "</button>"; }).join("") + "</span></div>";
-    if (S.view !== "standings") { box.innerHTML = h + raceChart(S.view === "cushion", w); return; }
+    var h = '<div class="sech"><h2>The race</h2></div>';
+    renderTrend();
     var top = 10, chopX = Infinity, cu = cushions();
     T.forEach(function (t) { top = Math.max(top, +t.est_final || 0, +t.pre || 0, +t.now || 0); chopX = Math.min(chopX, +t.est_final); });
     top = Math.ceil(top * 1.02 / 10) * 10;
@@ -1144,7 +1152,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       (t.pre != null ? '<span>Projected</span><span class="n">' + n1(t.pre) + '</span><span class="s">' + n1(t.pre_sleeper) + "</span><span></span>" : "") +
       '<span>Chop</span><span class="n">' + chopPct(t.chop) + '</span><span class="s">' + chopPct(t.chop_sleeper) + "</span><span></span></div>";
     if (R && R.rows && R.rows.length) {
-      var top = barTop(R.rows), bench = false;
+      var top = barTop(), bench = false;
       h += '<div class="plh"><span>Starters</span><span>Now · Final</span></div>';
       R.rows.forEach(function (r) {
         var isBench = r.slot !== "START";
@@ -1195,7 +1203,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<div class="gmb">';
       if (!g.rows.length) h += '<p class="note">None of the surviving rosters has a player in this game.</p>';
       else {
-        var top = barTop(g.rows), sel = S.sel["game-" + g.name] || [];
+        var top = barTop(), sel = S.sel["game-" + g.name] || [];
         g.rows.forEach(function (r, i) {
           if (!i || g.rows[i - 1].club !== r.club) h += '<div class="sub in"><i class="dot" style="--c:' + clubColor(r.club) + '"></i>' + esc(r.club) + " · " + plural(g.rows.filter(function (x) { return x.club === r.club; }).length, "player") + (i ? "" : '<span class="nf">Now · Final</span>') + "</div>";
           h += playerRow(r, "g:" + g.name, top, {team: r.acct, benchTag: true, c: clubColor(r.club), cls: sel.indexOf(r.id) >= 0 ? "sel" : sel.length ? "dim" : ""});
@@ -1260,13 +1268,13 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (act === "ref") {                               // a name in a story: open that team (and that player) on the ladder
       e.preventDefault();
       var kind = n.getAttribute("data-kind"), team = kind === "t" ? k : playerTeam(k); if (!team) return;
-      S.view = "standings"; S.team[team] = true;
+      S.team[team] = true;
       if (kind === "p") S.player["t:" + team + "|" + k] = true;
       render(); reveal(kind === "p" ? "p-t:" + team + "|" + k : "t-" + team);
       return;
     }
     if (act === "update") { pull(); return; }
-    if (act === "view") { S.view = k; LS.set("chop-v2-view", k); renderRace(); return; }
+    if (act === "view") { S.view = k; LS.set("chop-v2-view", k); renderTrend(); return; }
     if (act === "team") { S.team[k] = !S.team[k]; renderRace(); return; }
     if (act === "game") { var cur = n.getAttribute("aria-expanded") === "true"; S.game[k] = !cur; renderGames(); return; }
     if (act === "player") {
