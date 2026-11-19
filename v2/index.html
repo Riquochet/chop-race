@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '5b04d4d3da';</script>
+<script>window.CHOP_V2 = 'a51c785fcb';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -998,7 +998,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   // The teams through the week. Points: scored (solid) and projected (dashed), thick while a starter plays, thin between,
   // hair-thin once done. Cushion: each team's projected final at every moment up to now, minus the team on the block's.
-  function hasChop() { var L = (DOC && DOC.lines) || {}; return Object.keys(L).some(function (k) { return (L[k].cx || []).length > 1; }); }   // the feed carries chop chance through the week
+  function hasChop() { var L = (DOC && DOC.lines) || {}; return Object.keys(L).some(function (k) { return (L[k].cx || []).length > 0; }); }   // the feed carries chop chance through the week
   function pct0(v) { return v > 0 && v < 1 ? "<1%" : Math.round(v) + "%"; }
   function raceChart(cushion, w, chop) {                // points; or cushion; or chop chance (each a line per team through the week)
     var T = teams(), xmax = weekMax(), me = myTeam(), series = [], nx = nowX(), cuNow = cushions();
