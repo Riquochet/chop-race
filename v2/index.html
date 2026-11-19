@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '97b85f83e8';</script>
+<script>window.CHOP_V2 = 'ed1c26ec21';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -109,8 +109,11 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .oddk{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.75rem;color:var(--chop-muted)}
 .oddk b{color:var(--chop-fg);font-weight:600}.oddk .bul{margin:0 -6px}
 .oddk .dot{width:8px;height:8px;margin-right:4px}
+.mine{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.8125rem;color:var(--chop-muted)}
+.mine select{font:inherit;font-size:.875rem;font-weight:700;color:var(--tc,var(--chop-fg));background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 4px;max-width:14rem}
+.mine select.unset{font-weight:400;color:var(--chop-muted)}
 .me{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--chop-grid);font-size:.875rem}
-.me select{font:inherit;font-weight:700;color:var(--tc);background:var(--chop-bg);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 4px;max-width:11.5rem}
+.me .mt{font-weight:700;color:color-mix(in srgb,var(--tc) 88%,var(--chop-fg));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:11.5rem}
 /* story */
 .story{margin-top:12px;border:1px solid var(--chop-grid);border-radius:14px;background:var(--chop-panel)}
 .sth{all:unset;box-sizing:border-box;display:block;width:100%;padding:12px 14px;cursor:pointer}
@@ -288,6 +291,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <div class="top"><h1>The Chopping Block</h1>
     <button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button>
     <button type="button" class="btn" id="update" data-act="update">Update</button></div>
+  <div class="mine" id="mine" hidden><label for="follow">Your team</label><select id="follow"></select></div>
   <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span></div>
   <div class="st2" id="when2"></div>
   <div class="panel" id="redact" hidden></div>
@@ -456,16 +460,48 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   var REDACT_KEY = "chop-race-redact", REVEAL_KEY = "chop-race-redact-reveal", REDACT = {}, REVEAL = false;
   try { (JSON.parse(LS.get(REDACT_KEY) || "[]") || []).forEach(function (c) { REDACT[c] = true; }); } catch (e) {}
   REVEAL = LS.get(REVEAL_KEY) === "1";
-  // Unredacted lasts until the week's Wednesday morning update: the first update built on or after Wednesday 12:00 AM
-  // (this device's clock) puts it back to Redacted. REVEAL_AT (shared with the original page) = unix seconds it was unredacted.
-  var REVEAL_AT = "chop-race-redact-reveal-at";
-  function setReveal(on) { REVEAL = on; LS.set(REVEAL_KEY, on ? "1" : "0"); if (on) LS.set(REVEAL_AT, String(Math.floor(Date.now() / 1000))); }
-  function wedBefore(t) { var d = new Date(t * 1000); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 4) % 7)); return d.getTime() / 1000; }
-  function revealExpire(d) {
-    if (!REVEAL || !d || !+d.builtAt) return;
-    var at = +LS.get(REVEAL_AT) || 0;
-    if (!at) { LS.set(REVEAL_AT, String(Math.floor(Date.now() / 1000))); return; }   // unredacted before this rule: its week starts now
-    if (at < wedBefore(+d.builtAt)) setReveal(false);
+  // The setting's stamp: unix seconds it last changed on this device, or the stamp of the copy adopted from the data feed.
+  // REDACT_T is shared with the original page, like the two keys above.
+  var REDACT_T = "chop-race-redact-t", resent = false;
+  function stamp() { return +LS.get(REDACT_T) || 0; }
+  function setReveal(on) { REVEAL = on; LS.set(REVEAL_KEY, on ? "1" : "0"); }
+  function storeRedact(t) { LS.set(REDACT_KEY, JSON.stringify(redactList())); LS.set(REVEAL_KEY, REVEAL ? "1" : "0"); LS.set(REDACT_T, String(Math.floor(t))); }
+  // Unredacted lasts the week: a setting last changed before the latest Wednesday 3:00 AM Pacific goes back to Redacted,
+  // stamped at that moment, exactly as the builder does for a team's shared copy.
+  var PT = null; try { PT = new Intl.DateTimeFormat("en-US", {timeZone: "America/Los_Angeles", weekday: "short", hour: "numeric", minute: "numeric", second: "numeric", hourCycle: "h23"}); } catch (e) {}
+  function wedCut(t) {
+    var wd = 0, hh = 0, mm = 0, ss = 0, d = new Date(t * 1000);
+    if (PT) PT.formatToParts(d).forEach(function (q) {
+      if (q.type === "weekday") wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(q.value);
+      else if (q.type === "hour") hh = +q.value % 24; else if (q.type === "minute") mm = +q.value; else if (q.type === "second") ss = +q.value;
+    }); else { wd = d.getDay(); hh = d.getHours(); mm = d.getMinutes(); ss = d.getSeconds(); }
+    var since = ((wd + 4) % 7) * 86400 + (hh - 3) * 3600 + mm * 60 + ss;
+    return Math.floor(t) - (since < 0 ? since + 604800 : since);
+  }
+  // Your team, when one has been chosen on this device: its Redact setting is shared with every device that chose the same team.
+  function syncTeam() { return S.follow || null; }
+  function sameAs(e) { return !!e.reveal === REVEAL && (e.clubs || []).slice().sort().join(" ") === redactList().join(" "); }
+  function adopt(e) {
+    REDACT = {}; (e.clubs || []).forEach(function (c) { REDACT[String(c).toUpperCase()] = true; });
+    REVEAL = !!e.reveal && redactList().length > 0; storeRedact(+e.t || 0);
+  }
+  function sendRedact() {                               // through the Update relay; the recorder files it and rebuilds, about a minute
+    var team = syncTeam(); if (!team) return;
+    try { fetch(window.CHOP_PULL_URL || "https://ntfy.sh/chop-race-update-b01a63b57ecf", {method: "POST", body: JSON.stringify({redact: {team: team, clubs: redactList(), reveal: REVEAL}})}).catch(function () {}); } catch (e) {}
+  }
+  function redactChanged() {                            // the viewer changed it here
+    if (!redactList().length) REVEAL = false;           // no teams: back to Redacted, so the next team picked starts hidden
+    storeRedact(Date.now() / 1000); resent = false; sendRedact(); render();
+  }
+  // Each update: take the team's shared copy when it is newer than this device's; send this device's again (once) when it is
+  // newer than the feed's and three minutes have not brought it back, since the first send may have been lost; then the weekly reset.
+  function redactSync(d, picked) {
+    var team = syncTeam(), e = team && d && d.redact && d.redact[team], t = stamp();
+    if (e && (picked || +e.t > t)) adopt(e);
+    else if (picked && team && !e && redactList().length) { storeRedact(Date.now() / 1000); resent = false; sendRedact(); }   // newly chosen, nothing shared yet: this device's setting becomes the team's
+    else if (team && d && !picked && !resent && t && (!e || t > +e.t) && Date.now() / 1000 - t > 180 && (e ? !sameAs(e) : redactList().length > 0)) { resent = true; sendRedact(); }
+    if (!stamp()) LS.set(REDACT_T, String(Math.floor(+LS.get("chop-race-redact-reveal-at") || (REVEAL ? Date.now() / 1000 : 0))));   // a setting older than the stamp
+    if (REVEAL && d && +d.builtAt) { var cut = wedCut(+d.builtAt); if (stamp() < cut) { REVEAL = false; storeRedact(cut); } }
   }
   function redactList() { return Object.keys(REDACT).filter(function (c) { return REDACT[c]; }).sort(); }
   function redactOn(club) { return !REVEAL && !!REDACT[club]; }
@@ -496,7 +532,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (!S.redactOpen) { box.innerHTML = ""; return; }
     var h = '<span class="seg" role="group" aria-label="Redacted players">' + [["Redacted", false], ["Unredacted", true]].map(function (o) {
       return '<button type="button" data-act="reveal" data-k="' + (o[1] ? 1 : 0) + '" aria-pressed="' + (REVEAL === o[1]) + '"' + (n ? "" : " disabled") + ">" + o[0] + "</button>"; }).join("") + "</span>";
-    h += '<p class="lead">Hide stats for these NFL teams’ players once their games start (saved on this device):</p>';
+    h += '<p class="lead">Hide stats for these NFL teams’ players once their games start:</p>' +
+      '<p class="lead mut">' + (syncTeam() ? "Saved for " + esc(teamName(syncTeam(), false)) + ", on every device where it is Your team." : "Saved on this device only. Choose Your team at the top to share it with your other devices.") + "</p>";
     Object.keys(CONF).forEach(function (conf) {
       function group(cls, text, list, title) {
         var on = list.every(function (c) { return REDACT[c]; });
@@ -511,7 +548,16 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     box.innerHTML = h;
   }
-  function saveRedact() { LS.set(REDACT_KEY, JSON.stringify(redactList())); render(); }
+  function renderMine() {                               // the picker under the title; left alone while its list is open
+    var box = $("mine"), sel = $("follow"), T = teams();
+    box.hidden = !T.length; if (!T.length || document.activeElement === sel) return;
+    var opts = T.slice().sort(function (a, b) { return b.rank - a.rank; }).map(function (t) { return t.team; });
+    if (S.follow && opts.indexOf(S.follow) < 0) opts.push(S.follow);                       // chosen, since chopped: still his
+    var h = '<option value="">' + (S.follow ? "None" : "Choose…") + "</option>" + opts.map(function (a) {
+      return '<option value="' + esc(a) + '"' + (a === S.follow ? " selected" : "") + ">" + esc(teamName(a, false)) + "</option>"; }).join("");
+    if (sel.innerHTML !== h) sel.innerHTML = h;
+    sel.value = S.follow || ""; sel.className = S.follow ? "" : "unset"; sel.style.setProperty("--tc", S.follow ? teamColor(S.follow) : "");
+  }
 
   // ---------- status ----------
   function countdown(s) {                              // 2d 5h 07m; under a day 5h 07m; under an hour 7m
@@ -546,7 +592,6 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   // ---------- the box at the top: who is on the block ----------
   function renderHero() {
     var box = $("hero");
-    if (document.activeElement && document.activeElement.id === "follow") return;   // the viewer is choosing a team: leave the list open
     var T = teams().slice().sort(function (a, b) { return a.est_final - b.est_final || a.now - b.now; });
     if (!T.length) { box.innerHTML = ""; return; }
     var chop = T[0], next = T[1], gap = next ? next.est_final - chop.est_final : 0, cu = cushions();
@@ -586,9 +631,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var me = teamRow(myTeam());
     if (me) {
       var c = cu[me.team], onBlock = me.team === chop.team;
-      h += '<div class="me"><label for="follow" class="mut">Your team</label><select id="follow" style="--tc:' + teamColor(me.team) + '">' +
-        teams().slice().sort(function (a, b) { return b.rank - a.rank; }).map(function (t) {
-          return '<option value="' + esc(t.team) + '"' + (t.team === me.team ? " selected" : "") + ">" + esc(teamName(t.team, false)) + "</option>"; }).join("") + "</select>" +
+      h += '<div class="me"><span class="mt" style="--tc:' + teamColor(me.team) + '">' + esc(teamName(me.team, false)) + "</span>" +
         "<span>" + ordinal(+me.rank) + " of " + teams().length + BUL + (allPost ? n1(me.now) + " points" : "<b>" + signed(c) + "</b> " + (onBlock ? "behind" : "cushion") + BUL + "chop " + chopPct(me.chop)) + "</span></div>";
     }
     box.innerHTML = h;
@@ -1187,6 +1230,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     renderStatus();
     var ok = !!(DOC && DOC.teams && DOC.teams.length);
     $("wait").hidden = ok; $("body").hidden = !ok;
+    renderMine();
     if (!ok) { renderRedact(); return; }
     pickClubColors(); renderRedact();
     renderHero(); renderStory(); renderRace(); renderGames(); renderStories();
@@ -1234,13 +1278,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (act === "story") { S.story = !S.story; renderStory(); return; }
     if (act === "old-story") { S.stories[k] = !S.stories[k]; renderStories(); return; }
     if (act === "redact-open") { S.redactOpen = !S.redactOpen; renderRedact(); return; }
-    if (act === "redact-chip") { REDACT[k] = !REDACT[k]; saveRedact(); return; }
-    if (act === "redact-group") { var list = k.split(" "), on = list.every(function (c) { return REDACT[c]; }); list.forEach(function (c) { REDACT[c] = !on; }); saveRedact(); return; }
-    if (act === "reveal") { var want = k === "1"; if (REVEAL !== want) { setReveal(want); render(); } return; }
+    if (act === "redact-chip") { REDACT[k] = !REDACT[k]; redactChanged(); return; }
+    if (act === "redact-group") { var list = k.split(" "), on = list.every(function (c) { return REDACT[c]; }); list.forEach(function (c) { REDACT[c] = !on; }); redactChanged(); return; }
+    if (act === "reveal") { var want = k === "1"; if (REVEAL !== want) { REVEAL = want; redactChanged(); } return; }
   });
   document.addEventListener("change", function (e) {
     if (e.target.id !== "follow") return;
-    S.follow = e.target.value; LS.set("chop-v2-follow", S.follow); e.target.blur(); render();
+    S.follow = e.target.value; LS.set("chop-v2-follow", S.follow); e.target.blur();
+    resent = false; redactSync(DOC, true); render();    // that team's shared Redact setting, if it has one
   });
   document.addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("svg.cv")) scrub(e); else unscrub(); }, true);
   document.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || e.buttons || e.pressure > 0) scrub(e); });
@@ -1447,7 +1492,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var d = null;
       if (direct === true && API) { try { d = await getDoc(API, {Accept: "application/vnd.github.raw+json"}); } catch (e) {} }
       if (!d) d = await latest();
-      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; revealExpire(d); noteStatus(); applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
+      if (+d.builtAt > built) { built = +d.builtAt; DOC = d; redactSync(d); noteStatus(); applyLive(); if (Date.now() - S.scrubT >= 8000) render(); else renderStatus(); if (!LIVE) liveTick(); }   // never back to an older copy
       else { renderStatus(); if (pastWeek()) renderGames(); }
       newPage();
     } catch (e) { if (!DOC) $("wait").textContent = "Couldn’t load the page’s data. Reload to try again."; }
