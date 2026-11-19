@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '4396b1d91c';</script>
+<script>window.CHOP_V2 = '5b04d4d3da';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -319,7 +319,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
     <p><b>Players.</b> Under a name: his stats once he plays; before that, any status, his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. The numbers at the right are Now and Final; before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Beside the bar: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off. Tap a player for the rest: both projections beside Sleeper's, his ownership, bye and matchup.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
-    <p><b>Through the week</b>, under the ladder, charts the week by <b>Points</b> or by <b>Cushion</b>: solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
+    <p><b>Through the week</b>, under the ladder, charts the week by <b>Points</b>, by <b>Cushion</b> or by <b>Chop %</b> (each team's chance of being chopped as the week went): solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
     <p>The page updates itself: every 5 seconds while games are on (clock, ball and points), every minute for the charts, every 2 minutes between games for roster moves. The LIVE light comes on about 5 minutes before kickoff and stays on until the last game on ends. Update asks for a fresh pull right away; it normally arrives in about 10 seconds.</p>
   </details>
@@ -332,7 +332,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   var LS = {get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
             set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
   // What the viewer has opened or picked. Every redraw is built from DOC + S, so the 5-second updates keep it all in place.
-  var S = {view: LS.get("chop-v2-view") === "cushion" ? "cushion" : "points",   // which chart the week section shows
+  var S = {view: /^(cushion|chop)$/.test(LS.get("chop-v2-view") || "") ? LS.get("chop-v2-view") : "points",   // which chart the week section shows
            follow: LS.get("chop-v2-follow"), team: {}, game: {}, player: {}, sel: {}, zoom: {}, story: null, stories: {}, redactOpen: false, scrubT: 0};
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]; }); }
@@ -998,7 +998,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   // The teams through the week. Points: scored (solid) and projected (dashed), thick while a starter plays, thin between,
   // hair-thin once done. Cushion: each team's projected final at every moment up to now, minus the team on the block's.
-  function raceChart(cushion, w) {
+  function hasChop() { var L = (DOC && DOC.lines) || {}; return Object.keys(L).some(function (k) { return (L[k].cx || []).length > 1; }); }   // the feed carries chop chance through the week
+  function pct0(v) { return v > 0 && v < 1 ? "<1%" : Math.round(v) + "%"; }
+  function raceChart(cushion, w, chop) {                // points; or cushion; or chop chance (each a line per team through the week)
     var T = teams(), xmax = weekMax(), me = myTeam(), series = [], nx = nowX(), cuNow = cushions();
     var cush = {};
     if (cushion) {
@@ -1028,9 +1030,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       }
     }
     T.forEach(function (t) {
-      var L = (DOC.lines || {})[t.team] || {}, act = cushion ? cush[t.team] : zip(L.ax, L.ay), pro = cushion ? [] : zip(L.px, toward(L.py, t.est_final));
+      var L = (DOC.lines || {})[t.team] || {}, act = chop ? zip(L.cx, L.cy) : cushion ? cush[t.team] : zip(L.ax, L.ay), pro = cushion || chop ? [] : zip(L.px, toward(L.py, t.est_final));
       var full = act.concat(pro).sort(function (p, q) { return p.x - q.x; }), paths = [], mine = t.team === me;
-      var wd = cushion ? (mine ? {thick: 3.2, thin: 1.6, done: 0.8} : {thick: 2.2, thin: 1.1, done: 0.6}) : (mine ? {thick: 5, thin: 1.6, done: 0.75} : {thick: 3.4, thin: 1.1, done: 0.5});
+      var wd = cushion || chop ? (mine ? {thick: 3.2, thin: 1.6, done: 0.8} : {thick: 2.2, thin: 1.1, done: 0.6}) : (mine ? {thick: 5, thin: 1.6, done: 0.75} : {thick: 3.4, thin: 1.1, done: 0.5});
       var gx = (t.gx || []).map(Number), iv = [];
       for (var gi = 0; gi + 1 < gx.length; gi += 2) {
         if (iv.length && gx[gi] - iv[iv.length - 1][1] < 0.5) iv[iv.length - 1][1] = Math.max(iv[iv.length - 1][1], gx[gi + 1]);
@@ -1041,16 +1043,16 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (full.length) {
         seg(act, 0, doneX, wd.thin); seg(pro, 0, doneX, wd.thin, true); seg(full, doneX, xmax, wd.done);
         iv.forEach(function (q) { seg(act, q[0], q[1], wd.thick); seg(pro, q[0], q[1], wd.thick, true); });
-        if (cushion) { var e = full[full.length - 1]; if (xmax - e.x > 1) paths.push({pts: [e, {x: xmax, pts: e.pts}], w: 0.8, op: 0.55}); }   // from Now straight across at its value
+        if (cushion || chop) { var e = full[full.length - 1]; if (xmax - e.x > 1) paths.push({pts: [e, {x: xmax, pts: e.pts}], w: 0.8, op: 0.55}); }   // from Now straight across at its value
       }
       var cn = t.count || {};
       series.push({k: t.team, name: teamName(t.team, false), color: teamColor(t.team), bold: mine, full: full, paths: paths,
         cells: [n1(t.now), n1(t.est_final), signed(cuNow[t.team]), chopPct(t.chop, !roomy())].concat(roomy() ? [t.pre != null ? n1(t.pre) : "", (cn.left || 0) + "·" + (cn["in"] || 0) + "·" + (cn.done || 0)] : [])});
     });
-    return lineChart("race-" + (cushion ? "c" : "p"), {w: w, h: innerWidth < 560 ? 330 : 400, series: series, wins: DOC.windows, nowX: nx, xmax: xmax, signed: cushion, zeroLabel: "Chop line",
-      fmt: cushion ? signed : n1, zoomable: true, idle: "Tap a team to pick out its line. Slide across the chart to read " + (cushion ? "Cushion" : "points") + " at any moment.",
-      heads: ["Now", "Final", "Cushion", "Chop"].concat(roomy() ? ["Proj", "L·I·D"] : []), vi: cushion ? 2 : 1,
-      aria: cushion ? "Each team's projected points above or below the chop line through the week" : "Points by team through the week, scored and projected"});
+    return lineChart("race-" + (chop ? "o" : cushion ? "c" : "p"), {w: w, h: innerWidth < 560 ? 330 : 400, series: series, wins: DOC.windows, nowX: nx, xmax: xmax, signed: cushion, zeroLabel: "Chop line",
+      fmt: chop ? pct0 : cushion ? signed : n1, zoomable: true, idle: "Tap a team to pick out its line. Slide across the chart to read " + (chop ? "chop chance" : cushion ? "Cushion" : "points") + " at any moment.",
+      heads: ["Now", "Final", "Cushion", "Chop"].concat(roomy() ? ["Proj", "L·I·D"] : []), vi: chop ? 3 : cushion ? 2 : 1,
+      aria: chop ? "Each team's chance of being chopped, in percent, through the week" : cushion ? "Each team's projected points above or below the chop line through the week" : "Points by team through the week, scored and projected"});
   }
   // One team's players through the week: thick during each one's game (solid scored, dashed projected), hair-thin around it.
   function teamChart(acct, w) {
@@ -1109,9 +1111,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 
   // ---------- the week as a chart, in its own section under the ladder ----------
   function renderTrend() {
-    var box = $("trend"), w = (box.clientWidth || 356) - 16;
-    box.innerHTML = '<div class="sech"><h2>Through the week</h2><span class="seg" role="group" aria-label="Chart the week by">' + [["points", "Points"], ["cushion", "Cushion"]].map(function (v) {
-      return '<button type="button" data-act="view" data-k="' + v[0] + '" aria-pressed="' + (S.view === v[0]) + '">' + v[1] + "</button>"; }).join("") + "</span></div>" + raceChart(S.view === "cushion", w);
+    var box = $("trend"), w = (box.clientWidth || 356) - 16, odds = hasChop(), view = S.view === "chop" && !odds ? "points" : S.view;   // Chop % waits for the feed to carry it
+    box.innerHTML = '<div class="sech"><h2>Through the week</h2><span class="seg" role="group" aria-label="Chart the week by">' + [["points", "Points"], ["cushion", "Cushion"]].concat(odds ? [["chop", "Chop %"]] : []).map(function (v) {
+      return '<button type="button" data-act="view" data-k="' + v[0] + '" aria-pressed="' + (view === v[0]) + '">' + v[1] + "</button>"; }).join("") + "</span></div>" + raceChart(view === "cushion", w, view === "chop");
   }
   // ---------- the race: the ladder ----------
   function renderRace() {
