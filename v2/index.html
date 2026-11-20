@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '23902678ad';</script>
+<script>window.CHOP_V2 = '1bf6f9b357';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -264,7 +264,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .cv .sec.hr{stroke:color-mix(in srgb,var(--chop-grid) 50%,var(--chop-fg))}
 .cv .div{stroke:var(--chop-muted);stroke-dasharray:3 4;stroke-width:1}
 .cv .nowln{stroke:var(--chop-fg);stroke-width:1.2}
-.cv .rule{stroke:var(--chop-fg);stroke-width:1;opacity:.7}
+.cv .rule{stroke:var(--yellow);stroke-width:2.5}
 .cv .kickzone{fill:var(--chop-fg);fill-opacity:.06}
 .cv .kickend{stroke:var(--chop-muted);stroke-opacity:.5;stroke-dasharray:3 4;stroke-width:1}
 .cv .kick{stroke:var(--chop-fg);stroke-width:1.5}
@@ -284,6 +284,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .lg button{all:unset;box-sizing:border-box;display:grid;column-gap:4px;align-items:baseline;width:100%;font-size:.78rem;padding:5px 4px;cursor:pointer;border-radius:6px;border-top:1px solid var(--chop-grid);color:var(--chop-muted)}
 .lg button .nm{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;color:color-mix(in srgb,var(--c) 88%,var(--chop-fg))}
 .lg button b{font-weight:700;color:var(--chop-fg)}.lg button b.pre{font-weight:400;color:var(--chop-muted)}
+.scrub .lg button b.v,.scrub .lg button b.v.pre{color:var(--yellow)}
 .lg button.bold .nm{font-weight:700}
 .lg button.dim{opacity:.35}
 .lg button.on{box-shadow:inset 0 0 0 var(--hair) var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border-top-color:transparent}
@@ -984,7 +985,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (px < c.ml || px > c.W - c.mr) return;
     S.scrubT = Date.now();
     var xv = c.a + (px - c.ml) / (c.W - c.ml - c.mr) * (c.b - c.a);
-    rule.setAttribute("x1", px); rule.setAttribute("x2", px); rule.style.display = "";
+    rule.setAttribute("x1", px); rule.setAttribute("x2", px); rule.style.display = ""; box.classList.add("scrub");
     var win = c.wins.find(function (w) { return xv >= +w.x0 && xv <= +w.x1; }), started = win && (win.kicks || []).filter(function (k) { return xv >= k.x; }).pop();
     var head = box.querySelector(".rdh");
     if (head) head.textContent = (win ? win.label : "Between games") + (started ? " · " + shortTime(started.t) + " games on" : "") + (c.nowX != null && xv > c.nowX ? " · projected" : "") + " · at this point";
@@ -997,7 +998,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     document.querySelectorAll("svg.cv .rule").forEach(function (rule) {
       if (rule.style.display === "none") return;
       rule.style.display = "none";
-      var svg = rule.parentNode, c = CH[svg.getAttribute("data-ch")], box = svg.parentNode.parentNode; if (!c) return;
+      var svg = rule.parentNode, c = CH[svg.getAttribute("data-ch")], box = svg.parentNode.parentNode; box.classList.remove("scrub"); if (!c) return;
       var head = box.querySelector(".rdh"); if (head) head.textContent = c.idle;
       box.querySelectorAll(".lg button").forEach(function (b) {
         var s = c.series.find(function (s) { return s.k === b.getAttribute("data-k"); });
@@ -1323,6 +1324,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   });
   document.addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("svg.cv")) scrub(e); else unscrub(); }, true);
   document.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || e.buttons || e.pressure > 0) scrub(e); });
+  // Lifting the finger (or the mouse leaving the chart) puts the list back to its own numbers.
+  document.addEventListener("pointerup", function (e) { if (e.pointerType !== "mouse") unscrub(); }, true);
+  document.addEventListener("pointercancel", unscrub, true);
+  document.addEventListener("pointerout", function (e) { var svg = e.pointerType === "mouse" && e.target.closest && e.target.closest("svg.cv"); if (svg && !(e.relatedTarget && svg.contains(e.relatedTarget))) unscrub(); });
   document.addEventListener("contextmenu", function (e) { if (e.target.closest && e.target.closest("svg.cv")) e.preventDefault(); });
   var lastW = innerWidth;
   addEventListener("resize", function () { if (innerWidth !== lastW) { lastW = innerWidth; if (DOC) render(); } });
