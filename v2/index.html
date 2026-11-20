@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '9aa00aeb73';</script>
+<script>window.CHOP_V2 = '85ac4398e9';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -212,6 +212,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .gmx .tag{margin-right:.3em}
 .tick.stopped{opacity:.55}
 .b-m{display:none}
+.b-opp{color:var(--green);font-weight:600}
 .pr3{font-size:.72rem;margin-top:5px;line-height:1.45;color:var(--chop-muted)}
 .pr3,.tmh .meta{overflow-wrap:anywhere}
 .pr3{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
@@ -754,7 +755,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   function ballHTML(b) {                               // ◄40 • 3&2: the arrow before the yard line on the other team's side, after it on his own
     var nth = ["", "1st", "2nd", "3rd", "4th"][b.down], goal = b.togo === "G", where = b.where === "mid" ? "opp" : b.where;
-    function yd(t) { return b.rz ? tag(t, "red") : esc(t); }
+    function yd(t) { return b.rz ? tag(t, "red") : where === "opp" ? '<span class="b-opp">' + esc(t) + "</span>" : esc(t); }   // red zone: red tag; past the 50: green
     var title = nth + " & " + (goal ? "goal" : b.togo) + (b.yd === 50 ? " at midfield" : " on " + (where === "opp" ? "the other team's " : "his own ") + b.yd);
     return '<span class="ball" title="' + esc(title) + '"><span class="b-s">' + yd(where === "opp" ? "◄" + b.yd : where === "own" ? b.yd + "►" : "" + b.yd) + BUL + b.down + "&amp;" + (goal ? "G" : esc(b.togo)) + "</span>" +
       '<span class="b-m">' + yd(where === "opp" ? "◄" + b.yd + " yrd" : where === "own" ? b.yd + " yrd ►" : b.yd + " yrd") + BUL + nth + " &amp; " + (goal ? "goal" : esc(b.togo)) + "</span></span>";
