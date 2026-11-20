@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'dc2be90439';</script>
+<script>window.CHOP_V2 = 'aec5aeb88b';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -48,7 +48,7 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .st1{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.8125rem;color:var(--chop-muted);margin-top:6px}
 #when.set{color:var(--chop-fg);font-weight:700}   /* the countdown: bold once every QUES/DOUB in the next game is settled */
 #when{font-variant-numeric:tabular-nums}
-.st2{font-size:.75rem;color:var(--chop-muted);margin-top:3px}
+.st2{font-size:.75rem;color:var(--chop-muted);margin-top:3px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
 .live{display:inline-flex;align-items:center;gap:5px;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:#fff;background:#d62728;border-radius:4px;padding:2px 7px}
 .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
@@ -317,8 +317,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     <span class="mine" id="mine" hidden><label for="follow">Your team</label><select id="follow" aria-label="Your team" title="Your team"></select></span></div>
   <div class="stw"><div class="stl">
     <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span></div>
-    <div class="st2" id="when2"></div></div>
-    <span class="acts"><button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button><button type="button" class="btn" id="update" data-act="update">Update</button></span></div>
+    <div class="st2"><span id="when2"></span><button type="button" class="btn" id="update" data-act="update">Update</button></div></div>
+    <span class="acts"><button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button></span></div>
   </div>
   <div class="panel" id="redact" hidden></div>
   <p class="wait" id="wait">Waiting for the first scores. The page fills in as soon as the next update lands.</p>
