@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '44e9060a91';</script>
+<script>window.CHOP_V2 = '356ca6967e';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -797,6 +797,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   // The heading over a list's two number columns. Only a player whose game is on shows Now and Final;
   // before kickoff the lone number is his Projected, and after it the two are his final score and his Projected.
+  function zoomKey(id) { return id.indexOf("race-") === 0 ? "race" : id; }   // Points, Cushion and Chop % share one game-window choice; every other chart keeps its own
   function numsHead(rows) {
     return rows.some(function (r) { return r.game && !isRedacted(r) && !outThisWeek(r) && !goneOut(r) && r.game.st === "in"; }) ? "Now · Final" : "Final · Proj";
   }
@@ -912,8 +913,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
   function lineChart(id, c) {
     var W = Math.max(280, Math.round(c.w)), H = c.h || 300, m = {l: 30, r: 8, t: 10, b: 30};
-    var wins = (c.wins || []).filter(function (w) { return w.kind === "window"; }), z = S.zoom[id];
-    if (z && (z[1] > c.xmax + 1 || !c.zoomable)) z = S.zoom[id] = null;
+    var wins = (c.wins || []).filter(function (w) { return w.kind === "window"; }), z = S.zoom[zoomKey(id)];
+    if (z && (z[1] > c.xmax + 1 || !c.zoomable)) z = S.zoom[zoomKey(id)] = null;
     var a = z ? z[0] : 0, b = z ? z[1] : c.xmax, sel = S.sel[id] || [];
     var lo = Infinity, hi = -Infinity;
     c.series.forEach(function (s) {
@@ -1314,7 +1315,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (act === "sel") { var set = S.sel[ch] = S.sel[ch] || [], at = set.indexOf(k); if (at < 0) set.push(k); else set.splice(at, 1); if (ch.indexOf("game-") === 0) renderGames(); else renderRace(); return; }
     if (act === "zoom") {
       var c = CH[ch], w = c && k !== "" ? c.wins[+k] : null;
-      S.zoom[ch] = w ? [+w.x0, +w.x1] : null; renderRace(); return;
+      S.zoom[zoomKey(ch)] = w ? [+w.x0, +w.x1] : null; renderRace(); return;
     }
     if (act === "story") { S.story = !S.story; renderStory(); return; }
     if (act === "old-story") { S.stories[k] = !S.stories[k]; renderStories(); return; }
