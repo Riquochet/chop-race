@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '1bf6f9b357';</script>
+<script>window.CHOP_V2 = '9aa00aeb73';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -1327,6 +1327,22 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   // Lifting the finger (or the mouse leaving the chart) puts the list back to its own numbers.
   document.addEventListener("pointerup", function (e) { if (e.pointerType !== "mouse") unscrub(); }, true);
   document.addEventListener("pointercancel", unscrub, true);
+  // A thumb sliding along a chart drifts up and down. Once a drag starts sideways (or after a short hold) the page stays put
+  // until the thumb lifts, so the reading is not lost to a scroll; a drag that starts up or down scrolls the page as usual.
+  var TS = null;
+  document.addEventListener("touchstart", function (e) {
+    var t = e.touches[0]; TS = e.touches.length === 1 && e.target.closest && e.target.closest("svg.cv") ? {x: t.clientX, y: t.clientY, t: e.timeStamp, lock: null} : null;
+  }, {passive: true});
+  document.addEventListener("touchmove", function (e) {
+    if (!TS || e.touches.length !== 1) return;
+    var t = e.touches[0];
+    if (TS.lock == null) TS.lock = e.timeStamp - TS.t > 250 || Math.abs(t.clientX - TS.x) >= 0.7 * Math.abs(t.clientY - TS.y);
+    if (!TS.lock) return;
+    if (e.cancelable) e.preventDefault();
+    scrub({target: e.target, clientX: t.clientX});
+  }, {passive: false});
+  document.addEventListener("touchend", function () { TS = null; }, {passive: true});
+  document.addEventListener("touchcancel", function () { TS = null; }, {passive: true});
   document.addEventListener("pointerout", function (e) { var svg = e.pointerType === "mouse" && e.target.closest && e.target.closest("svg.cv"); if (svg && !(e.relatedTarget && svg.contains(e.relatedTarget))) unscrub(); });
   document.addEventListener("contextmenu", function (e) { if (e.target.closest && e.target.closest("svg.cv")) e.preventDefault(); });
   var lastW = innerWidth;
