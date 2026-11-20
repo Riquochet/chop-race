@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '6f00fcd3e3';</script>
+<script>window.CHOP_V2 = '23902678ad';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -119,10 +119,14 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .stw .st1{flex:1 1 auto}
 .stw .st2{order:3;flex:0 0 100%}
 .stw .acts{display:flex;align-items:center;gap:4px;margin-left:auto;margin-top:6px}
-@media (min-width:700px){                           /* room for both: the buttons sit at the right on the Next kickoff line's baseline */
-  .stw{flex-wrap:nowrap;align-items:flex-end;align-items:last baseline}
-  .stl{display:block;min-width:0}
-  .stw .acts{margin-top:0}
+@media (min-width:700px){                           /* room for both: at the right, Your team on the kickoff line's baseline and the buttons on the Next kickoff line's */
+  .hd{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:12px;row-gap:4px}
+  .hd .top,.hd .stw,.hd .stl{display:contents}
+  .hd h1{grid-column:1/-1}
+  .hd .st1{grid-column:1;grid-row:2;margin-top:0}
+  .hd .st2{grid-column:1;grid-row:3;margin-top:0}
+  .hd .top .mine{grid-column:2;grid-row:2;justify-self:end;margin-left:0}
+  .hd .stw .acts{grid-column:2;grid-row:3;justify-self:end;margin:0}
 }   /* Redact and Update, right end of the status line, under Your team */
 .top h1{white-space:nowrap}
 .top .mine label{display:none}                          /* a phone has no room: the empty choice reads "Your team…" instead */
@@ -306,12 +310,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 }
 </style>
 <div class="app" id="app">
+  <div class="hd">
   <div class="top"><h1>The Chopping Block</h1>
     <span class="mine" id="mine" hidden><label for="follow">Your team</label><select id="follow" aria-label="Your team" title="Your team"></select></span></div>
   <div class="stw"><div class="stl">
     <div class="st1"><span class="tag blue" id="week" hidden></span><span class="live" id="live" hidden>LIVE</span><span id="when">—</span></div>
     <div class="st2" id="when2"></div></div>
     <span class="acts"><button type="button" class="btn redact" id="redact-btn" data-act="redact-open" aria-expanded="false">Redact</button><button type="button" class="btn" id="update" data-act="update">Update</button></span></div>
+  </div>
   <div class="panel" id="redact" hidden></div>
   <p class="wait" id="wait">Waiting for the first scores. The page fills in as soon as the next update lands.</p>
   <div id="body" hidden>
