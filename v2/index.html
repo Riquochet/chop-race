@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '33302098ab';</script>
+<script>window.CHOP_V2 = '840989561c';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -338,7 +338,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <details class="help"><summary>About the race, and how to read this page</summary>
     <p>Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <b id="alive">—</b>. This page is the week's race, from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe.</p>
     <p><b>The box at the top</b> answers the one question: who is on the block right now, by how much, and what it needs. The colored strip under it is the whole league's chance of being chopped, one piece per team, widest first. Pick <b>your team</b> there once and the page remembers it on this device.</p>
-    <p><b>The ladder board</b> lists the teams worst first. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is red for the team on the block (last on the ladder board, the lowest Final); for the others it is that chance as a color: yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to beat it, yellow on track to miss it by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
+    <p><b>The ladder board</b> lists the teams worst first: by Chop, the highest at the top, then the lower Final, the fewer points so far, the lower Projected. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is red for the team on the block (the top of the ladder board, the highest Chop); for the others it is that chance as a color: yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to beat it, yellow on track to miss it by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
     <p><b>Players.</b> Under his bar, at the right, all week: his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. Tap his NFL team to jump to that game. The numbers at the right are Now and Final (the heading reads Final · Proj when no player in the list is in a game); before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Under the bar, at the left: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off, then the game's score. Tap a player for the rest: his stats from the game, and both projections beside Sleeper's.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
@@ -381,7 +381,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function star(a) { return a === myTeam() ? " ★" : ""; }   // beside Your team's name wherever it is written
   function teamTag(a) { return tag(teamName(a, false) + star(a), "team", teamName(a, true), "--tc:" + teamColor(a)); }
   // One order for the whole page, worst first: the block card and the ladder board both read it, so they cannot disagree.
-  function ladder() { return teams().slice().sort(function (a, b) { return +b.rank - +a.rank; }); }
+  // By our Chop% (highest first); then the lower Final, the lower points so far, the lower Projected.
+  function worse(a, b) { return (+b.chop || 0) - (+a.chop || 0) || (+a.est_final || 0) - (+b.est_final || 0) || (+a.now || 0) - (+b.now || 0) || (+a.pre || 0) - (+b.pre || 0); }
+  function ladder() { return teams().slice().sort(worse); }
+  function spot(a) { var L = ladder(); for (var i = 0; i < L.length; i++) if (L[i].team === a) return L.length - i; return 0; }   // 1 = safest
   // Cushion: how far a team's Final sits above the team on the block; for that team, how far behind the next one up.
   function cushions() {
     var lo = teams().map(function (t) { return +t.est_final; }).sort(function (a, b) { return a - b; }), out = {};
@@ -389,11 +392,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     return out;
   }
   function signed(v) { return (v > 0.05 ? "+" : v < -0.05 ? "−" : "") + Math.abs(v).toFixed(1); }
-  // The risk color at a row's left edge: red = on the block (last on the ladder, the lowest Final); for the rest, from OUR Chop%:
+  // The risk color at a row's left edge: red = on the block (last on the ladder, the highest Chop%); for the rest, from OUR Chop%:
   // yellow 10% or more, green under 10%, blue none.
   function chopRisk(t) {
     var last = ladder()[0], c = +t.chop;
-    if (last && t.team === last.team && teams().length > 1) return ["var(--red)", "On the block: the lowest Final"];
+    if (last && t.team === last.team && teams().length > 1) return ["var(--red)", "On the block: the most likely to be chopped"];
     if (c >= 10) return ["var(--yellow)", "In danger: 10% or more to be chopped"];
     if (c >= 0.05) return ["var(--green)", "Probably safe: under 10% to be chopped"];
     return ["var(--blue)", "No chance of being chopped"];
@@ -586,7 +589,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function renderMine() {                               // the picker at the right of the title line; left alone while its list is open
     var box = $("mine"), sel = $("follow"), T = teams();
     box.hidden = !T.length; if (!T.length || document.activeElement === sel) return;
-    var opts = T.slice().sort(function (a, b) { return b.rank - a.rank; }).map(function (t) { return t.team; });
+    var opts = ladder().map(function (t) { return t.team; });
     if (S.follow && opts.indexOf(S.follow) < 0) opts.push(S.follow);                       // chosen, since chopped: still his
     var h = '<option value="">' + (S.follow ? "None" : "Your team…") + "</option>" + opts.map(function (a) {
       return '<option value="' + esc(a) + '"' + (a === S.follow ? " selected" : "") + ">" + esc(teamName(a, false)) + "</option>"; }).join("");
@@ -629,7 +632,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var box = $("hero");
     var T = ladder();
     if (!T.length) { box.innerHTML = ""; return; }
-    var chop = T[0], next = T[1], gap = next ? next.est_final - chop.est_final : 0, cu = cushions();
+    // The team on the block, and the one it has to beat: the lowest Final among the rest.
+    var chop = T[0], next = T.slice(1).sort(function (a, b) { return a.est_final - b.est_final || a.now - b.now; })[0], cu = cushions();
     var allPost = T.every(function (t) { return tState(t) === "post"; }), allPre = T.every(function (t) { return tState(t) === "pre"; });
     function nm(t) { return '<span class="nm" style="--tc:' + teamColor(t.team) + '">' + esc(teamName(t.team, false) + star(t.team)) + "</span>"; }
     function left(t) { var c = t.count || {}; return (c.left || 0) + (c["in"] || 0); }
@@ -667,7 +671,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (me) {
       var c = cu[me.team], onBlock = me.team === chop.team;
       h += '<div class="me"><span class="mt" style="--tc:' + teamColor(me.team) + '">' + esc(teamName(me.team, false) + star(me.team)) + "</span>" +
-        "<span>" + ordinal(+me.rank) + " of " + teams().length + BUL + (allPost ? n1(me.now) + " points" : "<b>" + signed(c) + "</b> " + (onBlock ? "behind" : "cushion") + BUL + "chop " + chopPct(me.chop)) + "</span></div>";
+        "<span>" + ordinal(spot(me.team)) + " of " + teams().length + BUL + (allPost ? n1(me.now) + " points" : "<b>" + signed(c) + "</b> " + (c < 0 ? "behind" : "cushion") + BUL + "chop " + chopPct(me.chop)) + "</span></div>";
     }
     box.innerHTML = h;
   }
@@ -1170,7 +1174,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         return '<span><b style="color:' + clubColor(r.club) + '">' + esc(r.short) + "</b> " + (isRedacted(r) ? '<span class="mut">hidden</span>' : n1(r.now)) + "</span>"; }).join("") + "</span>";
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
-        '<span class="pl"><i class="car"></i><span>' + esc(t.rank) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
+        '<span class="pl"><i class="car"></i><span>' + spot(t.team) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
         '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
         teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + "</button>";
       if (open) h += teamBody(t, R, w - 21, risk);
@@ -1512,7 +1516,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     });
     var co = chopOdds(T, "est_final"), cs = chopOdds(T, "est_sleeper");
     T.forEach(function (t) { t.chop = round1(co[t.team]); t.chop_sleeper = round1(cs[t.team]); });
-    T.slice().sort(function (a, b) { return b.est_final - a.est_final || b.now - a.now; }).forEach(function (t, i) { t.rank = i + 1; });
+    ladder().forEach(function (t, i) { t.rank = T.length - i; });
   }
   function chopOdds(T, key) {                          // chop_chart.chop_odds: the share of 20,000 simulated finishes each team ends last
     var n = 20000, out = {}, seed = 7;
