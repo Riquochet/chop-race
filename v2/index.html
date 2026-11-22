@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '81994616ed';</script>
+<script>window.CHOP_V2 = 'ba83f055f1';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -149,13 +149,13 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
 .olds .story{border-radius:10px;margin-top:6px}
 /* the ladder */
-.lh{display:grid;grid-template-columns:28px minmax(0,1fr) auto 2.9rem;column-gap:6px;padding:0 8px 2px 7px;font-size:.68rem;color:var(--chop-muted)}
+.lh{display:grid;grid-template-columns:28px minmax(0,1fr) auto var(--cpw,2.9rem);column-gap:6px;padding:0 8px 2px 7px;font-size:.68rem;color:var(--chop-muted)}
 .lh span:nth-child(n+3){text-align:right}
 .tm{position:relative;border-radius:10px;margin:3px 0;--rowbg:transparent}
 .tm::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:3px;border-radius:1.5px;background:var(--risk);pointer-events:none}
 .tm.open{background:color-mix(in srgb,var(--row) 9%,transparent);box-shadow:inset 0 0 0 var(--hair) color-mix(in srgb,var(--row) 75%,transparent)}
 .tm.open::before{left:0;top:8px;bottom:8px}
-.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto 2.9rem;column-gap:6px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto var(--cpw,2.9rem);column-gap:6px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 /* The top line's four cells sit at the top of the row with one line height, and the rank is a smaller span on a line whose
    strut has the name's font size, so the rank, name, Final and Chop share one baseline in every browser (grid baseline
    alignment of a clipped cell differs between WebKit and Chrome). */
@@ -1164,6 +1164,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var box = $("race"), T = ladder();   // worst first
     var w = (box.clientWidth || 356) - 16, me = myTeam();
     var h = '<div class="sech"><h2>The ladder board</h2></div>';
+    // The Chop column is only as wide as the widest number in it, so it sits close to Final: "36%" most of the week, "100%" at the end.
+    box.style.setProperty("--cpw", T.some(function (t) { return +t.chop >= 99.5; }) ? "2.9rem" : "2.3rem");
     renderTrend();
     var top = 10, chopX = Infinity, cu = cushions();
     T.forEach(function (t) { top = Math.max(top, +t.est_final || 0, +t.pre || 0, +t.now || 0); chopX = Math.min(chopX, +t.est_final); });
