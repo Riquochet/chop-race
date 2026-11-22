@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '49a8b6a791';</script>
+<script>window.CHOP_V2 = '4661c4f031';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -837,7 +837,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (onRow.length || gb) l3 = '<div class="pr3">' + (gb ? '<span class="l"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + (onRow.length ? '<span class="r">' + onRow.join(BUL) + "</span>" : "") + "</div>";
     if (open) {
       var kv = [];
-      if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper (locked at the week’s first kickoff)"]);
+      if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper"]);
       if (gst !== "post" && !outThisWeek(r)) kv.push(["Final", "<b>" + n1(r.est_final) + "</b> • " + n1(r.est_sleeper) + " Sleeper"]);
       if (r.game && r.game.kick) kv.push(["Game", esc(gameName(r)) + " · " + esc(windowName(r.game.kick)) + " · " + esc(clock(r.game.kick))]);
       else if (r.club) kv.push(["Game", "No game this week"]);
