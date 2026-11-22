@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '4661c4f031';</script>
+<script>window.CHOP_V2 = '2bc24a0920';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -149,13 +149,13 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;text-decoration:underline;text-decoration-color:var(--ref);text-decoration-thickness:2px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent}
 .olds .story{border-radius:10px;margin-top:6px}
 /* the ladder */
-.lh{display:grid;grid-template-columns:28px minmax(0,1fr) auto 3.3rem;column-gap:8px;padding:0 8px 2px 7px;font-size:.68rem;color:var(--chop-muted)}
+.lh{display:grid;grid-template-columns:28px minmax(0,1fr) auto 2.9rem;column-gap:6px;padding:0 8px 2px 7px;font-size:.68rem;color:var(--chop-muted)}
 .lh span:nth-child(n+3){text-align:right}
 .tm{position:relative;border-radius:10px;margin:3px 0;--rowbg:transparent}
 .tm::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:3px;border-radius:1.5px;background:var(--risk);pointer-events:none}
 .tm.open{background:color-mix(in srgb,var(--row) 9%,transparent);box-shadow:inset 0 0 0 var(--hair) color-mix(in srgb,var(--row) 75%,transparent)}
 .tm.open::before{left:0;top:8px;bottom:8px}
-.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto 3.3rem;column-gap:8px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tmh{all:unset;box-sizing:border-box;display:grid;grid-template-columns:28px minmax(0,1fr) auto 2.9rem;column-gap:6px;row-gap:4px;align-items:baseline;width:100%;padding:8px 8px 9px 7px;cursor:pointer;-webkit-tap-highlight-color:transparent}
 /* The top line's four cells sit at the top of the row with one line height, and the rank is a smaller span on a line whose
    strut has the name's font size, so the rank, name, Final and Chop share one baseline in every browser (grid baseline
    alignment of a clipped cell differs between WebKit and Chrome). */
@@ -170,6 +170,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tmh .cp{font-weight:700;text-align:right;white-space:nowrap;color:color-mix(in srgb,var(--risk) 85%,var(--chop-fg))}
 .slp{font-weight:400;color:var(--chop-muted);font-size:.72rem;margin-left:.25em}
 .tmh .slp{display:none}
+.nw{display:inline-block;min-width:2.5rem;margin-right:.45em;text-align:right;font-weight:400;font-size:.75rem;color:var(--chop-muted)}.lh .nw{font-size:inherit}
 .tmh .trk,.tmh .meta,.tmh .onf{grid-column:2/-1}
 .tmh .meta{font-size:.72rem;color:var(--chop-muted);line-height:1.4}
 .tmh .meta b{color:var(--chop-fg);font-weight:600}
@@ -338,9 +339,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   <details class="help"><summary>About the race, and how to read this page</summary>
     <p>Twenty teams started the season, and every week the lowest scorer is chopped: out of the league, its roster dumped onto the waiver wire. Still standing: <b id="alive">—</b>. This page is the week's race, from Thursday's kickoff to Monday's final whistle. Whoever is at the bottom when Monday night ends gets the axe.</p>
     <p><b>The box at the top</b> answers the one question: who is on the block right now, by how much, and what it needs. The colored strip under it is the whole league's chance of being chopped, one piece per team, widest first. Pick <b>your team</b> there once and the page remembers it on this device.</p>
-    <p><b>The ladder board</b> lists the teams worst first: by Chop, the highest at the top, then the lower Final, the fewer points so far, the lower Projected. Final is the points so far plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is red for the team on the block (the top of the ladder board, the highest Chop); for the others it is that chance as a color: yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to beat it, yellow on track to miss it by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
+    <p><b>The ladder board</b> lists the teams worst first: by Chop, the highest at the top, then the lower Final, the fewer points so far, the lower Projected. Final is the points so far (the small gray number beside it) plus our prediction for the rest; Chop is the chance of finishing last (20,000 simulated finishes). The thin bar at the left edge is red for the team on the block (the top of the ladder board, the highest Chop); for the others it is that chance as a color: yellow 10% or more, green under 10%, blue no chance. On each team's bar the solid part is points already scored, the pale part runs on to Final, the <b>purple line</b> is Projected and the <b>red line</b> is the chop line: the Final of the team now heading out. The solid part's color is the pace against Projected: green on track to beat it, yellow on track to miss it by a point or less, red by more, blue already past it. Cushion is how far a team's Final sits above the team on the block (for the team on the block, how far behind the next one). Left, in and done count a team's starters: still to play, in a game now, finished or not playing. While games are on, each team's line names its starters on the field with their points.</p>
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
-    <p><b>Players.</b> Under his bar, at the right, until his game starts (after that, in the roll-down under his stats): his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. Tap his NFL team to jump to that game. The numbers at the right are Now and Final (the heading reads Final · Proj when no player in the list is in a game); before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Under the bar, at the left: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off, then the game's score. Tap a player for the rest: his stats from the game, his pre-game data, and both projections beside Sleeper's.</p>
+    <p><b>Players.</b> Under his bar, at the right, until his game starts (after that, in the roll-down under his stats): his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. Tap his NFL team to jump to that game. The numbers at the right are Now and Final (the heading reads Final · Proj when no player in the list is in a game); before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Under the bar, at the left: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off; the game's score is at the right. Tap a player for the rest: his stats from the game, his pre-game data, and both projections beside Sleeper's.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
     <p><b>Through the week</b>, under the ladder board, charts the week by <b>Points</b>, by <b>Cushion</b> or by <b>Chop %</b> (each team's chance of being chopped as the week went): solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
@@ -793,8 +794,12 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var h = g.st === "post" ? tag("FINAL", "gray") : clockHTML(g);
     if (g.st === "in" && g.poss && g.poss.club === r.club) h += BUL + ballHTML(g.poss);
     else if (g.st === "in" && g.kickoff) h += BUL + kickHTML(g.kickoff);
-    if (g.pts != null) h += (g.st === "post" ? " " : BUL) + '<span class="sc">' + finalScore(r) + "</span>";   // the score, the leader first
     return h;
+  }
+  function gameScore(r, ctx) {                         // the game's score, the leader first: at the right of his game line
+    var g = r.game;
+    if (!g || g.st === "pre" || g.pts == null || ctx === "g" || goneOut(r) || outThisWeek(r)) return "";
+    return '<span class="sc">' + finalScore(r) + "</span>";
   }
 
   // ---------- one player's row, the same everywhere ----------
@@ -833,8 +838,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     if (sub) bits.push("<span>" + dots(sub) + "</span>");
     if (r.bye) bits.push(tag(r.bye, "blue", "Bye in week " + r.bye));
     var hardBar = gst === "pre" && r.hard && !outThisWeek(r) ? '<span class="hm" title="' + ordinal(r.hard) + " of 32 against " + esc(r.pos) + 's: 1st hardest (red), 32nd easiest (green)"><i class="line"></i><i class="mark" style="left:calc(3.5px + (100% - 7px) * ' + ((r.hard - 1) / 31).toFixed(3) + ')"></i></span>' : "";
-    var began = !!gst && gst !== "pre" && !outThisWeek(r), onRow = began ? [] : bits;   // once his game starts, the pre-game data moves into the roll-down
-    if (onRow.length || gb) l3 = '<div class="pr3">' + (gb ? '<span class="l"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + (onRow.length ? '<span class="r">' + onRow.join(BUL) + "</span>" : "") + "</div>";
+    var began = !!gst && gst !== "pre" && !outThisWeek(r), gs = gameScore(r, ctx.charAt(0));
+    var right = began ? gs : bits.join(BUL);          // once his game starts the score is at the right, and the pre-game data moves into the roll-down
+    if (right || gb) l3 = '<div class="pr3">' + (gb ? '<span class="l"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + (right ? '<span class="r">' + right + "</span>" : "") + "</div>";
     if (open) {
       var kv = [];
       if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper"]);
@@ -1161,7 +1167,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var top = 10, chopX = Infinity, cu = cushions();
     T.forEach(function (t) { top = Math.max(top, +t.est_final || 0, +t.pre || 0, +t.now || 0); chopX = Math.min(chopX, +t.est_final); });
     top = Math.ceil(top * 1.02 / 10) * 10;
-    h += '<div class="lh"><span>#</span><span>Team</span><span>Final' + (roomy() ? " • Sleeper" : "") + "</span><span>Chop" + (roomy() ? " • Sleeper" : "") + "</span></div>";
+    h += '<div class="lh"><span>#</span><span>Team</span><span><small class="nw">Now</small>Final' + (roomy() ? " • Sleeper" : "") + "</span><span>Chop" + (roomy() ? " • Sleeper" : "") + "</span></div>";
     T.forEach(function (t) {
       var open = !!S.team[t.team], risk = chopRisk(t), st = tState(t), c = t.count || {}, R = (DOC.rosters || {})[t.team], nm = teamName(t.team, false);
       var meta = [];
@@ -1176,7 +1182,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
         '<span class="pl"><i class="car"></i><span>' + spot(t.team) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
-        '<span class="fin">' + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
+        '<span class="fin"><small class="nw">' + (st === "pre" ? "" : n1(t.now)) + "</small>" + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
         teamBar(t, top, chopX) + '<span class="meta">' + meta.join(BUL) + "</span>" + onf + "</button>";
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
