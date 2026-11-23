@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '3800564ff0';</script>
+<script>window.CHOP_V2 = '8597b9aefc';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -1188,33 +1188,37 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
     });
-    h += '<p class="note">Worst first. Bars: solid = points so far, pale = on to Final (where it ends), <b class="purple">purple line</b> = Projected, <b class="red">red line</b> = the chop line. Tap a team for its players.</p>';
+    h += '<p class="note">Worst first. Bars: solid = points so far, pale = on to Final (where it ends), <b class="purple">purple line</b> = Projected, <b class="red">red line</b> = the chop line. Tap a team for its players.</p><p class="note"><b>clear / behind</b>: Final against the chop line. <b>need</b>: points still to score to reach it, of what its players left are projected for. <b>banked</b>: already that far past it. <b>catch</b>: what the nearest team behind a finished team must still score to pass it, of what it is projected for. <b>vs proj</b>: Final against Projected.</p>';
     box.innerHTML = h; flash();
   }
-  // A ladder row's first line: where the team stands and what would change it, in one sentence, from our numbers only.
-  // Leads with the cushion (Final against the chop line), or Safe / Chopped once nothing left to play can change it.
+  // A ladder row's first line: stats only, from our numbers, picked to still mean something late in the week.
+  //   +9.3 clear / behind   Final against the chop line (for the lowest team, against the next one up)
+  //   need 13.7 of 23.0     points it still has to score to reach that line, of what we project its players left will score
+  //   banked +13.6          already that far past the line with players still to come
+  //   catch 54.5 of 2.7     it is finished: what the team chasing it must score to pass, of what we project for that team
+  //   +4.2 vs proj          Final against the Projected it started the week with
+  // Safe / Chopped lead the line once nothing left to play can change it.
   function verdict(t, cu) {
     var T = teams(), others = T.filter(function (x) { return x !== t; }), d = cu[t.team] || 0, mine = +t.now || 0;
     if (!others.length) return "";
     function left(x) { var k = x.count || {}; return (k.left || 0) + (k["in"] || 0); }
-    function nm(x) { return esc(teamName(x.team, false) + star(x.team)); }
-    var lead = "<b>" + signed(d) + "</b> " + (d < 0 ? "behind" : "clear"), n = left(t);
-    if (T.every(function (x) { return tState(x) === "pre"; })) return "Projected <b>" + n1(t.pre != null ? t.pre : t.est_final) + "</b>" + BUL + lead;
-    if (T.every(function (x) { return tState(x) === "post"; })) return d < 0 ? '<b class="red">Chopped</b>' + BUL + "finished " + n1(-d) + " behind" : '<b class="green">Safe</b>' + BUL + "finished " + n1(d) + " clear";
+    function st(v, lab, before) { return before ? lab + " <b>" + v + "</b>" : "<b>" + v + "</b> " + lab; }
+    var lead = st(signed(d), d < 0 ? "behind" : "clear"), wk = t.pre != null ? st(signed(+t.est_final - +t.pre), "vs proj") : "", n = left(t);
+    function line() { return [].slice.call(arguments).filter(Boolean).join(BUL); }
+    if (T.every(function (x) { return tState(x) === "pre"; })) return line(st(n1(t.pre != null ? t.pre : t.est_final), "Projected", true), lead);
+    var safe = '<b class="green">Safe</b>', out = '<b class="red">Chopped</b>';
+    if (T.every(function (x) { return tState(x) === "post"; })) return line(d < 0 ? out : safe, lead, wk);
     // A finished team already under this one's points: it cannot be last.
-    var under = others.filter(function (x) { return !left(x) && +x.now < mine; }).sort(function (a, b) { return a.now - b.now; })[0];
-    if (under) return '<b class="green">Safe</b>' + BUL + "past " + nm(under) + "’s final " + n1(under.now);
+    if (others.some(function (x) { return !left(x) && +x.now < mine; })) return line(safe, lead, wk);
     var low = others.slice().sort(function (a, b) { return a.est_final - b.est_final || a.now - b.now; })[0];   // the lowest Final among the rest
     if (!n) {                                        // finished: it is down to the teams that have not passed it yet
       var chase = others.filter(function (x) { return left(x) && +x.now <= mine; }).sort(function (a, b) { return a.est_final - b.est_final; })[0];
-      if (!chase) return '<b class="red">Chopped</b>' + BUL + "every team has passed " + n1(mine);
-      return lead + BUL + chaser(chase);
+      if (!chase) return line(out, lead, wk);
+      return line(lead, "catch <b>" + n1(mine - chase.now) + "</b> of " + n1(Math.max(0, chase.est_final - chase.now)), wk);
     }
-    var need = +low.est_final - mine, proj = Math.max(0, +t.est_final - mine);
-    if (need <= 0 && +t.est_final > +low.est_final) return lead + BUL + "already past " + (low === ladder()[0] ? "the block" : nm(low)) + "’s " + n1(low.est_final);   // banked more than the lowest team is heading for
-    return lead + BUL + "needs " + n1(Math.max(0, need)) + ", proj " + n1(proj);   // what it must still score to reach the chop line, beside what we project it will
-    // "the block needs 41.7, proj 2.7": what the team chasing this one must still score to pass it, beside what we project for it
-    function chaser(x) { return (x === ladder()[0] ? "the block" : nm(x)) + " needs " + n1(mine - x.now) + ", proj " + n1(Math.max(0, x.est_final - x.now)); }
+    var need = +low.est_final - mine;
+    if (need <= 0) return line(lead, st(signed(-need), "banked", true), wk);
+    return line(lead, "need <b>" + n1(need) + "</b> of " + n1(Math.max(0, +t.est_final - mine)), wk);
   }
   function teamBody(t, R, w, risk) {
     var st = tState(t);
