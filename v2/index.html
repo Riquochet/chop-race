@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'caa913417f';</script>
+<script>window.CHOP_V2 = 'e778ba90bc';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -1174,6 +1174,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     top = Math.ceil(top * 1.02 / 10) * 10;
     h += '<div class="lh"><span>#</span><span>Team</span><span><small class="nw">Now</small>Final' + (roomy() ? " • Sleeper" : "") + "</span><span>Chop" + (roomy() ? " • Sleeper" : "") + "</span></div>";
     T.forEach(function (t) {
+      // A finished team whose points so far, Final and Sleeper's Final are one number shows it once.
+      var k0 = t.count || {}, one = !k0.left && !k0["in"] && n1(t.now) === n1(t.est_final) && n1(t.est_final) === n1(t.est_sleeper);
       var open = !!S.team[t.team], risk = chopRisk(t), st = tState(t), c = t.count || {}, R = (DOC.rosters || {})[t.team], nm = teamName(t.team, false);
       // Its own line: starters left, in and done, then the ones on the field now with their points.
       var cnt = !c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c.done ? c.done + " done" : ""].filter(Boolean).join('<span class="bul tight">•</span>'), on = [];
@@ -1184,7 +1186,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<div class="tm' + (open ? " open" : "") + (t.team === me ? " mine" : "") + '" id="t-' + esc(t.team) + '" style="--row:' + teamColor(t.team) + ";--risk:" + risk[0] + '">' +
         '<button type="button" class="tmh" data-act="team" data-k="' + esc(t.team) + '" aria-expanded="' + open + '" title="' + esc(risk[1]) + '">' +
         '<span class="pl"><i class="car"></i><span>' + spot(t.team) + '</span></span><span class="tn">' + esc(nm) + (roomy() && nm !== t.team ? " <small>(" + esc(t.team) + ")</small>" : "") + (t.team === me ? " ★" : "") + "</span>" +
-        '<span class="fin"><small class="nw">' + (st === "pre" ? "" : n1(t.now)) + "</small>" + n1(t.est_final) + '<small class="slp">• ' + n1(t.est_sleeper) + '</small></span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
+        '<span class="fin">' + (one ? "" : '<small class="nw">' + (st === "pre" ? "" : n1(t.now)) + "</small>") + n1(t.est_final) + (one ? "" : '<small class="slp">• ' + n1(t.est_sleeper) + "</small>") + '</span><span class="cp">' + chopPct(t.chop, !roomy()) + '<small class="slp">• ' + chopPct(t.chop_sleeper) + "</small></span>" +
         teamBar(t, top, chopX) + '<span class="meta">' + verdict(t, cu) + "</span>" + onf + "</button>";
       if (open) h += teamBody(t, R, w - 21, risk);
       h += "</div>";
