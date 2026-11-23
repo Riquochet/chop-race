@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'e778ba90bc';</script>
+<script>window.CHOP_V2 = '8da2b8f639';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -225,6 +225,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .pr3{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
 .pr3 .l{flex:0 1 auto;min-width:0;display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 6px}
 .pr3 .r{flex:none;margin-left:auto;white-space:nowrap}
+.pr3 .l.rt{margin-left:auto;justify-content:flex-end}
 .prs{font-size:.8125rem;line-height:1.45;margin-top:7px;color:var(--chop-fg)}.prs.none{color:var(--chop-muted)}.prp{font-size:.72rem;color:var(--chop-muted);margin-top:4px}.prs .pt{white-space:nowrap}
 .hm{position:relative;display:inline-block;width:44px;height:10px;flex:none}
 .hm .line{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:linear-gradient(90deg,hsl(0,var(--chop-rank-s),var(--chop-rank-l)),hsl(30,var(--chop-rank-s),var(--chop-rank-l)),hsl(60,var(--chop-rank-s),var(--chop-rank-l)),hsl(90,var(--chop-rank-s),var(--chop-rank-l)),hsl(120,var(--chop-rank-s),var(--chop-rank-l)))}
@@ -834,8 +835,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       else if (gst === "in") nums = "<b>" + n1(r.now) + "</b><b>" + n1(r.est_final) + "</b>" + slp(r.est_sleeper);
       else nums = "<span>" + (gst === "pre" ? "" : n1(r.now)) + '</span><span class="pj">' + n1(r.pre != null ? r.pre : r.est_final) + "</span>" + slp(r.pre != null ? r.pre_sleeper : r.est_sleeper);
     }
-    // Under the bar, always on show: at the left the game (when and against whom; then the quarter, the clock, the ball and the
-    // score), at the right what was known before kickoff. His stats from the game are in the roll-down.
+    // Under the bar, always on show: before kickoff what is known about him at the left and his game (when, against whom, how
+    // hard) at the right; from kickoff the game at the left (quarter, clock, ball) and the score at the right. His stats from the game are in the roll-down.
     var sub = preLine(r), l3 = "", gb = gameBit(r, ctx.charAt(0)), l4 = "", bits = [];
     function dots(t) { return t.split(" · ").map(function (p) { return '<span class="pt">' + esc(p) + "</span>"; }).join(BUL); }
     if (sub) bits.push("<span>" + dots(sub) + "</span>");
@@ -843,7 +844,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var hardBar = gst === "pre" && r.hard && !outThisWeek(r) ? '<span class="hm" title="' + ordinal(r.hard) + " of 32 against " + esc(r.pos) + 's: 1st hardest (red), 32nd easiest (green)"><i class="line"></i><i class="mark" style="left:calc(3.5px + (100% - 7px) * ' + ((r.hard - 1) / 31).toFixed(3) + ')"></i></span>' : "";
     var began = !!gst && gst !== "pre" && !outThisWeek(r), gs = gameScore(r, ctx.charAt(0));
     var right = began ? gs : bits.join(BUL);          // once his game starts the score is at the right, and the pre-game data moves into the roll-down
-    if (right || gb) l3 = '<div class="pr3">' + (gb ? '<span class="l"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + (right ? '<span class="r">' + right + "</span>" : "") + "</div>";
+    // Before kickoff the two sides trade places: what is known about him at the left, his game and how hard it is at the right.
+    if (right || gb) l3 = '<div class="pr3">' + (!began && right ? '<span class="l">' + right + "</span>" : "") + (gb ? '<span class="l' + (began ? "" : " rt") + '"><span class="gmx">' + gb + "</span>" + hardBar + "</span>" : "") + (began && right ? '<span class="r">' + right + "</span>" : "") + "</div>";
     if (open) {
       var kv = [];
       if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper"]);
