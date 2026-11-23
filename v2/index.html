@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '8597b9aefc';</script>
+<script>window.CHOP_V2 = 'caa913417f';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -70,6 +70,7 @@ h3{font-size:.7rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase
 .tag.yellow{color:var(--chop-tag-yellow-t);border-color:var(--chop-tag-yellow-b);background:var(--chop-tag-yellow-f)}
 .tag.orange{color:var(--chop-tag-orange-t);border-color:var(--chop-tag-orange-b);background:var(--chop-tag-orange-f)}
 .tag.blue{color:var(--chop-tag-blue-t);border-color:var(--chop-tag-blue-b);background:var(--chop-tag-blue-f)}
+.tag.green{color:var(--green);border-color:color-mix(in srgb,var(--green) 45%,transparent);background:color-mix(in srgb,var(--green) 12%,transparent)}
 .tag.gray{color:var(--chop-tag-gray-t);border-color:var(--chop-tag-gray-b);background:var(--chop-tag-gray-f)}
 .tag.bench{color:var(--chop-tag-red-t);border-color:var(--chop-tag-red-b);background:var(--chop-tag-red-f);font-weight:400}
 .tag.team{color:color-mix(in srgb,var(--tc) 80%,var(--chop-fg));border-color:color-mix(in srgb,var(--tc) 45%,transparent);background:color-mix(in srgb,var(--tc) 12%,transparent);max-width:100%;overflow:hidden;text-overflow:ellipsis}
@@ -172,7 +173,7 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .tmh .slp{display:none}
 .nw{display:inline-block;min-width:2.5rem;margin-right:.45em;text-align:right;font-weight:400;font-size:.75rem;color:var(--chop-muted)}.lh .nw{font-size:inherit}
 .tmh .trk,.tmh .meta,.tmh .onf{grid-column:2/-1}
-.tmh .meta{font-size:.72rem;color:var(--chop-muted);line-height:1.4}
+.tmh .meta{font-size:.7rem;color:var(--chop-muted);line-height:1.4}
 .tmh .meta b{color:var(--chop-fg);font-weight:600}
 .tmh .meta b.green{color:var(--green)}.tmh .meta b.red{color:var(--red)}
 .onf{display:flex;flex-wrap:wrap;gap:3px 4px;font-size:.72rem}.onf .on{margin-right:4px}.onf .jn{color:var(--chop-muted);opacity:.55}
@@ -1206,7 +1207,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var lead = st(signed(d), d < 0 ? "behind" : "clear"), wk = t.pre != null ? st(signed(+t.est_final - +t.pre), "vs proj") : "", n = left(t);
     function line() { return [].slice.call(arguments).filter(Boolean).join(BUL); }
     if (T.every(function (x) { return tState(x) === "pre"; })) return line(st(n1(t.pre != null ? t.pre : t.est_final), "Projected", true), lead);
-    var safe = '<b class="green">Safe</b>', out = '<b class="red">Chopped</b>';
+    var safe = tag("SAFE", "green"), out = tag("CHOPPED", "red");
     if (T.every(function (x) { return tState(x) === "post"; })) return line(d < 0 ? out : safe, lead, wk);
     // A finished team already under this one's points: it cannot be last.
     if (others.some(function (x) { return !left(x) && +x.now < mine; })) return line(safe, lead, wk);
