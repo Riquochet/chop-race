@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'c6398079a5';</script>
+<script>window.CHOP_V2 = 'b96b5b1d95';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -653,6 +653,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       h += '<p class="hs">' + n1(chop.now) + " points" + (next ? ", " + n1(next.now - chop.now) + " behind " + nm(next) : "") + ".</p>";
     } else {
       h += '<div class="kick">' + (allPre ? "Projected chop" : "On the block") + '</div><p class="hl">' + nm(chop) + "</p>";
+      var c0 = h.length;                               // the chase bars are drawn under the odds bar (moved below)
       if (!allPre && next) {                           // what it comes down to, drawn: one bar per chase
         // chaser's points so far (solid), on to its Final (pale), against the line it must pass (the other team's color)
         var chase = function (a, tgt, tgtTeam) {
@@ -668,6 +669,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
           h += T.filter(function (t) { return t !== chop && left(t) && +t.now < +chop.now; }).sort(function (p, q) { return p.now - q.now; }).slice(0, 2).map(function (t) { return chase(t, +chop.now, chop); }).join("");
         }
       }
+      var chaseH = h.slice(c0); h = h.slice(0, c0);
       var odds = teams().slice().sort(function (a, b) { return b.chop - a.chop; }).filter(function (t) { return +t.chop > 0; });
       if (odds.length) {
         h += '<div class="odds" role="img" aria-label="Each team’s chance of being chopped">' + odds.map(function (t) {
@@ -676,6 +678,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         h += '<div class="oddk">' + shown.map(function (t) { return '<span><i class="dot" style="--c:' + teamColor(t.team) + '"></i>' + esc(teamName(t.team, false) + star(t.team)) + " <b>" + chopPct(t.chop) + "</b></span>"; }).join('<span class="bul">•</span>') +
              (rest.length ? '<span class="bul">•</span><span>'  + plural(rest.length, "other") + " <b>" + chopPct(restSum) + "</b></span>" : "") + "</div>";
       }
+      h += chaseH;
     }
     var me = teamRow(myTeam());
     if (me) {
@@ -813,11 +816,14 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   }
 
   // ---------- one player's row, the same everywhere ----------
-  function preLine(r) {                               // what is known before kickoff; it stays on his row all week
+  function preLine(r, long) {                         // what is known before kickoff: "RB13 · 62% (97%)" on his row, labelled in the roll-down
     var parts = [];
     if (r.prank) parts.push(r.prank);
-    if (r.start != null) parts.push(Math.round(r.start) + "% starting");   // "RB13 · 62% starting · 97% rostered"
-    if (r.own != null) parts.push(Math.round(r.own) + "% rostered");
+    if (long) {                                        // "RB13 · 62% starting · 97% rostered"
+      if (r.start != null) parts.push(Math.round(r.start) + "% starting");
+      if (r.own != null) parts.push(Math.round(r.own) + "% rostered");
+    } else if (r.start != null) parts.push(Math.round(r.start) + "%" + (r.own != null ? " (" + Math.round(r.own) + "%)" : ""));
+    else if (r.own != null) parts.push("(" + Math.round(r.own) + "%)");
     return parts.join(" · ");
   }
   // The heading over a list's two number columns. Only a player whose game is on shows Now and Final;
@@ -860,7 +866,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       else if (r.club) kv.push(["Game", "No game this week"]);
       if (r.inj) kv.push(["Status", esc(r.inj) + (r.body ? " (" + esc(r.body) + ")" : "")]);
       if (opt.team) kv.push(["Team", esc(teamName(opt.team, true) + star(opt.team)) + (bench ? " (bench: points do not count)" : "")]);
-      var sx = gst && gst !== "pre" && !outThisWeek(r) ? '<div class="prs' + (r.stats ? "" : " none") + '">' + (r.stats ? dots(r.stats) : "No stats yet") + "</div>" + (began && bits.length ? '<div class="prp">' + bits.join(BUL) + "</div>" : "") : "";
+      var subL = preLine(r, true), bitsL = (subL ? ["<span>" + dots(subL) + "</span>"] : []).concat(r.bye ? [tag(r.bye, "blue", "Bye in week " + r.bye)] : []);
+      var sx = (gst && gst !== "pre" && !outThisWeek(r) ? '<div class="prs' + (r.stats ? "" : " none") + '">' + (r.stats ? dots(r.stats) : "No stats yet") + "</div>" : "") + (bitsL.length ? '<div class="prp">' + bitsL.join(BUL) + "</div>" : "");   // the long, labelled pre-game line
       l4 = sx + '<div class="pr4">' + kv.map(function (p) { return "<span>" + p[0] + "</span><span>" + p[1] + "</span>"; }).join("") + "</div>";
     }
     return '<div class="' + cls + (open ? " open" : "") + '" id="p-' + esc(key) + '" data-act="player" data-k="' + esc(key) + '"' + (opt.c ? ' style="--c:' + opt.c + '"' : "") + ' role="button" aria-expanded="' + open + '"><span></span><div class="prc">' +
