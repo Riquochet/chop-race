@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'd6b461a04f';</script>
+<script>window.CHOP_V2 = 'c6398079a5';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -816,8 +816,8 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function preLine(r) {                               // what is known before kickoff; it stays on his row all week
     var parts = [];
     if (r.prank) parts.push(r.prank);
-    if (r.start != null) parts.push(Math.round(r.start) + "%" + (r.own != null ? " (" + Math.round(r.own) + "%)" : ""));
-    else if (r.own != null) parts.push("(" + Math.round(r.own) + "%)");
+    if (r.start != null) parts.push(Math.round(r.start) + "% starting");   // "RB13 · 62% starting · 97% rostered"
+    if (r.own != null) parts.push(Math.round(r.own) + "% rostered");
     return parts.join(" · ");
   }
   // The heading over a list's two number columns. Only a player whose game is on shows Now and Final;
