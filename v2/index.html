@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'dc85f1eb62';</script>
+<script>window.CHOP_V2 = 'd6b461a04f';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -435,7 +435,13 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function outThisWeek(r) { return !r.stats && !+r.now && ((!r.game && !!r.club) || ["Out", "IR", "PUP", "Sus", "NA"].indexOf(r.inj) >= 0); }
   // Ruled out while his game is on (the data already counts him as done, with nothing more to come): shown as finished.
   function goneOut(r) { return !!r.game && r.game.st === "in" && (r.inj === "Out" || r.inj === "IR"); }
-  function paceShown(r) { return goneOut(r) ? paceOf(+r.now || 0, +r.now || 0, +r.pre || 0, 0) : r.pace || ""; }
+  function paceShown(r) {
+    if (goneOut(r)) return paceOf(+r.now || 0, +r.now || 0, +r.pre || 0, 0);
+    var p = r.pace || "";
+    // A Final that shows as at least the Projected is on pace, whichever side worked the color out (the feed's is unrounded).
+    if ((p === "yellow" || p === "red") && r.pre != null && round1(+r.est_final || 0) >= round1(+r.pre)) return "green";
+    return p;
+  }
   // QUES and DOUB clear at kickoff and come back only if the status changes during the game. The feed carries only the
   // status now, so this device remembers the one each player took into his game (the last it saw before kickoff, or the
   // first it saw after), per week.
@@ -850,7 +856,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var kv = [];
       if (r.pre != null) kv.push(["Projected", "<b>" + n1(r.pre) + "</b> • " + n1(r.pre_sleeper) + " Sleeper"]);
       if (gst !== "post" && !outThisWeek(r)) kv.push(["Final", "<b>" + n1(r.est_final) + "</b> • " + n1(r.est_sleeper) + " Sleeper"]);
-      if (r.game && r.game.kick) kv.push(["Game", esc(gameName(r)) + " · " + esc(windowName(r.game.kick)) + " · " + esc(clock(r.game.kick))]);
+      if (r.game && r.game.kick) kv.push(["Game", esc(gameName(r)) + (windowName(r.game.kick) === clock(r.game.kick) ? "" : " · " + esc(windowName(r.game.kick))) + " · " + esc(clock(r.game.kick))]);   // a kickoff outside the named windows is written once
       else if (r.club) kv.push(["Game", "No game this week"]);
       if (r.inj) kv.push(["Status", esc(r.inj) + (r.body ? " (" + esc(r.body) + ")" : "")]);
       if (opt.team) kv.push(["Team", esc(teamName(opt.team, true) + star(opt.team)) + (bench ? " (bench: points do not count)" : "")]);
@@ -1490,6 +1496,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
   function round1(v) { return Math.round(v * 10) / 10; }
   function scorePts(st, sc) { var p = 0; for (var k in sc) if (st[k]) p += st[k] * sc[k]; return p; }
   function paceOf(now, fin, base, left) {              // chop_chart.pace
+    now = round1(now); fin = round1(fin); base = round1(base);   // judged on the numbers as shown: a Final of 17.0 meets a Projected of 17.0
     if (now > base) return "blue";
     if (fin >= base) return "green";
     return fin >= base - 1 || left > 1 - 7.5 / 60 ? "yellow" : "red";
