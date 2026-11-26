@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'beca6bb608';</script>
+<script>window.CHOP_V2 = '0d052ed550';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -243,7 +243,8 @@ a.ref{color:color-mix(in srgb,var(--ref) 78%,var(--chop-fg));font-weight:600;tex
 .zt>span:first-child{color:var(--chop-muted);opacity:.55}
 .zt.first{margin-top:22px}.sech+.zt{margin-top:4px}
 .pill{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;color:var(--blue);background:transparent;border:1px solid var(--blue);border-radius:4px;padding:1px 6px}
-.pill.dim{color:var(--chop-muted);border-color:color-mix(in srgb,var(--chop-muted) 45%,transparent);font-weight:600}
+.pill.dim{color:color-mix(in srgb,var(--blue) 50%,transparent);border-color:color-mix(in srgb,var(--blue) 35%,transparent)}
+.pill[data-kick]{font-variant-numeric:tabular-nums;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.car{transition:none}}
 .pr3 .pt{white-space:nowrap}
 .pr4{font-size:.72rem;color:var(--chop-muted);margin-top:5px;display:grid;grid-template-columns:auto 1fr;gap:1px 10px}
@@ -630,6 +631,10 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     eachRow(function (r) { if (r.game && Math.abs(+r.game.kick - kick) < 60 && (r.inj === "Questionable" || r.inj === "Doubtful")) open = true; });
     return !open;
   }
+  function upNext(kick) {                              // the UP NEXT tag with no game on: the same countdown as the top of the page
+    var s = kick - Date.now() / 1000;
+    return "UP NEXT" + BUL + (s < 300 ? "ANY MINUTE" : countdown(s).toUpperCase());
+  }
   function renderStatus() {
     var live = isLive(), now = Date.now() / 1000, parts = [], state = "";
     $("live").hidden = !live;
@@ -645,6 +650,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     $("when").textContent = state || "—";
     $("when").className = cdOn && statusSettled(DOC.next) ? "set" : "";
     $("when2").textContent = parts.join(" · ");
+    document.querySelectorAll(".pill[data-kick]").forEach(function (n) { n.innerHTML = upNext(+n.getAttribute("data-kick")); });
     if (DOC && DOC.teams) $("alive").textContent = DOC.teams.length + " of 20";
   }
 
@@ -1370,7 +1376,11 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
         var grp = all.filter(function (x) { return windowName(x.kick) === wn; }), mark = "";
         if (grp.some(function (x) { return x.st === "in"; })) mark = '<span class="live">LIVE</span>';
         else if (grp.every(function (x) { return x.st === "post"; })) mark = tag("FINAL", "gray");
-        else if (!nextDone) { mark = '<span class="pill' + (live.length ? " dim" : "") + '">UP NEXT</span>'; nextDone = true; }   // dim while a game is on: LIVE has the stage
+        else if (!nextDone) {                           // dim blue while a game is on (LIVE has the stage); otherwise it counts down to kickoff
+          var k0 = Math.min.apply(null, grp.filter(function (x) { return x.st === "pre"; }).map(function (x) { return +x.kick; }));
+          mark = live.length || !isFinite(k0) ? '<span class="pill' + (live.length ? " dim" : "") + '">UP NEXT</span>' : '<span class="pill" data-kick="' + k0 + '">' + upNext(k0) + "</span>";
+          nextDone = true;
+        }
         h += '<div class="zt' + (i ? "" : " first") + '"><span>' + esc(wn) + "</span>" + mark + "</div>";
       }
       h += gameCard(g, w);
