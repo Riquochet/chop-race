@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = 'b96b5b1d95';</script>
+<script>window.CHOP_V2 = '2f4a556b87';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -282,9 +282,19 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
 .cv .chopline{stroke:var(--red);stroke-width:1.2;opacity:.75}
 .cv path{fill:none;stroke-linejoin:round;stroke-linecap:round}
 .cv .dim{opacity:.12}
-.zm{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.zm button{font-size:.72rem;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:6px;padding:3px 8px;cursor:pointer}
-.zm button[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
+/* the game-window range strip: All, then the week's windows as one timeline (days over their slots); tap or drag a range */
+.rg{display:flex;align-items:stretch;gap:6px;margin-top:6px}
+.rg .all{font-size:.72rem;font-weight:600;background:var(--chop-panel);border:1px solid var(--chop-grid);border-radius:8px;padding:0 10px;cursor:pointer;color:var(--chop-muted)}
+.rg .all[aria-pressed="true"]{background:var(--chop-fg);color:var(--chop-bg);border-color:var(--chop-fg)}
+.rg .st{flex:1;min-width:0;display:grid;border:1px solid var(--chop-grid);border-radius:8px;overflow:hidden;background:var(--chop-panel);touch-action:none;user-select:none;-webkit-user-select:none}
+.rg .dy{grid-row:1;font-size:.6rem;font-weight:600;color:var(--chop-muted);text-align:center;padding:2px 0 0;border-left:1px solid var(--chop-grid);white-space:nowrap;overflow:hidden}
+.rg .dy:first-child{border-left:0}
+.rg .dy.on{color:var(--chop-fg)}
+.rg .cl{grid-row:2;font-size:.64rem;padding:2px 0 4px;margin:0;border:0;border-left:1px solid var(--chop-grid);background:transparent;color:var(--chop-fg);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0;-webkit-tap-highlight-color:transparent}
+.rg .cl.first{border-left:0}
+.rg .cl.on{background:var(--chop-fg);color:var(--chop-bg);border-left-color:var(--chop-fg)}
+.rg .cl:disabled{color:var(--chop-muted);opacity:.45;cursor:default}
+.rg .cl.on:disabled{opacity:.7}
 .rdh{font-size:.72rem;color:var(--chop-muted);margin:6px 0 4px;min-height:1.35em}
 .lg button,.lgh{display:grid;column-gap:4px;align-items:baseline;font-size:.78rem}
 .lgh{font-size:.66rem;color:var(--chop-muted);padding:0 4px 2px}
@@ -346,7 +356,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     <p><b>Tap a team</b> to open it: its numbers beside Sleeper's, every player, and their points through the week. <b>Projected</b> is the week's yardstick: every player's number locks at the week's first kickoff, and a team's is the sum of its starters, so it moves only if the lineup changes. News before a player's kickoff still moves Final and Chop. Every bar, color, place and chart on this page runs on our numbers; Sleeper's are shown beside them only for comparison, so they will not always match.</p>
     <p><b>Players.</b> Under his bar, at the right, until his game starts (after that, in the roll-down under his stats): his place at his position by season points in our scoring, the share of Sleeper teams starting him and (in parentheses) rostering him, and a blue tag with the week of a bye still to come. Tap his NFL team to jump to that game. The numbers at the right are Now and Final (the heading reads Final · Proj when no player in the list is in a game); before his game Final is his Projected, during it Final turns bold, and after it Projected is struck through beside what he actually scored. His bar works like a team's: before kickoff it is a thinner bar of his Projected in his NFL team's color; then points so far in his pace color, with a purple line at his Projected (through the first quarter it stays green unless he has already passed it). Under the bar, at the left: when he plays and the opponent, colored and ranked by how hard that defense has been on his position this season, with a small red-to-green line and a dot at that rank (1st red, the hardest; 32nd green, the easiest); during the game the quarter and the clock, which counts down while the game clock runs and dims while it is stopped, and when his team has the ball where and what down: ◄40 • 3&2 is 3rd and 2 on the other team's 40, 20► • 4&13 is 4th and 13 on his own 20, a red tag inside the 20, G for goal to go, Kickoff while the ball is being kicked off; the game's score is at the right, and beside FINAL once it is over. Tap a player for the rest: his stats from the game, his pre-game data, and both projections beside Sleeper's.</p>
     <p><b>Games</b> lists every NFL game this week: on now, up next, final. Tap one for the players in it from every surviving roster, bench included, split by NFL team, and for a game under way or finished their points quarter by quarter. Lines and bars there are in NFL team colors.</p>
-    <p><b>Through the week</b>, under the ladder board, charts the week by <b>Points</b>, by <b>Cushion</b> or by <b>Chop %</b> (each team's chance of being chopped as the week went): solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the buttons zoom to one game window.</p>
+    <p><b>Through the week</b>, under the ladder board, charts the week by <b>Points</b>, by <b>Cushion</b> or by <b>Chop %</b> (each team's chance of being chopped as the week went): solid lines are points scored, dashed lines our projection to the end of Monday night, thick while one of a team's starters is playing, thin between its games, hair-thin once it is done. Friday, Saturday and the gaps between game windows are cut out; a shaded zone marks staggered kickoffs inside a window. Cushion draws each team's margin over the block through the week, with everything under the red chop line going out. Slide a finger across a chart to read every value at that moment in the list under it; tap names in the list to pick out their lines; the strip of game windows above a chart zooms it: tap windows to pick them (a run with a gap fills in the windows between), drag along the strip to pick a run, tap an end of the run to drop it, and tap All for the whole week.</p>
     <p><b>Redact</b> hides the stats of players on the NFL teams you choose once their games start, and of their opponents in those games, along with the score and the down, so a game you are saving is not spoiled. The choice is kept on this device (tap AFC, NFC or a division's name to select or clear all of it), and Unredacted shows everything until you switch back. Redacted players always count in their team's totals. Stories are not redacted.</p>
     <p>The page updates itself: every 5 seconds while games are on (clock, ball and points), every minute for the charts, every 2 minutes between games for roster moves. The LIVE light comes on about 5 minutes before kickoff and stays on until the last game on ends. Update asks for a fresh pull right away; it normally arrives in about 10 seconds.</p>
   </details>
@@ -946,6 +956,44 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     }
     return {grid: grid, labels: labels};
   }
+  // The game windows a zoom covers, as [first, last] indexes into wins (null = the whole week).
+  function zoomIdx(z, wins) {
+    if (!z) return null;
+    var i = -1, j = -1;
+    wins.forEach(function (w, n) { if (+w.x0 >= z[0] - 0.01 && +w.x1 <= z[1] + 0.01) { if (i < 0) i = n; j = n; } });
+    return i < 0 ? null : [i, j];
+  }
+  // The zoom control: All, then the week's game windows as one connected timeline, days over their slots. The picked
+  // windows are always one unbroken run: tapping a window outside it stretches the run to reach it, tapping an end
+  // drops that end, tapping one inside keeps only that one; a finger dragged along the strip picks the run it covers.
+  // Windows this chart has nothing in stay in place (the run may pass over them) but cannot be picked.
+  function rangeStrip(id, wins, z, ok) {
+    var r = zoomIdx(z, wins), n = wins.length, days = [], cells = "";
+    wins.forEach(function (w, i) {
+      var lab = String(w.label || ""), d = lab.split(" ")[0], rest = lab.slice(d.length + 1).toLowerCase();
+      var slot = {morning: "Morn", "day games": "Day", day: "Day", night: "Night", early: "Early", late: "Late", international: "Intl", afternoon: "Aft"}[rest] || w.short || rest;
+      if (!days.length || days[days.length - 1].d !== d) days.push({d: d, a: i, n: 0, on: false});
+      var dd = days[days.length - 1], on = !!(r && i >= r[0] && i <= r[1]); dd.n++; if (on) dd.on = true;
+      cells += '<button type="button" class="cl' + (dd.n === 1 ? " first" : "") + (on ? " on" : "") + '" data-act="zoom" data-ch="' + esc(id) + '" data-k="' + i + '" style="grid-column:' + (i + 1) + '" aria-pressed="' + on + '" title="' + esc(lab + " " + windowTime(w)) + '"' + (ok && !ok(w) ? " disabled" : "") + ">" + esc(slot) + "</button>";
+    });
+    return '<div class="rg" role="group" aria-label="Zoom to game windows"><button type="button" class="all" data-act="zoom" data-ch="' + esc(id) + '" data-k="" aria-pressed="' + !r + '">All</button>' +
+      '<div class="st" data-ch="' + esc(id) + '" style="grid-template-columns:repeat(' + n + ',minmax(0,1fr))">' +
+      days.map(function (dd) { return '<span class="dy' + (dd.on ? " on" : "") + '" style="grid-column:' + (dd.a + 1) + " / span " + dd.n + '">' + esc(dd.d) + "</span>"; }).join("") + cells + "</div></div>";
+  }
+  // The run a tap on window k leaves, from the run r before it (null = the whole week).
+  function tapRange(r, k) {
+    if (!r) return [k, k];
+    if (k < r[0]) return [k, r[1]];
+    if (k > r[1]) return [r[0], k];
+    if (r[0] === r[1]) return null;
+    if (k === r[0]) return [k + 1, r[1]];
+    if (k === r[1]) return [r[0], k - 1];
+    return [k, k];
+  }
+  function setZoom(ch, r) {
+    var c = CH[ch]; if (!c) return;
+    S.zoom[zoomKey(ch)] = r ? [+c.wins[r[0]].x0, +c.wins[r[1]].x1] : null; renderHero(); renderRace();
+  }
   function lineChart(id, c) {
     var W = Math.max(280, Math.round(c.w)), H = c.h || 300, m = {l: 30, r: 8, t: 10, b: 30};
     var wins = (c.wins || []).filter(function (w) { return w.kind === "window"; }), z = S.zoom[zoomKey(id)];
@@ -1006,11 +1054,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var legend = c.series.filter(function (s) { return s.full.length || s.end != null; }).sort(function (p, q) { return end(q) - end(p); });
     CH[id] = {W: W, ml: m.l, mr: m.r, a: a, b: b, series: legend, wins: wins, nowX: c.nowX, fmt: fmt, rangeEnd: c.series.some(function (s) { return s.end != null; }), idle: c.idle || ""};
     var h = "";
-    if (c.zoomable && wins.length > 1) {
-      h += '<div class="zm" role="group" aria-label="Zoom to a game window"><button type="button" data-act="zoom" data-ch="' + esc(id) + '" data-k="" aria-pressed="' + !z + '">Whole week</button>' + wins.map(function (w, i) {
-        if (c.zoomOk && !c.zoomOk(w)) return "";
-        return '<button type="button" data-act="zoom" data-ch="' + esc(id) + '" data-k="' + i + '" aria-pressed="' + !!(z && z[0] === +w.x0 && z[1] === +w.x1) + '" title="' + esc(w.label + " " + windowTime(w)) + '">' + esc(w.short || w.label) + "</button>"; }).join("") + "</div>";
-    }
+    if (c.zoomable && wins.length > 1) h += rangeStrip(id, wins, z, c.zoomOk);
     h += '<div class="cvw"><svg class="cv" data-ch="' + esc(id) + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(c.aria || "") + '"><defs><mask id="' + mid + '" maskUnits="userSpaceOnUse" x="0" y="0" width="' + W + '" height="' + H + '"><rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' + cut + '</mask><clipPath id="clip-' + esc(id.replace(/[^\w-]/g, "_")) + '"><rect x="' + m.l + '" y="' + (m.t - 2) + '" width="' + (R - m.l) + '" height="' + (B - m.t + 4) + '"/></clipPath></defs>' +
       g + '<g clip-path="url(#clip-' + esc(id.replace(/[^\w-]/g, "_")) + ')">' + lines + '</g><line class="rule" y1="' + m.t + '" y2="' + B + '" x1="0" x2="0" style="display:none"/></svg></div>';
     // The list under the chart: one line per series. heads = its columns; column vi is the chart's own value, which follows the finger.
@@ -1395,8 +1439,9 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     }
     if (act === "sel") { var set = S.sel[ch] = S.sel[ch] || [], at = set.indexOf(k); if (at < 0) set.push(k); else set.splice(at, 1); if (ch.indexOf("game-") === 0) renderGames(); else { renderHero(); renderRace(); } return; }
     if (act === "zoom") {
-      var c = CH[ch], w = c && k !== "" ? c.wins[+k] : null;
-      S.zoom[zoomKey(ch)] = w ? [+w.x0, +w.x1] : null; renderHero(); renderRace(); return;
+      if (DRAGGED) { DRAGGED = false; return; }        // the end of a drag along the strip: already applied
+      var c = CH[ch]; if (!c) return;
+      setZoom(ch, k === "" ? null : tapRange(zoomIdx(S.zoom[zoomKey(ch)], c.wins), +k)); return;
     }
     if (act === "story") { S.story = !S.story; renderStory(); return; }
     if (act === "old-story") { S.stories[k] = !S.stories[k]; renderStories(); return; }
@@ -1410,8 +1455,31 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     S.follow = e.target.value; LS.set("chop-v2-follow", S.follow); e.target.blur();
     resent = false; redactSync(DOC, true); render();    // that team's shared Redact setting, if it has one
   });
-  document.addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("svg.cv")) scrub(e); else unscrub(); }, true);
-  document.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || e.buttons || e.pressure > 0) scrub(e); });
+  // A drag along a range strip: the cells light up as the finger passes (no redraw mid-drag); lifting it applies the run.
+  var DRAG = null, DRAGGED = false;
+  function dragStart(e) {
+    DRAGGED = false;
+    var cl = e.target.closest && e.target.closest(".rg .cl");
+    DRAG = cl && !cl.disabled ? {ch: cl.getAttribute("data-ch"), st: cl.parentNode, k0: +cl.getAttribute("data-k"), k: +cl.getAttribute("data-k"), moved: false} : null;
+  }
+  function dragTo(x, y) {
+    if (!DRAG) return;
+    var el = document.elementFromPoint(x, y), cl = el && el.closest && el.closest(".rg .cl");
+    if (!cl || cl.parentNode !== DRAG.st || +cl.getAttribute("data-k") === DRAG.k) return;
+    DRAG.k = +cl.getAttribute("data-k"); DRAG.moved = true;
+    var a = Math.min(DRAG.k0, DRAG.k), b = Math.max(DRAG.k0, DRAG.k);
+    DRAG.st.querySelectorAll(".cl").forEach(function (c2) { var i = +c2.getAttribute("data-k"); c2.classList.toggle("on", i >= a && i <= b); });
+  }
+  function dragEnd() {
+    var d = DRAG; DRAG = null;
+    if (!d || !d.moved) return;
+    DRAGGED = true; setTimeout(function () { DRAGGED = false; }, 400);   // swallow the click that may follow the lift
+    setZoom(d.ch, [Math.min(d.k0, d.k), Math.max(d.k0, d.k)]);
+  }
+  document.addEventListener("pointerdown", function (e) { dragStart(e); if (e.target.closest && e.target.closest("svg.cv")) scrub(e); else unscrub(); }, true);
+  document.addEventListener("pointermove", function (e) { if (DRAG && (e.pointerType === "mouse" ? e.buttons : true)) { dragTo(e.clientX, e.clientY); return; } if (e.pointerType === "mouse" || e.buttons || e.pressure > 0) scrub(e); });
+  document.addEventListener("pointerup", dragEnd, true);
+  document.addEventListener("pointercancel", function () { DRAG = null; }, true);
   // Lifting the finger (or the mouse leaving the chart) puts the list back to its own numbers.
   document.addEventListener("pointerup", function (e) { if (e.pointerType !== "mouse") unscrub(); }, true);
   document.addEventListener("pointercancel", unscrub, true);
@@ -1422,6 +1490,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
     var t = e.touches[0]; TS = e.touches.length === 1 && e.target.closest && e.target.closest("svg.cv") ? {x: t.clientX, y: t.clientY, t: e.timeStamp, lock: null} : null;
   }, {passive: true});
   document.addEventListener("touchmove", function (e) {
+    if (DRAG && e.touches.length === 1) { if (e.cancelable) e.preventDefault(); dragTo(e.touches[0].clientX, e.touches[0].clientY); return; }
     if (!TS || e.touches.length !== 1) return;
     var t = e.touches[0];
     if (TS.lock == null) TS.lock = e.timeStamp - TS.t > 250 || Math.abs(t.clientX - TS.x) >= 0.7 * Math.abs(t.clientY - TS.y);
