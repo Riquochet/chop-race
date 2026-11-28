@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="The Chopping Block: who is on the block, every team's race through the week, live.">
-<script>window.CHOP_V2 = '0d052ed550';</script>
+<script>window.CHOP_V2 = '299bb0b76b';</script>
 </head><body>
 <title>The Chopping Block</title>
 <style>
@@ -1244,7 +1244,7 @@ svg.cv{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-sele
       var k0 = t.count || {}, one = !k0.left && !k0["in"] && n1(t.now) === n1(t.est_final) && n1(t.est_final) === n1(t.est_sleeper);
       var open = !!S.team[t.team], risk = chopRisk(t), st = tState(t), c = t.count || {}, R = (DOC.rosters || {})[t.team], nm = teamName(t.team, false);
       // Its own line: starters left, in and done, then the ones on the field now with their points.
-      var cnt = !c.left && !c["in"] ? tag("DONE", "gray") : [c.left ? c.left + " left" : "", c.done ? c.done + " done" : ""].filter(Boolean).join('<span class="bul tight">•</span>'), on = [];
+      var cnt = !c.left && !c["in"] ? tag("DONE", "gray") : [c.done ? c.done + " done" : "", c.left ? c.left + " left" : ""].filter(Boolean).join('<span class="bul tight">•</span>'), on = [];
       if (R) on = R.rows.filter(function (r) { return r.slot === "START" && r.game && r.game.st === "in" && !outThisWeek(r) && !goneOut(r); });
       // "2 left • 3 done • (2) Allen 6.0  Strange 1.2": the number in a game now, in parentheses, leads their names
       var onf = '<span class="onf">' + (cnt ? '<span class="lab">' + cnt + "</span>" : "") + (c["in"] ? (cnt ? '<span class="bul tight">•</span>' : "") + (open ? '<span class="lab">' + c["in"] + " in game</span>" : c["in"] > 1 || !on.length ? '<span class="lab" title="In a game now">(' + c["in"] + ")</span>" : "") : "") + (open ? [] : on).map(function (r) {   // open: the players are listed below, so no names here; one name needs no count
